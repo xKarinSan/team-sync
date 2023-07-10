@@ -199,7 +199,7 @@ function LandingPageSegment({
     id: string;
 }) {
     return (
-        <Box width="90vw" margin="10px auto">
+        <Box width="90vw" margin="10px auto" id={id}>
             {children}
         </Box>
     );
