@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Flex,
@@ -15,12 +15,15 @@ import {
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { KeyFeature } from "@/types/LandingPage/features";
 
 import FirstPic from "../images/landing/FirstLandingImage.png";
 import AboutMePic from "../images/landing/AboutMeImage.png";
 import PlaceboImage from "../images/landing/PlaceboImage.png";
 import ContactMeImage from "../images/landing/ContactMeImage.png";
+import useUser from "@/store/userStore";
+import { userLoggedProtection } from "@/routeProtectors";
 export default function Home() {
     const keyFeatures: KeyFeature[] = [
         {
@@ -48,6 +51,11 @@ export default function Home() {
             featureImage: PlaceboImage,
         },
     ];
+    const { user } = useUser();
+    const router = useRouter();
+    useEffect(() => {
+        userLoggedProtection(user, router);
+    }, []);
     return (
         <Box>
             <LandingPageSegment id="home">
@@ -77,19 +85,21 @@ export default function Home() {
                             enjoyment!
                         </Text>
                         <br />
-                        <Button
-                            display={{ base: "none", md: "inline-flex" }}
-                            fontSize={"sm"}
-                            color={"white"}
-                            bg={"#0239C8"}
-                            borderRadius={"5px"}
-                            _hover={{
-                                bg: "rgba(2, 57, 200, 0.3)",
-                            }}
-                            width="50%"
-                        >
-                            <Link href="/register">Sign Up</Link>
-                        </Button>
+                        <Link href="/register">
+                            <Button
+                                display={{ base: "none", md: "inline-flex" }}
+                                fontSize={"sm"}
+                                color={"white"}
+                                bg={"#0239C8"}
+                                borderRadius={"5px"}
+                                _hover={{
+                                    bg: "rgba(2, 57, 200, 0.3)",
+                                }}
+                                width="50%"
+                            >
+                                Sign Up
+                            </Button>
+                        </Link>
                         <br />
                         <Text fontWeight={"bold"} fontSize="sm">
                             *No credit card required
@@ -122,8 +132,7 @@ export default function Home() {
                         <br />
                         <Text>
                             {" "}
-                            We believe in the power of
-                            {" "}
+                            We believe in the power of{" "}
                             <Text as="span" color="#0239C8">
                                 collaboration
                             </Text>{" "}

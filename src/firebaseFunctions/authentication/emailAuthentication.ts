@@ -1,6 +1,4 @@
 import {
-    EmailLoginUser,
-    EmailRegisterUser,
     User,
 } from "@/types/User/usertypes";
 import { auth } from "@/config/firebaseConfig";
@@ -12,7 +10,7 @@ import {
 
 // if successful, return the user
 // else return null
-export const emailLogin = async ({ email, password, setUser, toast }: any) => {
+export const emailLogin = async ({ email, password, setUser, toast,router }: any) => {
     await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
@@ -33,6 +31,7 @@ export const emailLogin = async ({ email, password, setUser, toast }: any) => {
                     duration: 5000,
                     isClosable: true,
                 });
+                router.replace("/home")
             }
         })
         .catch((e) => {
@@ -54,6 +53,7 @@ export const emailRegistration = async ({
     password,
     setUser,
     toast,
+    router,
 }: any) => {
     await createUserWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
@@ -80,6 +80,7 @@ export const emailRegistration = async ({
                 duration: 5000,
                 isClosable: true,
             });
+            router.replace("/home")
         })
         .catch((e) => {
             toast({

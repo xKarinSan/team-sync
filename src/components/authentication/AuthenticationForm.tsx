@@ -16,6 +16,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import { User } from "@/types/User/usertypes";
 import { gmailLogin } from "@/firebaseFunctions/authentication/gmailAuthentication";
 type AuthenticationFormProps = {
@@ -34,6 +35,7 @@ export default function AuthenticationForm({
 }: // submitFunction,
 AuthenticationFormProps) {
     const toast = useToast();
+    const router = useRouter();
 
     // need email, pass
     const [email, setEmail] = useState("");
@@ -75,6 +77,7 @@ AuthenticationFormProps) {
                     password,
                     setUser,
                     toast,
+                    router,
                 };
             } else {
                 submitProps = {
@@ -83,6 +86,7 @@ AuthenticationFormProps) {
                     username,
                     setUser,
                     toast,
+                    router,
                 };
             }
             await submitFunction(submitProps, setUser);
@@ -93,6 +97,7 @@ AuthenticationFormProps) {
         const submitProps: any = {
             setUser,
             toast,
+            router,
         };
         await gmailLogin(submitProps);
     };

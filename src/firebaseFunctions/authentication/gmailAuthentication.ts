@@ -1,7 +1,7 @@
 import { auth } from "@/config/firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { User } from "@/types/User/usertypes";
-export const gmailLogin = async ({ setUser, toast }: any) => {
+export const gmailLogin = async ({ setUser, toast,router }: any) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
         .then((result) => {
@@ -23,6 +23,7 @@ export const gmailLogin = async ({ setUser, toast }: any) => {
                     duration: 5000,
                     isClosable: true,
                 });
+                router.replace("/home")
             }
         })
         // .catch((e) => {

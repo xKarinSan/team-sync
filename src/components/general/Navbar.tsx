@@ -10,14 +10,12 @@ import {
     Popover,
     PopoverTrigger,
     useColorModeValue,
-    useBreakpointValue,
     useDisclosure,
     Drawer,
     DrawerContent,
     BoxProps,
     FlexProps,
     CloseButton,
-    Link,
     Icon,
 } from "@chakra-ui/react";
 import {
@@ -27,15 +25,15 @@ import {
     FiUser,
     FiBell,
     FiMenu,
-    FiLogOut
+    FiLogOut,
 } from "react-icons/fi";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import NextLink from "next/link";
 import { User } from "@/types/User/usertypes";
 import useUser from "@/store/userStore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 
-export default function Navbar() {
+export default function Navbar({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
     const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
     const { user } = useUser();
@@ -74,6 +72,15 @@ export default function Navbar() {
                                     display={{ base: "flex", md: "none" }}
                                     onOpen={onOpen}
                                 />
+                                <Box
+                                    ml={{ base: 0, md: 60 }}
+                                    p={0}
+                                    background={"#EEF2F6"}
+                                    minHeight={"100vh"}
+                                    display="grid"
+                                >
+                                    {children}
+                                </Box>
                             </>
                         ) : (
                             <>
@@ -123,10 +130,7 @@ export default function Navbar() {
                                         }}
                                     >
                                         <Text
-                                            textAlign={useBreakpointValue({
-                                                base: "center",
-                                                md: "left",
-                                            })}
+                                            textAlign={["center", null, "left"]}
                                             fontFamily={"heading"}
                                             color={useColorModeValue(
                                                 "gray.800",
@@ -152,36 +156,37 @@ export default function Navbar() {
                                         direction={"row"}
                                         spacing={6}
                                     >
-                                        <Button
-                                            fontSize={"sm"}
-                                            fontWeight={400}
-                                        >
-                                            <NextLink href="/register">
+                                        <NextLink href="/register">
+                                            <Button
+                                                fontSize={"sm"}
+                                                fontWeight={400}
+                                            >
                                                 Sign Up
-                                            </NextLink>
-                                        </Button>
+                                            </Button>
+                                        </NextLink>
 
-                                        <Button
-                                            display={{
-                                                base: "none",
-                                                md: "inline-flex",
-                                            }}
-                                            fontSize={"sm"}
-                                            color={"white"}
-                                            bg={"#0239C8"}
-                                            _hover={{
-                                                bg: "rgba(2, 57, 200, 0.3)",
-                                            }}
-                                        >
-                                            <NextLink href="/login">
+                                        <NextLink href="/login">
+                                            <Button
+                                                display={{
+                                                    base: "none",
+                                                    md: "inline-flex",
+                                                }}
+                                                fontSize={"sm"}
+                                                color={"white"}
+                                                bg={"#0239C8"}
+                                                _hover={{
+                                                    bg: "rgba(2, 57, 200, 0.3)",
+                                                }}
+                                            >
                                                 Login
-                                            </NextLink>
-                                        </Button>
+                                            </Button>
+                                        </NextLink>
                                     </Stack>
                                 </Flex>
                                 <Collapse in={isOpen} animateOpacity>
                                     <MobileNav />
                                 </Collapse>
+                                <Box>{children}</Box>
                             </>
                         )}
                     </Box>
@@ -194,14 +199,15 @@ export default function Navbar() {
 interface LinkItemProps {
     name: string;
     icon: IconType;
+    path: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-    { name: "Home", icon: FiHome },
-    { name: "Teams", icon: FiUsers },
-    { name: "Calendar", icon: FiCalendar },
-    { name: "Profile", icon: FiUser },
-    { name: "Notifications", icon: FiBell },
-    { name: "Logout", icon: FiLogOut },
+    { name: "Home", icon: FiHome, path: "/home" },
+    { name: "Teams", icon: FiUsers, path: "/teams" },
+    { name: "Calendar", icon: FiCalendar, path: "/profile/calendar" },
+    { name: "Profile", icon: FiUser, path: "/home/profile" },
+    { name: "Notifications", icon: FiBell, path: "/home/notifications" },
+    { name: "Logout", icon: FiLogOut, path: "/logout" },
 ];
 
 interface SidebarProps extends BoxProps {
@@ -234,9 +240,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 />
             </Flex>
             {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon}>
-                    {link.name}
-                </NavItem>
+                <NavItem
+                    key={link.name}
+                    icon={link.icon}
+                    path={link.path}
+                    text={link.name}
+                />
             ))}
         </Box>
     );
@@ -244,15 +253,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
 interface NavItemProps extends FlexProps {
     icon: IconType;
-    children: ReactText;
+    path: string;
+    text: string;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, path, text }: NavItemProps) => {
     return (
-        <Link
-            href="#"
-            style={{ textDecoration: "none" }}
-            _focus={{ boxShadow: "none" }}
-        >
+        <NextLink href={path}>
             <Flex
                 align="center"
                 p="4"
@@ -261,10 +267,9 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
                 role="group"
                 cursor="pointer"
                 _hover={{
-                    bg: "cyan.400",
+                    bg: "#0239C8",
                     color: "white",
                 }}
-                {...rest}
             >
                 {icon && (
                     <Icon
@@ -276,9 +281,9 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
                         as={icon}
                     />
                 )}
-                {children}
+                {text}
             </Flex>
-        </Link>
+        </NextLink>
     );
 };
 
@@ -323,7 +328,9 @@ const DesktopNav = () => {
     return (
         <Stack direction={"row"} spacing={4}>
             {NAV_ITEMS.map((navItem) => (
-                <Box key={navItem.label}>
+                <Box
+                    key={navItem.label}
+                >
                     <Popover trigger={"hover"} placement={"bottom-start"}>
                         <PopoverTrigger>
                             <NextLink href={`/${navItem.href}`}>
