@@ -1,4 +1,4 @@
-#Component format example
+# Component format example
 
 Whenver a new page/component is created, copy and paste this template
 
