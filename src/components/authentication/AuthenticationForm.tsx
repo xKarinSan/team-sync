@@ -1,4 +1,15 @@
-"using client";
+"use client";
+// ==========================import from react==========================
+import { useState } from "react";
+
+// ==========================import from next==========================
+import NextLink from "next/link";
+import { useRouter } from "next/navigation";
+// ==========================import state management==========================
+import { User } from "@/types/User/usertypes";
+
+// ==========================import chakraui components==========================
+
 import {
     Flex,
     Box,
@@ -9,13 +20,19 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
-import { useState } from "react";
+
+// ==========================import custom components==========================
 import CustomButton from "../general/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
-import NextLink from "next/link";
-import { useRouter } from "next/navigation";
-import { User } from "@/types/User/usertypes";
+// ==========================import external functions==========================
 import { gmailLogin } from "@/firebaseFunctions/authentication/gmailAuthentication";
+
+// ==========================import external variables==========================
+
+// ==========================import types/interfaces==========================
+
+// ==========================main component==========================
+// ===============component exclusive interface(s)/type(s) if any===============
 type AuthenticationFormProps = {
     isLogin: boolean;
     submitFunction: (
@@ -25,14 +42,19 @@ type AuthenticationFormProps = {
     ) => Promise<void>;
     setUser: (props: User) => void;
 };
+
 export default function AuthenticationForm({
     isLogin,
     submitFunction,
     setUser,
 }: // submitFunction,
 AuthenticationFormProps) {
+    // ===============constants===============
+
     const toast = useToast();
     const router = useRouter();
+
+    // ===============states===============
 
     // need email, pass
     const [email, setEmail] = useState("");
@@ -41,6 +63,10 @@ AuthenticationFormProps) {
     // username and confirm pass
     const [username, setUsername] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    // ===============helper functions (will not be directly triggered)===============
+
+    // ===============main functions (will be directly triggered)===============
 
     // for login/register
     const onSubmit = async () => {
@@ -98,6 +124,9 @@ AuthenticationFormProps) {
         };
         await gmailLogin(submitProps);
     };
+
+    // ===============useEffect===============
+
     return (
         <Flex align={"center"} justify={"center"}>
             <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
@@ -199,3 +228,7 @@ AuthenticationFormProps) {
         </Flex>
     );
 }
+
+// ==========================sub component(s) if any==========================
+// ===============component exclusive interface(s)/type(s) if any===============
+// the rest are pretty much similar like the main components
