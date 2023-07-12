@@ -4,6 +4,8 @@ Whenver a new page/component is created, copy and paste this template
 
 ```
 "use client"
+// ===================================all imports===================================
+
 // ==========================import from react==========================
 
 // ==========================import from next==========================
@@ -20,8 +22,10 @@ Whenver a new page/component is created, copy and paste this template
 
 // ==========================import types/interfaces==========================
 
+// ==========================etc==========================
 
-// ==========================main component==========================
+
+// ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
 export default function ComponentName({prop1}:{prop1:propType}){
@@ -35,14 +39,13 @@ export default function ComponentName({prop1}:{prop1:propType}){
 
 // ===============useEffect===============
 
-return <>
+return (<>
 The react content
 
-<>
-
+</>)
 }
 
-// ==========================sub component(s) if any==========================
+// ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
 

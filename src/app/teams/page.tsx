@@ -1,4 +1,6 @@
 "use client";
+// ===================================all imports===================================
+
 // ==========================import from react==========================
 import { useEffect } from "react";
 
@@ -23,7 +25,7 @@ import { userLoginProtection } from "@/routeProtectors";
 
 // ==========================import types/interfaces==========================
 
-// ==========================main component==========================
+// ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
 export default function TeamPage() {
@@ -50,6 +52,6 @@ export default function TeamPage() {
         </Box>
     );
 }
-// ==========================sub component(s) if any==========================
+// ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components

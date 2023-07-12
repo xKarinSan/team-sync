@@ -1,19 +1,42 @@
 "use client";
+// ===================================all imports===================================
 
-import MainMenu from "@/components/general/MainMenu";
-import { MenuOption } from "@/types/HomePage/menuOptions";
+// ==========================import from react==========================
 import { useEffect } from "react";
+
+// ==========================import from next==========================
+import { useRouter } from "next/navigation";
+
+// ==========================import state management==========================
 import useUser from "@/store/userStore";
+
+// ==========================import chakraui components==========================
 import { Heading, Box } from "@chakra-ui/react";
+
+// ==========================import custom components==========================
+import MainMenu from "@/components/general/MainMenu";
+
+// ==========================import external functions==========================
+import { userLoginProtection } from "@/routeProtectors";
+
+// ==========================import external variables==========================
+
+// ==========================import types/interfaces==========================
+import { MenuOption } from "@/types/HomePage/menuOptions";
+
+// ==========================etc==========================
 
 import TeamsImage from "../../images/homepage/TeamsImage.png";
 import CalendarImage from "../../images/homepage/CalendarImage.png";
 import ProfileImage from "../../images/homepage/ProfileImage.png";
 import NotificationImage from "../../images/homepage/NotificationImage.png";
 import LogoutImage from "../../images/homepage/LogoutImage.png";
-import { userLoginProtection } from "@/routeProtectors";
-import { useRouter } from "next/navigation";
+
+// ===================================main component===================================
+// ===============component exclusive interface(s)/type(s) if any===============
+
 export default function HomePage() {
+    // ===============constants===============
     const { user } = useUser();
     const router = useRouter();
     const menuOptions: MenuOption[] = [
@@ -44,6 +67,13 @@ export default function HomePage() {
         },
     ];
 
+    // ===============states===============
+
+    // ===============helper functions (will not be directly triggered)===============
+
+    // ===============main functions (will be directly triggered)===============
+
+    // ===============useEffect===============
     useEffect(() => {
         userLoginProtection(user, router);
     }, []);
@@ -60,3 +90,7 @@ export default function HomePage() {
         </Box>
     );
 }
+
+// ===================================sub component(s) if any===================================
+// ===============component exclusive interface(s)/type(s) if any===============
+// the rest are pretty much similar like the main components

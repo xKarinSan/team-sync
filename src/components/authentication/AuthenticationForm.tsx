@@ -1,10 +1,13 @@
 "use client";
+// ===================================all imports===================================
+
 // ==========================import from react==========================
 import { useState } from "react";
 
 // ==========================import from next==========================
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
+
 // ==========================import state management==========================
 import { User } from "@/types/User/usertypes";
 
@@ -24,6 +27,7 @@ import { FcGoogle } from "react-icons/fc";
 // ==========================import custom components==========================
 import CustomButton from "../general/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
+
 // ==========================import external functions==========================
 import { gmailLogin } from "@/firebaseFunctions/authentication/gmailAuthentication";
 
@@ -31,7 +35,7 @@ import { gmailLogin } from "@/firebaseFunctions/authentication/gmailAuthenticati
 
 // ==========================import types/interfaces==========================
 
-// ==========================main component==========================
+// ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 type AuthenticationFormProps = {
     isLogin: boolean;
@@ -229,6 +233,6 @@ AuthenticationFormProps) {
     );
 }
 
-// ==========================sub component(s) if any==========================
+// ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components

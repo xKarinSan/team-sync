@@ -1,19 +1,49 @@
 "use client";
+// ===================================all imports===================================
+
+// ==========================import from react==========================
 import { useEffect } from "react";
-import { useToast } from "@chakra-ui/react";
+
+// ==========================import from next==========================
 import { useRouter } from "next/navigation";
-import LoadingDisplay from "@/components/general/LoadingDisplay";
+
+// ==========================import state management==========================
 import useUser from "@/store/userStore";
+
+// ==========================import chakraui components==========================
+import { useToast } from "@chakra-ui/react";
+
+// ==========================import custom components==========================
+import LoadingDisplay from "@/components/general/LoadingDisplay";
+
+// ==========================import external functions==========================
 import { logoutUser } from "@/firebaseFunctions/authentication/userLogout";
 import { userLoginProtection } from "@/routeProtectors";
+
+// ==========================import external variables==========================
+
+// ==========================import types/interfaces==========================
+
+// ===================================main component===================================
+// ===============component exclusive interface(s)/type(s) if any===============
+
 export default function LogoutPage() {
+    // ===============constants===============
     const router = useRouter();
     const { user, removeUser } = useUser();
     const toast = useToast();
+
+    // ===============states===============
+
+    // ===============helper functions (will not be directly triggered)===============
+
+    // ===============main functions (will be directly triggered)===============
     const checkLogout = async () => {
         userLoginProtection(user, router);
         await logoutUser({ toast, removeUser, router });
     };
+
+    // ===============useEffect===============
     useEffect(() => {
         checkLogout();
     }, []);
@@ -24,3 +54,7 @@ export default function LogoutPage() {
         </>
     );
 }
+
+// ===================================sub component(s) if any===================================
+// ===============component exclusive interface(s)/type(s) if any===============
+// the rest are pretty much similar like the main components
