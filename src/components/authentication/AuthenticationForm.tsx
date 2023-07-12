@@ -2,12 +2,7 @@
 import {
     Flex,
     Box,
-    FormControl,
-    FormLabel,
-    Input,
     Stack,
-    Center,
-    Button,
     Heading,
     Text,
     useColorModeValue,
@@ -15,6 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
+import CustomButton from "../general/CustomButton";
+import CustomFormInput from "../general/CustomFormInput";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "@/types/User/usertypes";
@@ -122,80 +119,59 @@ AuthenticationFormProps) {
                 >
                     <Stack spacing={4}>
                         {isLogin ? null : (
-                            <FormControl id="username">
-                                <FormLabel>Username</FormLabel>
-                                <Input
-                                    type="text"
-                                    placeholder="Eg:John Doe"
-                                    value={username}
-                                    onChange={(e) =>
-                                        setUsername(e.target.value)
-                                    }
-                                />
-                            </FormControl>
+                            <CustomFormInput
+                                formId="username"
+                                formLabel="Username"
+                                placeholder="Eg: John Doe"
+                                value={username}
+                                changeHandler={setUsername}
+                            />
                         )}
-                        <FormControl id="email">
-                            <FormLabel>Email address</FormLabel>
-                            <Input
-                                type="email"
-                                placeholder="Eg:example@email.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </FormControl>
-                        <FormControl id="password">
-                            <FormLabel>Password</FormLabel>
-                            <Input
-                                type="password"
-                                placeholder="Enter password (min 8 characters)"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </FormControl>
+                        <CustomFormInput
+                            formId="email"
+                            formType="email"
+                            formLabel="Email address"
+                            placeholder="Eg:example@email.com"
+                            value={email}
+                            changeHandler={setEmail}
+                        />
+                        <CustomFormInput
+                            formId="password"
+                            formType="password"
+                            formLabel="Password"
+                            placeholder="Enter password (min 8 characters)"
+                            value={password}
+                            changeHandler={setPassword}
+                        />
                         {isLogin ? null : (
-                            <FormControl id="confirmPassword">
-                                <FormLabel>Confirm Password</FormLabel>
-                                <Input
-                                    type="password"
-                                    placeholder="Confirm password"
-                                    value={confirmPassword}
-                                    onChange={(e) =>
-                                        setConfirmPassword(e.target.value)
-                                    }
-                                />
-                            </FormControl>
+                            <CustomFormInput
+                                formId="confirmPassword"
+                                formType="password"
+                                formLabel="Confirm Password"
+                                placeholder="Confirm password"
+                                value={confirmPassword}
+                                changeHandler={setConfirmPassword}
+                            />
                         )}
 
-                        <Button
-                            bg={"blue.400"}
-                            color={"white"}
-                            _hover={{
-                                bg: "blue.500",
-                            }}
-                            onClick={() => {
-                                onSubmit();
-                            }}
-                        >
-                            {isLogin ? "Login" : "Register"}
-                        </Button>
+                        <CustomButton
+                            clickFunction={onSubmit}
+                            buttonText={isLogin ? "Login" : "Register"}
+                            margin={0}
+                        />
                         <Text textAlign={"center"}>Or</Text>
-                        <Button
-                            w={"full"}
-                            maxW={"md"}
-                            variant={"outline"}
-                            leftIcon={<FcGoogle />}
-                            onClick={() => {
-                                gmailAuth();
-                            }}
-                        >
-                            <Center>
-                                <Text>
-                                    {isLogin ? "Sign In" : "Sign Up"} with
-                                    Google
-                                </Text>
-                            </Center>
-                        </Button>
-
+                        <CustomButton
+                            clickFunction={gmailAuth}
+                            textColor="black"
+                            buttonColor="white"
+                            LeftButtonIcon={FcGoogle}
+                            buttonText={
+                                isLogin
+                                    ? "Sign In with Google"
+                                    : "Sign Up with Google"
+                            }
+                            margin={0}
+                        />
                         <Text textAlign={"center"}>
                             {isLogin ? (
                                 <>

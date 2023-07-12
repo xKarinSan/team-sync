@@ -74,7 +74,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
                                 />
                                 <Box
                                     ml={{ base: 0, md: 60 }}
-                                    p={0}
+                                    p={5}
                                     background={"#EEF2F6"}
                                     minHeight={"100vh"}
                                     display="grid"
