@@ -13,7 +13,11 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className}>
-                <ChakraProvider>
+                <ChakraProvider
+                    toastOptions={{
+                        defaultOptions: { duration: 3000, isClosable: true },
+                    }}
+                >
                     <Navbar children={children} />
                 </ChakraProvider>
             </body>

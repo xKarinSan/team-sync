@@ -28,8 +28,6 @@ export const emailLogin = async ({ email, password, setUser, toast,router }: any
                     title: "Logged In.",
                     description: "Login Successful!",
                     status: "success",
-                    duration: 5000,
-                    isClosable: true,
                 });
                 router.replace("/home")
             }
@@ -39,8 +37,6 @@ export const emailLogin = async ({ email, password, setUser, toast,router }: any
                 title: "Error.",
                 description: e.message,
                 status: "error",
-                duration: 5000,
-                isClosable: true,
             });
         });
 };
@@ -77,8 +73,6 @@ export const emailRegistration = async ({
                 title: "Registered.",
                 description: "Registration Successful!",
                 status: "success",
-                duration: 5000,
-                isClosable: true,
             });
             router.replace("/home")
         })
@@ -87,8 +81,6 @@ export const emailRegistration = async ({
                 title: "Error.",
                 description: e.message,
                 status: "error",
-                duration: 5000,
-                isClosable: true,
             });
         });
 };

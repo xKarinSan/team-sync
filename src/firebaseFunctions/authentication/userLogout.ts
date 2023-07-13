@@ -17,8 +17,6 @@ export const logoutUser = async ({
                 title: "Logged Out.",
                 description: "Logout Successful!",
                 status: "success",
-                duration: 5000,
-                isClosable: true,
             });
             router.replace("/login");
         })
@@ -27,8 +25,6 @@ export const logoutUser = async ({
                 title: "Error",
                 description: "Please try again later!",
                 status: "success",
-                duration: 5000,
-                isClosable: true,
             });
         });
 };

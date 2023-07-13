@@ -1,7 +1,7 @@
 import { auth } from "@/config/firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { User } from "@/types/User/usertypes";
-export const gmailLogin = async ({ setUser, toast,router }: any) => {
+export const gmailLogin = async ({ setUser, toast, router }: any) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
         .then((result) => {
@@ -23,16 +23,14 @@ export const gmailLogin = async ({ setUser, toast,router }: any) => {
                     duration: 5000,
                     isClosable: true,
                 });
-                router.replace("/home")
+                router.replace("/home");
             }
         })
-        // .catch((e) => {
-        //     toast({
-        //         title: "Error.",
-        //         description: e.message,
-        //         status: "error",
-        //         duration: 5000,
-        //         isClosable: true,
-        //     });
-        // });
+        .catch((e) => {
+            toast({
+                title: "Error.",
+                description: e.message,
+                status: "error",
+            });
+        });
 };

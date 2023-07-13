@@ -94,8 +94,6 @@ AuthenticationFormProps) {
                 title: "Unsuccessful",
                 description: "Please check your input",
                 status: "error",
-                duration: 3000,
-                isClosable: true,
             });
         } else {
             if (isLogin) {
