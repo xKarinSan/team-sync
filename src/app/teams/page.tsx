@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -11,32 +11,47 @@ import { useRouter } from "next/navigation";
 import useUser from "@/store/userStore";
 
 // ==========================import chakraui components==========================
-import { Box, Heading } from "@chakra-ui/react";
-import { FiUser, FiUserPlus } from "react-icons/fi";
+import { Box, Heading, useDisclosure } from "@chakra-ui/react";
+import { FiUser } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import WhiteContainer from "@/components/general/WhiteContainer";
 import CustomButton from "@/components/general/CustomButton";
-
+import CustomFormInput from "@/components/general/CustomFormInput";
+import CustomModal from "@/components/general/CustomModal";
 // ==========================import external functions==========================
 import { userLoginProtection } from "@/routeProtectors";
+import { addNewTeam } from "@/requests/teams/POSTRequests";
 
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-
+import { TeamInput } from "@/types/Team/teamtypes";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
 export default function TeamPage() {
     // ===============constants===============
     const router = useRouter();
-    const { user, addUser } = useUser();
+    const { user } = useUser();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     // ===============states===============
+    const [teamName, setTeamName] = useState<string>("");
 
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
+    const submitTeam = async () => {
+        const { userId } = user;
+        const teamObject: TeamInput = {
+            userId,
+            teamName,
+            createdDate: new Date(),
+        };
+        await addNewTeam(teamObject);
+        alert("DONE");
+    };
 
     // ===============useEffect===============
     useEffect(() => {
@@ -46,9 +61,29 @@ export default function TeamPage() {
     return (
         <Box>
             <Heading fontWeight={"normal"}>Teams</Heading>
-            <CustomButton LeftButtonIcon={FiUser} buttonText="Create Team" />
+            <CustomButton
+                LeftButtonIcon={FiUser}
+                buttonText="Create Team"
+                clickFunction={onOpen}
+            />
             <WhiteContainer>HELLO</WhiteContainer>
             <WhiteContainer minHeight={"100vh"}>HELLO</WhiteContainer>
+            <CustomModal
+                isOpen={isOpen}
+                onClose={onClose}
+                modalTitle="Create Team"
+                actionWord={"Create"}
+                cancelWord={"Close"}
+                modalSubmitFunction={submitTeam}
+            >
+                <CustomFormInput
+                    formId="teamName"
+                    placeholder="Enter team name"
+                    formLabel="Team Name:"
+                    value={teamName}
+                    changeHandler={setTeamName}
+                />
+            </CustomModal>
         </Box>
     );
 }
