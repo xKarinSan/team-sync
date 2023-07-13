@@ -1,4 +1,3 @@
-// import { data } from "@/data/data";
 import { NextRequest, NextResponse } from "next/server";
 import { allUsers } from "../../firebaseFunctions/users/usersGet";
 import { addUser } from "../../firebaseFunctions/users/usersAdd";

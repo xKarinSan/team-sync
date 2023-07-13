@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import useUser from "@/store/userStore";
 
 // ==========================import chakraui components==========================
-import { Box, Heading, useDisclosure } from "@chakra-ui/react";
+import { Box, Heading, useDisclosure, useToast } from "@chakra-ui/react";
 import { FiUser } from "react-icons/fi";
 
 // ==========================import custom components==========================
@@ -35,6 +35,7 @@ export default function TeamPage() {
     const router = useRouter();
     const { user } = useUser();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
 
     // ===============states===============
     const [teamName, setTeamName] = useState<string>("");
@@ -49,8 +50,22 @@ export default function TeamPage() {
             teamName,
             createdDate: new Date(),
         };
-        await addNewTeam(teamObject);
-        alert("DONE");
+        await addNewTeam(teamObject)
+            .then(() => {
+                toast({
+                    title: "Creation Successful",
+                    description: "New team added",
+                    status: "success",
+                });
+                setTeamName("");
+            })
+            .catch((e) => {
+                toast({
+                    title: "Creation Unsuccessful",
+                    description: "Something went wrong. Please try again later",
+                    status: "error",
+                });
+            });
     };
 
     // ===============useEffect===============
