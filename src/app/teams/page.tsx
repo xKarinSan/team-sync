@@ -5,20 +5,31 @@
 import { useEffect, useState } from "react";
 
 // ==========================import from next==========================
+import NextLink from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
 
 // ==========================import chakraui components==========================
-import { Box, Heading, useDisclosure, useToast } from "@chakra-ui/react";
-import { FiUser } from "react-icons/fi";
+import {
+    Box,
+    Heading,
+    useDisclosure,
+    useToast,
+    SimpleGrid,
+    Icon,
+} from "@chakra-ui/react";
+import { FiUser, FiUsers } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import WhiteContainer from "@/components/general/WhiteContainer";
 import CustomButton from "@/components/general/CustomButton";
 import CustomFormInput from "@/components/general/CustomFormInput";
 import CustomModal from "@/components/general/CustomModal";
+import LoadingDisplay from "@/components/general/LoadingDisplay";
+import NoRecordsDisplay from "@/components/general/NoRecordsDisplay";
 // ==========================import external functions==========================
 import { userLoginProtection } from "@/routeProtectors";
 import { addNewTeam } from "@/requests/teams/POSTRequests";
@@ -27,7 +38,10 @@ import { getUserTeams } from "@/requests/teams/GETRequests";
 
 // ==========================import types/interfaces==========================
 import { TeamInput } from "@/types/Team/teamtypes";
-import { Membership } from "@/types/Membership/membertypes";
+import { MembershipDisplay } from "@/types/Membership/membertypes";
+
+// ==========================etc==========================
+import NoResults from "../../images/general/NoResults.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -40,12 +54,14 @@ export default function TeamPage() {
 
     // ===============states===============
     const [teamName, setTeamName] = useState<string>("");
-    const [membership, setMemberships] = useState<Membership>("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [memberships, setMemberships] = useState<MembershipDisplay[]>([]);
 
     // ===============helper functions (will not be directly triggered)===============
     const getMemberships = async () => {
         const { userId } = user;
         const userMemberships = await getUserTeams(userId);
+        setMemberships(userMemberships);
         console.log("userMemberships", userMemberships);
     };
 
@@ -64,6 +80,7 @@ export default function TeamPage() {
                     description: "New team added",
                     status: "success",
                 });
+                getMemberships();
                 setTeamName("");
             })
             .catch((e) => {
@@ -77,9 +94,11 @@ export default function TeamPage() {
 
     // ===============useEffect===============
     useEffect(() => {
+        setLoading(true);
         userLoginProtection(user, router);
         getMemberships();
-    });
+        setLoading(false);
+    }, []);
 
     return (
         <Box>
@@ -90,7 +109,47 @@ export default function TeamPage() {
                 clickFunction={onOpen}
             />
             <WhiteContainer>HELLO</WhiteContainer>
-            <WhiteContainer minHeight={"100vh"}>HELLO</WhiteContainer>
+            {loading ? (
+                <>
+                    <LoadingDisplay displayText="Loading contents ..." />
+                </>
+            ) : (
+                <>
+                    {" "}
+                    <WhiteContainer minHeight={"50vh"}>
+                        {memberships.length > 0 ? (
+                            <>
+                                {" "}
+                                <SimpleGrid
+                                    columns={[2, 3, 4, 5, 6]}
+                                    spacing={1}
+                                >
+                                    {memberships.map(
+                                        (
+                                            membership: MembershipDisplay,
+                                            index: number
+                                        ) => {
+                                            return (
+                                                <MembershipContainer
+                                                    membership={membership}
+                                                    key={index}
+                                                />
+                                            );
+                                        }
+                                    )}
+                                </SimpleGrid>
+                            </>
+                        ) : (
+                            <>
+                                <NoRecordsDisplay
+                                    displayText={"You are not in any teams."}
+                                />
+                            </>
+                        )}
+                    </WhiteContainer>
+                </>
+            )}
+
             <CustomModal
                 isOpen={isOpen}
                 onClose={onClose}
@@ -113,3 +172,25 @@ export default function TeamPage() {
 // ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
+const MembershipContainer = ({
+    membership,
+}: {
+    membership: MembershipDisplay;
+}) => {
+    const router = useRouter();
+    const goToPage = () => {
+        router.replace(`/teams/${membership.teamId}`);
+    };
+    return (
+        <NextLink href={`/teams/${membership.teamId}`} target="_blank">
+            <CustomButton
+                buttonColor="rgba(243, 246, 251, 1)"
+                buttonTextAlignment={"flex-start"}
+                textColor="black"
+                LeftButtonIcon={FiUsers}
+                buttonText={membership.teamName}
+                buttonWidth="100%"
+            />
+        </NextLink>
+    );
+};

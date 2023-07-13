@@ -1,16 +1,16 @@
 "use client";
 // ===================================all imports===================================
-// ==========================import from react==========================
-import React from "react";
 
+// ==========================import from react==========================
 // ==========================import from next==========================
+import Image from "next/image";
 
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
-import { Box } from "@chakra-ui/react";
-
+import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
+import WhiteContainer from "./WhiteContainer";
 
 // ==========================import external functions==========================
 
@@ -18,23 +18,15 @@ import { Box } from "@chakra-ui/react";
 
 // ==========================import types/interfaces==========================
 
+// ==========================etc==========================
+import NoResults from "../../images/general/NoResults.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function WhiteContainer({
-    children,
-    minHeight,
-    minWidth,
-    maxHeight,
-    maxWidth,
-    width,
+export default function NoRecordsDisplay({
+    displayText,
 }: {
-    children?: React.ReactNode;
-    minHeight?: string;
-    minWidth?: string;
-    maxHeight?: string;
-    maxWidth?: string;
-    width?: string[];
+    displayText?: string;
 }) {
     // ===============constants===============
 
@@ -47,22 +39,24 @@ export default function WhiteContainer({
     // ===============useEffect===============
 
     return (
-        <Box
-            width={width ? width : ["100%"]}
-            background="white"
-            boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
-            borderRadius={5}
-            padding={2}
-            margin="auto"
-            marginTop={5}
-            marginBottom={5}
-            minHeight={minHeight ? minHeight : 0}
-            minWidth={minWidth ? minWidth : 0}
-            maxHeight={maxHeight ? maxHeight : "auto"}
-            maxWidth={maxWidth ? maxWidth : "auto"}
-        >
-            {children}
-        </Box>
+        <WhiteContainer width={["80%", "60%", "40%"]}>
+            <Box display="grid" margin="auto" width="100%">
+                <Box margin="auto">
+                    <Image
+                        src={NoResults}
+                        alt="No results"
+                        objectFit="contain"
+                    />
+                    <Heading textAlign={"center"} fontWeight={"normal"}>
+                        {displayText ? (
+                            <>{displayText}</>
+                        ) : (
+                            <> No results found . . .</>
+                        )}
+                    </Heading>
+                </Box>
+            </Box>
+        </WhiteContainer>
     );
 }
 

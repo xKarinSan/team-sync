@@ -30,6 +30,7 @@ export default function CustomButton({
     buttonColor,
     buttonWidth,
     margin,
+    buttonTextAlignment,
 }: {
     LeftButtonIcon?: any;
     RightButtonIcon?: any;
@@ -39,6 +40,7 @@ export default function CustomButton({
     buttonColor?: string;
     buttonWidth?: string;
     margin?: number;
+    buttonTextAlignment?: string;
 }) {
     // ===============constants===============
 
@@ -63,9 +65,15 @@ export default function CustomButton({
                 clickFunction ? clickFunction() : null;
             }}
             variant={"outline"}
+            justifyContent={
+                buttonTextAlignment ? buttonTextAlignment : "center"
+            }
+            textAlign={"left"}
         >
             {" "}
-            <Text>{buttonText}</Text>
+            <Text overflow={"hidden"} textOverflow={"ellipsis"}>
+                {buttonText}
+            </Text>
         </Button>
     );
 }

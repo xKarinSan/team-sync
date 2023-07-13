@@ -8,3 +8,9 @@ export type Membership = {
     // date when joined
     joinedDate: Date;
 };
+
+export type MembershipDisplay = {
+    teamId: string;
+    teamName: string;
+    createdDate: Date;
+};

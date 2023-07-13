@@ -19,7 +19,7 @@ import { Box, CircularProgress, Heading } from "@chakra-ui/react";
 // ==========================import types/interfaces==========================
 interface loadingDisplayProps {
     displayText: string;
-    width: number;
+    width?: number;
 }
 
 // ===================================main component===================================
