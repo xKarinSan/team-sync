@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { allUsers } from "../../firebaseFunctions/users/usersGet";
 import { addUser } from "../../firebaseFunctions/users/usersAdd";
 export async function GET(req: Request) {
-    console.log("Called");
     const data = await allUsers();
     return NextResponse.json({
         message: "OK",

@@ -1,17 +1,15 @@
-import { realtimeDB } from "../../config/firebaseConfig";
-import { ref, push, set } from "firebase/database";
+import { teamRef } from "./teamRefs";
 import { TeamInput } from "@/types/Team/teamtypes";
+import { push } from "firebase/database";
 export const addTeam = async (newTeam: TeamInput) => {
     try {
-        const teamRef = ref(realtimeDB, "teams/");
         const res = await push(teamRef, newTeam);
         if (res) {
-            return true;
+            // console.log("key", res.key);
+            return res.key;
         }
-        return false;
-
-        // return addUserReq.
+        return null;
     } catch (e) {
-        return false;
+        return null;
     }
 };

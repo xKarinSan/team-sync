@@ -22,11 +22,12 @@ import CustomModal from "@/components/general/CustomModal";
 // ==========================import external functions==========================
 import { userLoginProtection } from "@/routeProtectors";
 import { addNewTeam } from "@/requests/teams/POSTRequests";
-
+import { getUserTeams } from "@/requests/teams/GETRequests";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
 import { TeamInput } from "@/types/Team/teamtypes";
+import { Membership } from "@/types/Membership/membertypes";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -39,8 +40,14 @@ export default function TeamPage() {
 
     // ===============states===============
     const [teamName, setTeamName] = useState<string>("");
+    const [membership, setMemberships] = useState<Membership>("");
 
     // ===============helper functions (will not be directly triggered)===============
+    const getMemberships = async () => {
+        const { userId } = user;
+        const userMemberships = await getUserTeams(userId);
+        console.log("userMemberships", userMemberships);
+    };
 
     // ===============main functions (will be directly triggered)===============
     const submitTeam = async () => {
@@ -71,6 +78,7 @@ export default function TeamPage() {
     // ===============useEffect===============
     useEffect(() => {
         userLoginProtection(user, router);
+        getMemberships();
     });
 
     return (
