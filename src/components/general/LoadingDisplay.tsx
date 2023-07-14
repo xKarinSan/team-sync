@@ -54,7 +54,9 @@ export default function LoadingDisplay({
                 margin={"auto"}
                 color="#0239C8"
             />
-            <Heading textAlign="center">{displayText}</Heading>
+            <Heading textAlign="center" fontWeight={"normal"}>
+                {displayText}
+            </Heading>
         </Box>
     );
 }

@@ -11,6 +11,7 @@ import Image from "next/image";
 
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
+import useTeam from "@/store/teamStore";
 
 // ==========================import chakraui components==========================
 import {
@@ -49,6 +50,7 @@ export default function TeamPage() {
     // ===============constants===============
     const router = useRouter();
     const { user } = useUser();
+    const { addTeam } = useTeam();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
 
@@ -62,7 +64,7 @@ export default function TeamPage() {
         const { userId } = user;
         const userMemberships = await getUserTeams(userId);
         setMemberships(userMemberships);
-        console.log("userMemberships", userMemberships);
+        // console.log("userMemberships", userMemberships);
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -133,6 +135,7 @@ export default function TeamPage() {
                                                 <MembershipContainer
                                                     membership={membership}
                                                     key={index}
+                                                    clickFunction={addTeam}
                                                 />
                                             );
                                         }
@@ -174,15 +177,22 @@ export default function TeamPage() {
 // the rest are pretty much similar like the main components
 const MembershipContainer = ({
     membership,
-}: {
+    clickFunction,
+}: // clickFunction,
+{
     membership: MembershipDisplay;
+    clickFunction: (teamId: string) => void;
 }) => {
     const router = useRouter();
-    const goToPage = () => {
-        router.replace(`/teams/${membership.teamId}`);
-    };
+
     return (
-        <NextLink href={`/teams/${membership.teamId}`} target="_blank">
+        <NextLink
+            href={`/team/${membership.teamId}`}
+            onClick={() => {
+                clickFunction(membership.teamId);
+            }}
+            target="_blank"
+        >
             <CustomButton
                 buttonColor="rgba(243, 246, 251, 1)"
                 buttonTextAlignment={"flex-start"}

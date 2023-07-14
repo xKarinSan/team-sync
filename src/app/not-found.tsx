@@ -2,9 +2,11 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import NextLink from "next/link";
 import NotFoundImage from "../images/errorpage/NotFound.png";
 export default function NotFound() {
+    const router = useRouter();
     return (
         <Box>
             <Box width="80%" m="0 auto">
@@ -13,7 +15,7 @@ export default function NotFound() {
                 </Box>
                 <Text textAlign={"center"}>
                     We can't find anything here. Click{" "}
-                    <NextLink href="/">
+                    <NextLink href={"/"}>
                         <Text as="span" color="#0239C8" fontWeight={"bold"}>
                             here
                         </Text>

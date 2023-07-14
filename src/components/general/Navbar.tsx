@@ -26,11 +26,17 @@ import {
     FiBell,
     FiMenu,
     FiLogOut,
+    FiFolder,
+    FiMessageSquare,
+    FiArrowLeft,
 } from "react-icons/fi";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { usePathname } from "next/navigation";
+
 import NextLink from "next/link";
 import { User } from "@/types/User/usertypes";
 import useUser from "@/store/userStore";
+import useTeam from "@/store/teamStore";
 import { useState, useEffect, ReactNode } from "react";
 
 export default function Navbar({ children }: { children: ReactNode }) {
@@ -38,6 +44,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
     const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
     const { user } = useUser();
     // console.log("user", user);
+
     useEffect(() => {
         setLoading(true);
 
@@ -215,6 +222,53 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+    const pathName = usePathname();
+
+    const { teamId, removeTeam } = useTeam();
+
+    const [sidebarItems, setSidebarItems] = useState<LinkItemProps[]>([]);
+
+    const setCurrentTeamItems = (teamId: string): LinkItemProps[] => {
+        return [
+            { name: "Back to Teams", icon: FiArrowLeft, path: "/teams" },
+            {
+                name: "Team Homepage",
+                icon: FiHome,
+                path: `/team/${teamId}`,
+            },
+            {
+                name: "Documents",
+                icon: FiFolder,
+                path: `/team/${teamId}/documents`,
+            },
+            {
+                name: "Calendar",
+                icon: FiCalendar,
+                path: `/team/${teamId}/calendar`,
+            },
+            {
+                name: "Meeting",
+                icon: FiUsers,
+                path: `/team/${teamId}/meetings`,
+            },
+            {
+                name: "Chat",
+                icon: FiMessageSquare,
+                path: `/team/${teamId}/chat`,
+            },
+            { name: "Members", icon: FiUsers, path: `/team/${teamId}/members` },
+        ];
+    };
+    useEffect(() => {
+        console.log("pathName", pathName);
+        if (!pathName.includes("/team/")) {
+            removeTeam();
+            setSidebarItems(LinkItems);
+        } else {
+            // print("user now in")
+            setSidebarItems(setCurrentTeamItems(teamId));
+        }
+    }, [pathName]);
     return (
         <Box
             bg={useColorModeValue("white", "gray.900")}
@@ -239,7 +293,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                     onClick={onClose}
                 />
             </Flex>
-            {LinkItems.map((link) => (
+            {sidebarItems.map((link) => (
                 <NavItem
                     key={link.name}
                     icon={link.icon}
@@ -328,9 +382,7 @@ const DesktopNav = () => {
     return (
         <Stack direction={"row"} spacing={4}>
             {NAV_ITEMS.map((navItem) => (
-                <Box
-                    key={navItem.label}
-                >
+                <Box key={navItem.label}>
                     <Popover trigger={"hover"} placement={"bottom-start"}>
                         <PopoverTrigger>
                             <NextLink href={`/${navItem.href}`}>
