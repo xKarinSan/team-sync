@@ -15,6 +15,7 @@ import { Heading } from "@chakra-ui/react";
 import { userLoginProtection } from "@/routeProtectors";
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import MainMenu from "@/components/general/MainMenu";
+import { getTeamByTeamId } from "@/requests/teams/GETRequests";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -67,8 +68,15 @@ export default function TeamHomePage({
 
     // ===============states===============
     const [loading, setLoading] = useState<boolean>(false);
+    const [currTeam, setCurrTeam] = useState(null);
 
     // ===============helper functions (will not be directly triggered)===============
+    const retrieveCurrentTeam = async () => {
+        const selectedTeam = await getTeamByTeamId(params.teamId);
+        if (selectedTeam) {
+            setCurrTeam(selectedTeam);
+        }
+    };
 
     // ===============main functions (will be directly triggered)===============
 
@@ -76,6 +84,7 @@ export default function TeamHomePage({
     useEffect(() => {
         setLoading(true);
         userLoginProtection(user, router);
+        retrieveCurrentTeam();
         setLoading(false);
     }, []);
 
@@ -89,7 +98,7 @@ export default function TeamHomePage({
                 <>
                     {" "}
                     <Heading textAlign={"center"} fontWeight={"normal"}>
-                        Team Name{" "}
+                        {currTeam ? currTeam.teamName : "Team Name"}
                     </Heading>
                     <MainMenu menuOptions={menuOptions} />
                 </>

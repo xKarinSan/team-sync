@@ -43,14 +43,19 @@ export default function MainMenu({
         <>
             {menuOptions ? (
                 <>
-                    <SimpleGrid columns={[1, 2, null, 4]} width="100%">
+                    <SimpleGrid
+                        columns={[1, 2, null, 4]}
+                        width="100%"
+                    >
                         {menuOptions.map(
                             (
                                 { label, icon, path }: MenuOption,
                                 index: number
                             ) => {
                                 return (
-                                    <NextLink href={path} key={index}>
+                                    <NextLink
+                                        href={path}
+                                        key={index}                                    >
                                         <Box
                                             margin="10px"
                                             background="white"
