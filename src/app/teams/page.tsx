@@ -33,8 +33,9 @@ import LoadingDisplay from "@/components/general/LoadingDisplay";
 import NoRecordsDisplay from "@/components/general/NoRecordsDisplay";
 // ==========================import external functions==========================
 import { userLoginProtection } from "@/routeProtectors";
-import { addNewTeam } from "@/requests/teams/POSTRequests";
-import { getUserTeams } from "@/requests/teams/GETRequests";
+import { createNewTeam } from "@/firebaseFunctions/teams/teamAdd";
+import { getUserTeams } from "@/firebaseFunctions/teams/teamGet";
+
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -50,7 +51,7 @@ export default function TeamPage() {
     // ===============constants===============
     const router = useRouter();
     const { user } = useUser();
-    const { addTeam } = useTeam();
+    const { setTeam } = useTeam();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
 
@@ -64,7 +65,6 @@ export default function TeamPage() {
         const { userId } = user;
         const userMemberships = await getUserTeams(userId);
         setMemberships(userMemberships);
-        // console.log("userMemberships", userMemberships);
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -75,7 +75,7 @@ export default function TeamPage() {
             teamName,
             createdDate: new Date(),
         };
-        await addNewTeam(teamObject)
+        await createNewTeam(teamObject)
             .then(() => {
                 toast({
                     title: "Creation Successful",
@@ -135,7 +135,7 @@ export default function TeamPage() {
                                                 <MembershipContainer
                                                     membership={membership}
                                                     key={index}
-                                                    clickFunction={addTeam}
+                                                    clickFunction={setTeam}
                                                 />
                                             );
                                         }

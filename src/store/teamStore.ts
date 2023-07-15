@@ -5,7 +5,7 @@ export const useTeam = create(
     persist(
         (set) => ({
             teamId: null,
-            addTeam: (teamId: string) =>
+            setTeam: (teamId: string) =>
                 set(() => ({
                     teamId: teamId,
                 })),

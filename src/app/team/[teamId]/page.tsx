@@ -15,7 +15,7 @@ import { Heading } from "@chakra-ui/react";
 import { userLoginProtection } from "@/routeProtectors";
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import MainMenu from "@/components/general/MainMenu";
-import { getTeamByTeamId } from "@/requests/teams/GETRequests";
+import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -72,7 +72,7 @@ export default function TeamHomePage({
 
     // ===============helper functions (will not be directly triggered)===============
     const retrieveCurrentTeam = async () => {
-        const selectedTeam = await getTeamByTeamId(params.teamId);
+        const selectedTeam = await getTeamById(params.teamId);
         if (selectedTeam) {
             setCurrTeam(selectedTeam);
         }
@@ -103,7 +103,6 @@ export default function TeamHomePage({
                     <MainMenu menuOptions={menuOptions} />
                 </>
             )}
-            {/* {params.teamId} */}
         </>
     );
 }
