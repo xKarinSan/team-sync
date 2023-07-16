@@ -7,6 +7,7 @@ export type Membership = {
 
     // date when joined
     joinedDate: Date;
+
 };
 
 export type MembershipDisplay = {

@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 // ==========================import from next==========================
 import Image from "next/image";
 // ==========================import state management==========================
-
+import useUser from "@/store/userStore";
 // ==========================import chakraui components==========================
 import {
     Box,
@@ -20,13 +20,13 @@ import {
     MenuButton,
     Button,
 } from "@chakra-ui/react";
-import { FiFile, FiFilePlus } from "react-icons/fi";
+import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import WhiteContainer from "../general/WhiteContainer";
 import CustomButton from "../general/CustomButton";
 // ==========================import external functions==========================
-
+import { addFilesToTeam } from "@/firebaseFunctions/documents/documentAdd";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -44,6 +44,7 @@ import NoRecordsDisplay from "../general/NoRecordsDisplay";
 export default function FileDropzone({ folderId }: { folderId: string }) {
     // ===============constants===============
     const toast = useToast();
+    const { user } = useUser();
     // ===============states===============
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [entering, setEntering] = useState<boolean>(false);
@@ -52,14 +53,21 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
 
     // ===============main functions (will be directly triggered)===============
     const onDrop = useCallback((acceptedFiles) => {
-        setSelectedFiles(
-            acceptedFiles.map((file) =>
-                Object.assign(file, {
-                    preview: URL.createObjectURL(file),
-                    fileId: Math.random().toString(36).substr(2, 9),
-                })
-            )
-        );
+        let tempFiles = selectedFiles;
+        console.log("tempFiles before", tempFiles);
+
+        acceptedFiles.map((file) => {
+            Object.assign(file, {
+                preview: URL.createObjectURL(file),
+                fileId: Math.random().toString(36).substr(2, 9),
+            });
+            tempFiles.push(file);
+        });
+
+        console.log("tempFiles after", tempFiles);
+
+        // tempFiles = tempFiles.concat(updatedFiles);
+        setSelectedFiles(tempFiles);
         setEntering(false);
     }, []);
 
@@ -71,50 +79,60 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
         );
     };
 
-    const uploadFiles = () => {
-        toast({
-            title: "File(s) uploaded",
-            status: "success",
-        });
+    const clearSelection = () => {
         setSelectedFiles([]);
+    };
+
+    const uploadFiles = async () => {
+        try {
+            await addFilesToTeam(folderId, selectedFiles, user.userId);
+            toast({
+                title: "File(s) uploaded",
+                status: "success",
+            });
+            setSelectedFiles([]);
+        } catch (err) {
+            console.log(err);
+            toast({
+                title: "File(s) failed to upload",
+                status: "error",
+            });
+        }
     };
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
     const selectedImages = selectedFiles?.map((file) => {
         return (
-            <>
-                <Menu>
-                    <MenuButton
-                        as={Button}
-                        aria-label="Options"
-                        width={"100%"}
-                        rightIcon={<FiFile />}
-                        background="white"
-                        boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+            <Menu key={file.fileId}>
+                <MenuButton
+                    as={Button}
+                    aria-label="Options"
+                    width={"100%"}
+                    rightIcon={<FiFile />}
+                    background="white"
+                    boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+                >
+                    <Text
+                        textAlign={"left"}
+                        overflow="hidden"
+                        textOverflow={"ellipsis"}
                     >
-                        <Text
-                            noOfLines={1}
-                            textAlign={"left"}
-                            overflow="hidden"
-                            textOverflow={"ellipsis"}
-                        >
-                            {file.name}
-                        </Text>
-                        {/* </WhiteContainer> */}
-                    </MenuButton>
-                    <MenuList>
-                        <Link href={file.preview} target="_blank">
-                            <MenuItem>Preview</MenuItem>
-                        </Link>
-                        <MenuItem
-                            onClick={() => {
-                                deleteFile(file.fileId);
-                            }}
-                        >
-                            Delete
-                        </MenuItem>
-                    </MenuList>
-                </Menu>
-            </>
+                        {file.name}
+                    </Text>
+                    {/* </WhiteContainer> */}
+                </MenuButton>
+                <MenuList>
+                    <Link href={file.preview} target="_blank">
+                        <MenuItem>Preview</MenuItem>
+                    </Link>
+                    <MenuItem
+                        onClick={() => {
+                            deleteFile(file.fileId);
+                        }}
+                    >
+                        Remove
+                    </MenuItem>
+                </MenuList>
+            </Menu>
         );
     });
 
@@ -131,7 +149,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             >
                 <Box
                     width={["100%"]}
-                    background={entering ? "#939393" : "white"}
+                    background={entering ? "black" : "white"}
                     color={entering ? "white" : "black"}
                     boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
                     borderRadius={5}
@@ -143,19 +161,38 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                     transition={
                         "background-color 200ms linear, color 200ms linear"
                     }
+                    display="grid"
                 >
                     <input {...getInputProps()} />
+                    <Heading
+                        fontWeight={"normal"}
+                        size="lg"
+                        margin="auto"
+                        textAlign="center"
+                    >
+                        {entering
+                            ? "Drop it like its hawt!"
+                            : " Click or drag and drop files here"}
+                    </Heading>
                 </Box>
             </div>
             <Heading fontWeight={"normal"} size="md">
-                Files
+                Upload files
             </Heading>
             <br />
             <CustomButton
                 buttonText={`Upload ${selectedFiles.length} files`}
                 clickFunction={uploadFiles}
                 LeftButtonIcon={FiFilePlus}
-            />{" "}
+                isDisabled={selectedFiles.length == 0}
+            />
+            <CustomButton
+                buttonText={"Clear Selection"}
+                buttonColor="#AA0000"
+                clickFunction={clearSelection}
+                LeftButtonIcon={FiTrash}
+                isDisabled={selectedFiles.length == 0}
+            />
             <WhiteContainer>
                 {selectedFiles.length == 0 ? (
                     <>

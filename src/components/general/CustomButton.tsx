@@ -31,6 +31,7 @@ export default function CustomButton({
     buttonWidth,
     margin,
     buttonTextAlignment,
+    isDisabled,
 }: {
     LeftButtonIcon?: any;
     RightButtonIcon?: any;
@@ -41,6 +42,7 @@ export default function CustomButton({
     buttonWidth?: string;
     margin?: number;
     buttonTextAlignment?: string;
+    isDisabled?: boolean;
 }) {
     // ===============constants===============
 
@@ -69,6 +71,7 @@ export default function CustomButton({
                 buttonTextAlignment ? buttonTextAlignment : "center"
             }
             textAlign={"left"}
+            isDisabled={isDisabled ? isDisabled : false}
         >
             {" "}
             <Text overflow={"hidden"} textOverflow={"ellipsis"}>
