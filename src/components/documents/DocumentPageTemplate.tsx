@@ -33,7 +33,8 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
     AlertDialogCloseButton,
-    Toast,
+    Breadcrumb,
+    BreadcrumbItem,
 } from "@chakra-ui/react";
 import { FiFile, FiMoreVertical, FiFolderPlus } from "react-icons/fi";
 
@@ -42,14 +43,21 @@ import WhiteContainer from "../general/WhiteContainer";
 import FileDropzone from "./FileDropzone";
 import CustomButton from "../general/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
+import LoadingDisplay from "../general/LoadingDisplay";
+
 // ==========================import external functions==========================
 // =============protection=============
 import { userLoginProtection } from "@/routeProtectors";
 
-// =============folder features=============
-import { realtimeFolderChanges } from "@/firebaseFunctions/folders/folderGet";
-import { addFolder } from "@/firebaseFunctions/folders/folderAdd";
+// =============team=============
+import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
 
+// =============folder features=============
+import {
+    realtimeFolderChanges,
+    getFolderById,
+} from "@/firebaseFunctions/folders/folderGet";
+import { addFolder } from "@/firebaseFunctions/folders/folderAdd";
 import { updateFolderRecord } from "@/firebaseFunctions/folders/folderPut";
 import { deleteFolderRecord } from "@/firebaseFunctions/folders/folderDelete";
 
@@ -63,6 +71,7 @@ import { realtimeFileChanges } from "@/firebaseFunctions/documents/documentGet";
 // ==========================import types/interfaces==========================
 import { DocumentRecord } from "@/types/Documents/documentTypes";
 import { Folder } from "@/types/Folders/folderTypes";
+
 // ==========================etc==========================
 
 // ===================================main component===================================
@@ -81,12 +90,25 @@ export default function DocumentPageTemplate({
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // ===============states===============
+    const [currentPlace, setCurrentPlace] = useState<string>("");
+    const [parentDest, setParentDest] = useState<string>("");
     const [folderName, setFolderName] = useState<string>("");
     const [folders, setFolders] = useState([]);
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
 
     // ===============helper functions (will not be directly triggered)===============
+    const getCurrentPlace = async () => {
+        if (folderId) {
+            const folder = await getFolderById(folderId);
+            const { parentId, folderName } = folder;
+            setParentDest(parentId);
+            setCurrentPlace(folderName);
+        } else {
+            const team = await getTeamById(teamId);
+            setCurrentPlace(team.teamName);
+        }
+    };
 
     // ===============main functions (will be directly triggered)===============
     const createFolder = async () => {
@@ -121,9 +143,7 @@ export default function DocumentPageTemplate({
     useEffect(() => {
         setLoading(true);
         userLoginProtection(user, router);
-        // check if both exists
-        // yes --> take folder Id
-        // no --> take team Id
+        getCurrentPlace();
         realtimeFileChanges(folderId && teamId ? folderId : teamId, setFiles);
         realtimeFolderChanges(
             folderId && teamId ? folderId : teamId,
@@ -136,12 +156,37 @@ export default function DocumentPageTemplate({
         <Box>
             <Heading fontWeight={"nomral"}>
                 {" "}
-                Documents in {folderId ? "Folder" : "Team"}
+                Documents in {folderId ? "Folder" : "Team"} {""} {currentPlace}
             </Heading>
             <br />
 
             <WhiteContainer>
-                <NextLink href={`/team/${teamId}`}>Back</NextLink>{" "}
+                {/* use breadcrumbs */}
+                <Breadcrumb separator=">">
+                    <BreadcrumbItem>
+                        {folderId ? (
+                            <NextLink href={`/team/${teamId}/documents/`}>
+                                Back To Team Documents
+                            </NextLink>
+                        ) : (
+                            <NextLink href={`/team/${teamId}/`}>
+                                Back To Team
+                            </NextLink>
+                        )}
+                    </BreadcrumbItem>
+                    {folderId && parentDest != teamId ? (
+                        <BreadcrumbItem>
+                            <NextLink
+                                href={`/team/${teamId}/documents/${parentDest}`}
+                            >
+                                Back To Parent
+                            </NextLink>{" "}
+                        </BreadcrumbItem>
+                    ) : null}
+                    <BreadcrumbItem>
+                        <Text>{currentPlace}</Text>
+                    </BreadcrumbItem>
+                </Breadcrumb>
             </WhiteContainer>
             <Heading fontWeight={"normal"} size="md">
                 Folders
@@ -161,7 +206,9 @@ export default function DocumentPageTemplate({
             {/* <br /> */}
             <WhiteContainer>
                 {loading ? (
-                    <></>
+                    <>
+                        <LoadingDisplay displayText="Getting folders ..." />
+                    </>
                 ) : (
                     <SimpleGrid columns={[2, null, 3, 4, 6]} spacing={1}>
                         {" "}
@@ -188,7 +235,9 @@ export default function DocumentPageTemplate({
             </Heading>
             <WhiteContainer>
                 {loading ? (
-                    <></>
+                    <>
+                        <LoadingDisplay displayText="Getting Documents ..." />
+                    </>
                 ) : (
                     <SimpleGrid columns={[2, null, 3, 4, 6]} spacing={1}>
                         {" "}

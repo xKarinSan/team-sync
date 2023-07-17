@@ -17,7 +17,7 @@ export const getAllFolders = async () => {
 };
 
 // get folder by id
-export const getTeamById = async (teamId: string) => {
+export const getFolderById = async (teamId: string) => {
     const dataSnapshot = await get(folderRefWithId(teamId));
     return getIndividualSnapshotData(dataSnapshot);
 };

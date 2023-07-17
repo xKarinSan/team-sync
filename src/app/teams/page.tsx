@@ -191,7 +191,7 @@ const MembershipContainer = ({
             onClick={() => {
                 clickFunction(membership.teamId);
             }}
-            target="_blank"
+            // target="_blank"
         >
             <CustomButton
                 buttonColor="rgba(243, 246, 251, 1)"
