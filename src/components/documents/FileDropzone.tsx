@@ -102,7 +102,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
     const selectedImages = selectedFiles?.map((file) => {
         return (
-            <Menu key={file.fileId}>
+            <Menu>
                 <MenuButton
                     as={Button}
                     aria-label="Options"
@@ -121,7 +121,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                     {/* </WhiteContainer> */}
                 </MenuButton>
                 <MenuList>
-                    <Link href={file.preview} target="_blank">
+                    <Link href={file.url} target="_blank">
                         <MenuItem>Preview</MenuItem>
                     </Link>
                     <MenuItem
