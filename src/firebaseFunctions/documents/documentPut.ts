@@ -1,6 +1,5 @@
-import { realtimeDB } from "@/config/firebaseConfig";
 import { getFileRef } from "./documentRefs";
-import { ref, set } from "firebase/database";
+import { set } from "firebase/database";
 import { DocumentRecord } from "@/types/Documents/documentTypes";
 export const updateDocument = async (
     parentId: string,

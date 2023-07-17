@@ -36,6 +36,7 @@ import FileDropzone from "@/components/documents/FileDropzone";
 import { userLoginProtection } from "@/routeProtectors";
 import { realtimeFileChanges } from "@/firebaseFunctions/documents/documentGet";
 import { updateDocument } from "@/firebaseFunctions/documents/documentPut";
+import { deleteDocument } from "@/firebaseFunctions/documents/documentDelete";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -134,6 +135,10 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
 
     // update file name
     const updateFile = async () => {
+        toast({
+            title: "Updating document...",
+            status: "info",
+        });
         const { parentId, id } = file;
         const successfullyUpdated = await updateDocument(
             parentId,
@@ -156,7 +161,31 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
     };
 
     // delete the file entirely
-    const deleteFile = () => {};
+    const deleteFile = async () => {
+        toast({
+            title: "Deleting document...",
+            status: "info",
+        });
+        const { parentId, docId, id, fileExtension } = file;
+        const successfullyDeleted = await deleteDocument(
+            parentId,
+            docId,
+            id,
+            fileExtension
+        );
+        if (successfullyDeleted) {
+            setEditing(false);
+            toast({
+                title: "Document deleted",
+                status: "success",
+            });
+        } else {
+            toast({
+                title: "Failed to delete document",
+                status: "error",
+            });
+        }
+    };
     return (
         <WhiteContainer>
             <Box
@@ -231,7 +260,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                                 </MenuItem>
                                 <MenuItem
                                     onClick={() => {
-                                        // deleteFile(file.fileId);
+                                        deleteFile();
                                     }}
                                 >
                                     Remove
