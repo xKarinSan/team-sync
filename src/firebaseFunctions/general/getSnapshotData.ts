@@ -7,7 +7,7 @@ export const getSnapshotData = (snapshot: DataSnapshot) => {
             // console.log(child.key, child.val());
             res.push({ ...child.val(), id: child.key });
         });
-        console.log("res", res);
+        // console.log("res", res);
         return res;
     } else {
         return [];

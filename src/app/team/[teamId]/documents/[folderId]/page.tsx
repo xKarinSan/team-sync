@@ -12,10 +12,6 @@
 // ==========================import custom components==========================
 import DocumentPageTemplate from "@/components/documents/DocumentPageTemplate";
 // ==========================import external functions==========================
-// =============protection=============
-
-// =============folder features=============
-// =============document features=============
 
 // ==========================import external variables==========================
 
@@ -26,7 +22,11 @@ import DocumentPageTemplate from "@/components/documents/DocumentPageTemplate";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function TeamDocumentPage() {
+export default function TeamDocumentPage({
+    params,
+}: {
+    params: { folderId: string };
+}) {
     // ===============constants===============
 
     // ===============states===============
@@ -37,11 +37,7 @@ export default function TeamDocumentPage() {
 
     // ===============useEffect===============
 
-    return (
-        <>
-            <DocumentPageTemplate />
-        </>
-    );
+    return <DocumentPageTemplate folderId={params.folderId} />;
 }
 
 // ===================================sub component(s) if any===================================

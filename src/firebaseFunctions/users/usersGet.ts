@@ -7,7 +7,7 @@ export const allUsers = async () => {
     if (dataSnapshot.exists()) {
         const res:any[] = [];
         dataSnapshot.forEach((child) => {
-            console.log(child.key, child.val());
+            // console.log(child.key, child.val());
             res.push(child.val());
         });
         return res;

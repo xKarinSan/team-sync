@@ -38,14 +38,19 @@ export const realtimeFolderChanges = (
     setCurrentData: (data: any) => void
 ) => {
     onValue(folderRef, (snapshot) => {
+        // console.log("parentId", parentId);
+        // console.log(snapshot.exists());
         if (snapshot.exists()) {
             const data = snapshot.val();
             // console.log("data", data);
             let dataIds = Object.keys(data);
             const res = [];
             dataIds.forEach((id: string) => {
-                res.push({ ...data[id], id });
+                if (data[id].parentId === parentId) {
+                    res.push({ ...data[id], id });
+                }
             });
+            // console.log("res", res);
 
             setCurrentData(res);
         }
