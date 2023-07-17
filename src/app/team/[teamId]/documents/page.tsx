@@ -194,6 +194,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                 justifyContent={"space-between"}
             >
                 <Text
+                    noOfLines={2}
                     textAlign={"left"}
                     overflow="hidden"
                     textOverflow={"ellipsis"}
@@ -209,12 +210,8 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                             />
                         </>
                     ) : (
-                        <>
-                            {}
-                            {fileName}
-                        </>
+                        <>{fileName}</>
                     )}
-                    {/* {fileName} */}
                     {"."}
                     {fileExtension}
                 </Text>

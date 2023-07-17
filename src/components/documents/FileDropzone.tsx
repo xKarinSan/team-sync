@@ -2,9 +2,8 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 // ==========================import from next==========================
-import Image from "next/image";
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
 // ==========================import chakraui components==========================
@@ -34,7 +33,6 @@ import { DocumentEntry } from "@/types/Documents/documentTypes";
 // ==========================etc==========================
 import { useDropzone } from "react-dropzone";
 import { Heading } from "@chakra-ui/react";
-import { title } from "process";
 import NoRecordsDisplay from "../general/NoRecordsDisplay";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
@@ -54,37 +52,56 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        let tempFiles: File[] = selectedFiles;
-        console.log("tempFiles before", tempFiles);
-
-        acceptedFiles.map((file: File) => {
-            Object.assign(file, {
-                preview: URL.createObjectURL(file),
-                fileId: Math.random().toString(36).substr(2, 9),
+    const onDrop = useCallback(
+        async (acceptedFiles: File[]) => {
+            console.log("acceptedFiles", acceptedFiles);
+            const fileCount: number = acceptedFiles.length;
+            toast({
+                title: `Adding ${fileCount} file(s)`,
+                status: "info",
             });
-            tempFiles.push(file);
-        });
+            acceptedFiles.map((file: File) => {
+                Object.assign(file, {
+                    preview: URL.createObjectURL(file),
+                    fileId: Math.random().toString(36).substr(2, 9),
+                });
+                selectedFiles.push(file);
+            });
 
-        // console.log("tempFiles after", tempFiles);
-        // tempFiles = tempFiles.concat(updatedFiles);
-        setSelectedFiles(tempFiles);
-        setEntering(false);
-    }, []);
+            // console.log("tempFiles after", tempFiles);
+            // tempFiles = tempFiles.concat(updatedFiles);
+            setSelectedFiles(selectedFiles);
+            setEntering(false);
+            toast({
+                title: `Added ${fileCount} file(s)`,
+                status: "success",
+            });
+        },
+        [selectedFiles]
+    );
 
     const deleteFile = (id: string) => {
-        setSelectedFiles(
-            selectedFiles.filter((file: DocumentEntry) => {
+        // const filteredFiles = selectedFiles.filter((file: DocumentEntry) => {
+        //     return file.fileId != id;
+        // });
+        setSelectedFiles([
+            ...selectedFiles.filter((file: DocumentEntry) => {
                 return file.fileId != id;
-            })
-        );
+            }),
+        ]);
     };
 
     const clearSelection = () => {
+        // let tempFiles: File[] = selectedFiles;
+        // tempFiles = [];
         setSelectedFiles([]);
     };
 
     const uploadFiles = async () => {
+        toast({
+            title: "Uploading file(s)",
+            status: "info",
+        });
         try {
             await addFilesToTeam(folderId, selectedFiles, user.userId);
             toast({
@@ -100,6 +117,9 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             });
         }
     };
+    // useEffect(() => {
+    //     console.log("selectedFiles", selectedFiles.length);
+    // }, [selectedFiles]);
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
     const selectedImages = selectedFiles?.map((file: DocumentEntry) => {
         const { fileId, name, preview } = file;
@@ -138,46 +158,8 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
         );
     });
 
-    // ===============useEffect===============
-
     return (
-        <Box width={["100%", null, null, "60%", "40%"]} margin="auto">
-            <div
-                {...getRootProps()}
-                onDragEnter={() => {
-                    setEntering(true);
-                }}
-                onDragLeave={() => setEntering(false)}
-            >
-                <Box
-                    width={["100%"]}
-                    background={entering ? "black" : "white"}
-                    color={entering ? "white" : "black"}
-                    boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
-                    borderRadius={5}
-                    padding={2}
-                    margin="auto"
-                    marginTop={5}
-                    marginBottom={5}
-                    minHeight={"40vh"}
-                    transition={
-                        "background-color 200ms linear, color 200ms linear"
-                    }
-                    display="grid"
-                >
-                    <input {...getInputProps()} />
-                    <Heading
-                        fontWeight={"normal"}
-                        size="lg"
-                        margin="auto"
-                        textAlign="center"
-                    >
-                        {entering
-                            ? "Drop it like its hawt!"
-                            : " Click or drag and drop files here"}
-                    </Heading>
-                </Box>
-            </div>
+        <Box margin="auto">
             <Heading fontWeight={"normal"} size="md">
                 Upload files
             </Heading>
@@ -195,6 +177,44 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                 LeftButtonIcon={FiTrash}
                 isDisabled={selectedFiles.length == 0}
             />
+            <Box width={["100%", null, null, "60%", "40%"]}>
+                <div
+                    {...getRootProps()}
+                    onDragEnter={() => {
+                        setEntering(true);
+                    }}
+                    onDragLeave={() => setEntering(false)}
+                >
+                    <Box
+                        width={["100%"]}
+                        background={entering ? "black" : "white"}
+                        color={entering ? "white" : "black"}
+                        boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+                        borderRadius={5}
+                        padding={2}
+                        margin="auto"
+                        marginTop={5}
+                        marginBottom={5}
+                        minHeight={"200px"}
+                        transition={
+                            "background-color 200ms linear, color 200ms linear"
+                        }
+                        display="grid"
+                    >
+                        <input {...getInputProps()} />
+                        <Heading
+                            fontWeight={"normal"}
+                            size="lg"
+                            margin="auto"
+                            textAlign="center"
+                        >
+                            {entering
+                                ? "Drop it like its hawt!"
+                                : " Click or drag and drop files here"}
+                        </Heading>
+                    </Box>
+                </div>
+            </Box>
             <WhiteContainer>
                 {selectedFiles.length == 0 ? (
                     <>
