@@ -23,8 +23,11 @@ import {
     Text,
     MenuList,
     Link,
+    Input,
+    IconButton,
+    useToast,
 } from "@chakra-ui/react";
-import { FiFile } from "react-icons/fi";
+import { FiFile, FiMoreVertical } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import WhiteContainer from "@/components/general/WhiteContainer";
@@ -32,6 +35,7 @@ import FileDropzone from "@/components/documents/FileDropzone";
 // ==========================import external functions==========================
 import { userLoginProtection } from "@/routeProtectors";
 import { realtimeFileChanges } from "@/firebaseFunctions/documents/documentGet";
+import { updateDocument } from "@/firebaseFunctions/documents/documentPut";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -116,42 +120,127 @@ export default function TeamDocumentPage({
 // the rest are pretty much similar like the main components
 
 export function FileContainer({ file }: { file: DocumentRecord }) {
+    const { fileName, fileExtension, url } = file;
+    const toast = useToast();
+
+    const [currFileName, setCurrFileName] = useState<string>(fileName);
+    const [editing, setEditing] = useState<boolean>(false);
+
+    // cancel updating file name
+    const cancelUpdating = () => {
+        setCurrFileName(fileName);
+        setEditing(false);
+    };
+
     // update file name
+    const updateFile = async () => {
+        const { parentId, id } = file;
+        const successfullyUpdated = await updateDocument(
+            parentId,
+            id,
+            currFileName,
+            file
+        );
+        if (successfullyUpdated) {
+            setEditing(false);
+            toast({
+                title: "File name updated",
+                status: "success",
+            });
+        } else {
+            toast({
+                title: "Failed to update",
+                status: "error",
+            });
+        }
+    };
 
     // delete the file entirely
-    const { fileName, fileExtension, url } = file;
+    const deleteFile = () => {};
     return (
-        <Menu>
-            <MenuButton
-                as={Button}
-                aria-label="Options"
+        <WhiteContainer>
+            <Box
+                display={"flex"}
                 width={"100%"}
-                rightIcon={<FiFile />}
-                background="white"
-                boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+                justifyContent={"space-between"}
             >
                 <Text
                     textAlign={"left"}
                     overflow="hidden"
                     textOverflow={"ellipsis"}
                 >
-                    {fileName}
+                    {editing ? (
+                        <>
+                            <Input
+                                placeholder="New file name"
+                                value={currFileName}
+                                onChange={(e) => {
+                                    setCurrFileName(e.target.value);
+                                }}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            {}
+                            {fileName}
+                        </>
+                    )}
+                    {/* {fileName} */}
                     {"."}
                     {fileExtension}
                 </Text>
-            </MenuButton>
-            <MenuList>
-                <Link href={url} target="_blank">
-                    <MenuItem>Preview</MenuItem>
-                </Link>
-                <MenuItem
-                    onClick={() => {
-                        // deleteFile(file.fileId);
-                    }}
-                >
-                    Remove
-                </MenuItem>
-            </MenuList>
-        </Menu>
+                <Menu>
+                    <MenuButton
+                        as={IconButton}
+                        aria-label="Options"
+                        icon={<FiMoreVertical />}
+                        background="white"
+                        boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+                        right={"0"}
+                    ></MenuButton>
+                    <MenuList>
+                        {editing ? (
+                            <>
+                                <MenuItem
+                                    onClick={() => {
+                                        updateFile();
+                                    }}
+                                >
+                                    Save
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        cancelUpdating();
+                                    }}
+                                >
+                                    Cancel
+                                </MenuItem>
+                            </>
+                        ) : (
+                            <>
+                                {" "}
+                                <Link href={url} target="_blank">
+                                    <MenuItem>View</MenuItem>
+                                </Link>
+                                <MenuItem
+                                    onClick={() => {
+                                        setEditing(true);
+                                    }}
+                                >
+                                    Rename File
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        // deleteFile(file.fileId);
+                                    }}
+                                >
+                                    Remove
+                                </MenuItem>
+                            </>
+                        )}
+                    </MenuList>
+                </Menu>
+            </Box>
+        </WhiteContainer>
     );
 }

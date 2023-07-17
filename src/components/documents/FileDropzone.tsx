@@ -66,8 +66,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             tempFiles.push(file);
         });
 
-        console.log("tempFiles after", tempFiles);
-
+        // console.log("tempFiles after", tempFiles);
         // tempFiles = tempFiles.concat(updatedFiles);
         setSelectedFiles(tempFiles);
         setEntering(false);
@@ -142,7 +141,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     // ===============useEffect===============
 
     return (
-        <Box>
+        <Box width={["100%", null, null, "60%", "40%"]} margin="auto">
             <div
                 {...getRootProps()}
                 onDragEnter={() => {
