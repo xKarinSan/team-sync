@@ -11,7 +11,7 @@ export const realtimeFileChanges = (
     onValue(currentFileRef, (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
-            console.log("data", data);
+            // console.log("data", data);
             let dataIds = Object.keys(data);
             const res = [];
             dataIds.forEach((id: string) => {

@@ -30,7 +30,7 @@ import { addFilesToTeam } from "@/firebaseFunctions/documents/documentAdd";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-
+import { DocumentEntry } from "@/types/Documents/documentTypes";
 // ==========================etc==========================
 import { useDropzone } from "react-dropzone";
 import { Heading } from "@chakra-ui/react";
@@ -46,17 +46,19 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     const toast = useToast();
     const { user } = useUser();
     // ===============states===============
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState<
+        File[] | DocumentEntry[]
+    >([]);
     const [entering, setEntering] = useState<boolean>(false);
 
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
-    const onDrop = useCallback((acceptedFiles) => {
-        let tempFiles = selectedFiles;
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        let tempFiles: File[] = selectedFiles;
         console.log("tempFiles before", tempFiles);
 
-        acceptedFiles.map((file) => {
+        acceptedFiles.map((file: File) => {
             Object.assign(file, {
                 preview: URL.createObjectURL(file),
                 fileId: Math.random().toString(36).substr(2, 9),
@@ -71,9 +73,9 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
         setEntering(false);
     }, []);
 
-    const deleteFile = (id: number) => {
+    const deleteFile = (id: string) => {
         setSelectedFiles(
-            selectedFiles.filter((file) => {
+            selectedFiles.filter((file: DocumentEntry) => {
                 return file.fileId != id;
             })
         );
@@ -100,9 +102,10 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
         }
     };
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
-    const selectedImages = selectedFiles?.map((file) => {
+    const selectedImages = selectedFiles?.map((file: DocumentEntry) => {
+        const { fileId, name, preview } = file;
         return (
-            <Menu>
+            <Menu key={fileId}>
                 <MenuButton
                     as={Button}
                     aria-label="Options"
@@ -116,17 +119,17 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                         overflow="hidden"
                         textOverflow={"ellipsis"}
                     >
-                        {file.name}
+                        {name}
                     </Text>
                     {/* </WhiteContainer> */}
                 </MenuButton>
                 <MenuList>
-                    <Link href={file.url} target="_blank">
+                    <Link href={preview} target="_blank">
                         <MenuItem>Preview</MenuItem>
                     </Link>
                     <MenuItem
                         onClick={() => {
-                            deleteFile(file.fileId);
+                            deleteFile(fileId);
                         }}
                     >
                         Remove
@@ -203,7 +206,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                 ) : (
                     <>
                         <SimpleGrid columns={[2, 4, null]} spacing={1}>
-                            {selectedImages}{" "}
+                            {selectedImages}
                         </SimpleGrid>
                     </>
                 )}

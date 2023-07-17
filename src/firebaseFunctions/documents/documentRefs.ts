@@ -8,6 +8,6 @@ export const getDocumentRef = (destinationId: string, imagePath: string) => {
 };
 
 export const getFileRef = (parentId: string) => {
-    console.log("parentId",parentId)
+    // console.log("parentId",parentId)
     return databaseRef(realtimeDB, `documents/${parentId}`);
 };

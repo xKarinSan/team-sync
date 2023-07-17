@@ -1,5 +1,6 @@
 import { getDocumentRef, getFileRef } from "./documentRefs";
 import { uploadBytes, getDownloadURL } from "firebase/storage";
+import { DocumentRecord } from "@/types/Documents/documentTypes";
 import { push } from "firebase/database";
 import { v4 as uuidv4 } from "uuid";
 
@@ -30,7 +31,7 @@ export const addFileRecord = async (
 // ================== complex functions ==================
 export const addFilesToTeam = async (
     teamId: string,
-    fileArr: any[],
+    fileArr: File[],
     uploaderId: string
 ) => {
     const promises: Promise<any>[] = [];
@@ -40,18 +41,22 @@ export const addFilesToTeam = async (
             file.name.lastIndexOf(".") + 1,
             file.name.length
         );
-        const newFileName = uuidv4() + "." + extension;
+        const docId = uuidv4();
+        const newFileName = docId + "." + extension;
         const docRef = getDocumentRef(teamId, newFileName);
         promises.push(
             await uploadBytes(docRef, file).then(async () => {
                 await getDownloadURL(docRef).then(async (url) => {
-                    await addFileRecord(teamId, {
+                    const newDocument: DocumentRecord = {
+                        docId,
                         url,
                         uploaderId,
                         parentId: teamId,
                         uploadDate: new Date(),
-                        fileName: file.name,
-                    });
+                        fileName: file.name.substr(0, file.name.lastIndexOf(".")),
+                        fileExtension: extension,
+                    };
+                    await addFileRecord(teamId, newDocument);
                 });
             })
         );

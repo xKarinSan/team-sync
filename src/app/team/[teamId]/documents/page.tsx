@@ -24,7 +24,7 @@ import {
     MenuList,
     Link,
 } from "@chakra-ui/react";
-import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
+import { FiFile } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import WhiteContainer from "@/components/general/WhiteContainer";
@@ -35,7 +35,7 @@ import { realtimeFileChanges } from "@/firebaseFunctions/documents/documentGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-
+import { DocumentRecord } from "@/types/Documents/documentTypes";
 // ==========================etc==========================
 
 // ===================================main component===================================
@@ -73,7 +73,7 @@ export default function TeamDocumentPage({
             <WhiteContainer>
                 <NextLink href={`/team/${params.teamId}`}>Back</NextLink>{" "}
             </WhiteContainer>
-            <Heading fontWeight={"nomral"} size="md">
+            <Heading fontWeight={"normal"} size="md">
                 Folders
             </Heading>
             <WhiteContainer></WhiteContainer>
@@ -89,18 +89,13 @@ export default function TeamDocumentPage({
                         {files.length > 0 ? (
                             <>
                                 {" "}
-                                {files.map((file, index) => {
-                                    console.log("file", file);
+                                {files.map((file: DocumentRecord, index) => {
+                                    // console.log("file", file);
                                     return (
-                                        <FileContainer file={file} key={file.id} />
-                                        // <WhiteContainer key={index}>
-                                        //     <NextLink
-                                        //         href={file.url}
-                                        //         target="_blank"
-                                        //     >
-                                        //         {file.fileName}
-                                        //     </NextLink>
-                                        // </WhiteContainer>
+                                        <FileContainer
+                                            file={file}
+                                            key={index}
+                                        />
                                     );
                                 })}
                             </>
@@ -120,9 +115,13 @@ export default function TeamDocumentPage({
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
 
-export function FileContainer({file}) {
+export function FileContainer({ file }: { file: DocumentRecord }) {
+    // update file name
+
+    // delete the file entirely
+    const { fileName, fileExtension, url } = file;
     return (
-        <Menu key={file.fileId}>
+        <Menu>
             <MenuButton
                 as={Button}
                 aria-label="Options"
@@ -136,11 +135,13 @@ export function FileContainer({file}) {
                     overflow="hidden"
                     textOverflow={"ellipsis"}
                 >
-                    {file.fileName}
+                    {fileName}
+                    {"."}
+                    {fileExtension}
                 </Text>
             </MenuButton>
             <MenuList>
-                <Link href={file.url} target="_blank">
+                <Link href={url} target="_blank">
                     <MenuItem>Preview</MenuItem>
                 </Link>
                 <MenuItem
