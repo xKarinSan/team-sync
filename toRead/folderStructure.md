@@ -1,7 +1,5 @@
 # Folder Structure
 
-
-
 - Project
   - public (where the .svg files will be stored)
   - src
@@ -61,6 +59,6 @@
   - toRead (**Important to read; ends with .md**)
   - .env.local(environment variables)
   - next-config.js
-  - pacakge-lock-json
+  - package-lock-json
   - README.md (the main md file you will first see in this repo)
   - tsconfig.json (the typescript configuations)
