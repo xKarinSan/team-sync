@@ -41,7 +41,7 @@ TeamSync is a collaborative platform that offers various features for efficient 
 3. Explore and utilize the various features such as team management, document management, calendars, video conferencing, and realtime chat.
 
 ## Format Templates
-- [Client(Components/Pages/Layouts)](toRead/clientFormat.md)
+1. [Client(Components/Pages/Layouts)](toRead/ClientFormat.md)
 
 
 ## Contributing
