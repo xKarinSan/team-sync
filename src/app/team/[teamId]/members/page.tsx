@@ -47,7 +47,8 @@ import { getUserDict } from "@/firebaseFunctions/users/usersGet";
 // ==========================import types/interfaces==========================
 
 // ==========================etc==========================
-
+// import defaultProfilePic from "@/images/general/defaultProfilePic.png";
+import defaultProfilePic from "../../../../images/general/defaultProfilePic.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -214,6 +215,10 @@ export function InvitationBox({
                                 {allUsers.map((user) => {
                                     const { userId, username, profilePic } =
                                         user;
+                                    // console.log(
+                                    //     "profilePic.length > 0",
+                                    //     profilePic
+                                    // );
                                     return (
                                         <MenuItem
                                             key={userId}
@@ -222,7 +227,11 @@ export function InvitationBox({
                                             }}
                                         >
                                             <Image
-                                                src={profilePic}
+                                                src={
+                                                    profilePic
+                                                        ? profilePic
+                                                        : defaultProfilePic.src
+                                                }
                                                 alt={username}
                                                 height="25px"
                                                 width="25px"
@@ -258,7 +267,11 @@ export function InvitationBox({
                                 <WhiteContainer key={invitedMember}>
                                     <Box display={"flex"}>
                                         <Image
-                                            src={profilePic}
+                                            src={
+                                                profilePic
+                                                    ? profilePic
+                                                    : defaultProfilePic.src
+                                            }
                                             alt={username}
                                             height="25px"
                                             width="25px"
@@ -310,7 +323,7 @@ const MemberContainer = ({ member }: { member: any }) => {
         <WhiteContainer>
             <Box display={"flex"} width={"100%"}>
                 <Image
-                    src={profilePic}
+                    src={profilePic ? profilePic : defaultProfilePic.src}
                     alt={username}
                     width={50}
                     height={50}
@@ -337,7 +350,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                         background="white"
                         boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
                         right={"0"}
-                    ></MenuButton>
+                    />
                     <MenuList>
                         <MenuItem>
                             <MenuItem>View</MenuItem>
