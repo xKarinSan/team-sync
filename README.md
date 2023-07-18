@@ -1,34 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TeamSync
 
-## Getting Started
+TeamSync is a collaborative platform that offers various features for efficient team management and collaboration.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Table of Contents
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Format Templates](#format-templates)
+- [Contributing](#contributing)
+- [License](#license)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Team Management: Easily create and manage teams, invite members, and assign roles.
+- Document Management: Upload, organize, and collaborate on documents and files within teams.
+- Calendars: Create and manage team calendars, schedule events, and set reminders.
+- Video Conferencing: Conduct video meetings and conferences with team members.
+- Realtime Chat: Communicate with team members through a realtime chat interface.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Technologies Used
 
-## Learn More
+![Next.js](https://img.shields.io/badge/Next.js-Your_Version-blue?logo=next.js&logoColor=white)
+![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?logo=firebase&logoColor=white&style=flat)
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white&style=flat)
+![Vercel](https://img.shields.io/badge/-Vercel-000000?logo=vercel&logoColor=white&style=flat)
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Clone the repository: `git clone https://github.com/your-username/TeamSync.git`
+2. Install dependencies: `npm install`
+3. Set up Firebase: Create a Firebase project and set up the necessary configurations. Add the Firebase credentials to your project.
+4. Start the development server: `npm run dev`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+1. Register an account and log in to TeamSync.
+2. Create or join a team.
+3. Explore and utilize the various features such as team management, document management, calendars, video conferencing, and realtime chat.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Format Templates
+- [Client(Components/Pages/Layouts)](toRead/clientFormat.md)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Contributing
+
+Contributions are welcome! If you would like to contribute to TeamSync, follow these steps:
+
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature/your-feature`
+3. Make your changes and commit them: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+Feel free to modify this template according to your project's specific needs. The aim is to provide a clear and comprehensive overview of your project, making it easier for others to understand and potentially contribute to it.
