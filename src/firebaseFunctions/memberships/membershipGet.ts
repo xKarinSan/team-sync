@@ -9,7 +9,7 @@ import {
 } from "firebase/database";
 import { getSnapshotData } from "../general/getSnapshotData";
 import { Membership } from "@/types/Membership/membertypes";
-import { getAllUsers } from "../users/usersGet";
+import { getAllUsers, getUserDict } from "../users/usersGet";
 
 // Fetch all users
 // Call the function to retrieve all users
@@ -61,17 +61,24 @@ export const realtimeMembershipChanges = (
     teamId: string,
     setCurrentData: (data: any) => void
 ) => {
-    onValue(membershipRef, (snapshot) => {
+    onValue(membershipRef, async (snapshot) => {
         // console.log("parentId", parentId);
         // console.log(snapshot.exists());
+        const userDict = await getUserDict();
         if (snapshot.exists()) {
             const data = snapshot.val();
-            // console.log("data", data);
+            console.log("userDict", userDict);
             let dataIds = Object.keys(data);
             const res = [];
             dataIds.forEach((id: string) => {
                 if (data[id].teamId === teamId) {
-                    res.push({ ...data[id], id });
+                    const [username, profilePic] = userDict[data[id].userId];
+                    res.push({
+                        username,
+                        profilePic,
+                        userId: data[id].userId,
+                        id,
+                    });
                 }
             });
             console.log("res", res);

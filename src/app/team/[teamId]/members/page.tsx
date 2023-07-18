@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 // import Image from "next/image";
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
-// import useTeam from "@/store/teamStore";
+import useTeam from "@/store/teamStore";
 // ==========================import chakraui components==========================
 import {
     Heading,
@@ -22,6 +22,7 @@ import {
     MenuButton,
     Image,
     useDisclosure,
+    useToast,
 } from "@chakra-ui/react";
 import { FiMoreVertical, FiUserPlus, FiSearch, FiX } from "react-icons/fi";
 // ==========================import custom components==========================
@@ -37,6 +38,7 @@ import CustomDialog from "@/components/general/CustomDialog";
 // =========== security ===========
 // import { isMemberProtection } from "@/routeProtectors";
 // =========== membership ===========
+import { massInvite } from "@/firebaseFunctions/memberships/membershipAdd";
 import {
     getAllTeamMembers,
     realtimeMembershipChanges,
@@ -128,13 +130,16 @@ export default function MembersPage({
 export function InvitationBox({
     isOpen,
     onClose,
-    teamMembers,
-}: {
+}: // teamMembers,
+{
     isOpen: boolean;
     onClose: () => void;
-    teamMembers: any;
+    // teamMembers: any;
 }) {
     const { user } = useUser();
+    const { teamId } = useTeam();
+    const toast = useToast();
+
     const [allUsers, setAllUsers] = useState();
     const [allUsersDict, setAllUsersDict] = useState({});
     const [invitedMembers, setInvitedMembers] = useState([]);
@@ -173,7 +178,14 @@ export function InvitationBox({
         setInvitedMembers(newMembers);
     };
 
-    const triggerSubmit = () => {
+    const triggerSubmit = async () => {
+        const invited = await massInvite(invitedMembers, teamId);
+        if (invited) {
+            toast({ title: "Invitation(s) sent", status: "success" });
+            setInvitedMembers([]);
+        } else {
+            toast({ title: "Invitation(s) failed to send", status: "error" });
+        }
         // alert("LOL")
     };
     const cancelSubmit = () => {
@@ -258,7 +270,7 @@ export function InvitationBox({
                             const [username, profilePic] =
                                 allUsersDict[invitedMember];
                             return (
-                                <WhiteContainer>
+                                <WhiteContainer key={invitedMember}>
                                     <Box display={"flex"}>
                                         <Image
                                             src={profilePic}
