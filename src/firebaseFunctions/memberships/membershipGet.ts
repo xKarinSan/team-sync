@@ -41,18 +41,15 @@ export const memmberInTeam = async (teamId: string, userId: string) => {
             query(membershipRef, orderByChild("userId"), equalTo(userId))
         );
         const results = getSnapshotData(dataSnapshot);
-        console.log("results", results);
         if (results && results.length > 0) {
             for (let i: number = 0; i < results.length; i++) {
                 if (results[i].teamId === teamId) {
-                    console.log("found");
                     return true;
                 }
             }
         }
         return false;
     } catch (e) {
-        console.log("e", e);
         return false;
     }
 };
@@ -62,12 +59,9 @@ export const realtimeMembershipChanges = (
     setCurrentData: (data: any) => void
 ) => {
     onValue(membershipRef, async (snapshot) => {
-        // console.log("parentId", parentId);
-        // console.log(snapshot.exists());
         const userDict = await getUserDict();
         if (snapshot.exists()) {
             const data = snapshot.val();
-            console.log("userDict", userDict);
             let dataIds = Object.keys(data);
             const res = [];
             dataIds.forEach((id: string) => {
@@ -81,8 +75,6 @@ export const realtimeMembershipChanges = (
                     });
                 }
             });
-            console.log("res", res);
-
             setCurrentData(res);
         }
     });

@@ -43,7 +43,6 @@ export default function Navbar({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
     const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
     const { user } = useUser();
-    // console.log("user", user);
 
     useEffect(() => {
         setLoading(true);
@@ -260,7 +259,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         ];
     };
     useEffect(() => {
-        console.log("pathName", pathName);
         if (!pathName.includes("/team/")) {
             removeTeam();
             setSidebarItems(LinkItems);

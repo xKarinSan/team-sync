@@ -73,7 +73,6 @@ export const emailRegistration = async ({
                     email: email,
                     profilePic: photoURL ? photoURL : "",
                 };
-                console.log("currentUser", currentUser);
 
                 await addUser(currentUser);
                 setUser(currentUser);

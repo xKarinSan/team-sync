@@ -8,7 +8,6 @@ export const addUser = async (createdUser: User) => {
     try {
         // cannot add duplicate
         const userFound = await getUserbyUserId(userId);
-        console.log("userFound", userFound);
         if (userFound.length > 0) {
             return false;
         }

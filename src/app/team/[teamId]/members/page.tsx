@@ -36,13 +36,9 @@ import CustomDialog from "@/components/general/CustomDialog";
 
 // ==========================import external functions==========================
 // =========== security ===========
-// import { isMemberProtection } from "@/routeProtectors";
 // =========== membership ===========
 import { massInvite } from "@/firebaseFunctions/memberships/membershipAdd";
-import {
-    getAllTeamMembers,
-    realtimeMembershipChanges,
-} from "@/firebaseFunctions/memberships/membershipGet";
+import { realtimeMembershipChanges } from "@/firebaseFunctions/memberships/membershipGet";
 // =========== users ===========
 import { getUserDict } from "@/firebaseFunctions/users/usersGet";
 
@@ -61,8 +57,8 @@ export default function MembersPage({
     params: { teamId: string };
 }) {
     // ===============constants===============
-    // const {user} = useUser();
-    // const
+    const { creatorId } = useTeam();
+    const { user } = useUser();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // ===============states===============
@@ -70,21 +66,13 @@ export default function MembersPage({
     const [loading, setLoading] = useState(true);
 
     // ===============helper functions (will not be directly triggered)===============
-    const initMembers = async () => {
-        const teamMembers = await getAllTeamMembers(params.teamId);
-        console.log("teamMembers", teamMembers);
-        setMembers(teamMembers);
-    };
 
     // ===============main functions (will be directly triggered)===============
-    const inviteTeamates = () => {};
-    const triggerInviteModal = () => {};
+
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        // initMembers();
         realtimeMembershipChanges(params.teamId, setMembers);
-        // getAllTeamMembers(params.teamId);
         setLoading(false);
     }, []);
 
@@ -104,6 +92,7 @@ export default function MembersPage({
                         LeftButtonIcon={FiUserPlus}
                         clickFunction={onOpen}
                         buttonText={"Invite Teammates"}
+                        isDisabled={user.userId !== creatorId}
                     />
                     <InvitationBox isOpen={isOpen} onClose={onClose} />
                     <WhiteContainer>
@@ -130,11 +119,9 @@ export default function MembersPage({
 export function InvitationBox({
     isOpen,
     onClose,
-}: // teamMembers,
-{
+}: {
     isOpen: boolean;
     onClose: () => void;
-    // teamMembers: any;
 }) {
     const { user } = useUser();
     const { teamId } = useTeam();
@@ -186,7 +173,6 @@ export function InvitationBox({
         } else {
             toast({ title: "Invitation(s) failed to send", status: "error" });
         }
-        // alert("LOL")
     };
     const cancelSubmit = () => {
         setInvitedMembers([]);
@@ -262,7 +248,6 @@ export function InvitationBox({
             <Heading size={"md"} fontWeight={"normal"}>
                 Invited Members
             </Heading>
-            {/* <WhiteContainer> */}
             {invitedMembers && invitedMembers.length > 0 ? (
                 <>
                     <CustomGrid gridCols={[1, null, null, 2]}>
@@ -312,22 +297,18 @@ export function InvitationBox({
                     <Text>Invite some members?</Text>
                 </>
             )}
-            {/* </WhiteContainer> */}
         </CustomDialog>
     );
 }
 
 const MemberContainer = ({ member }: { member: any }) => {
     const { user } = useUser();
+    const { creatorId } = useTeam();
 
     const { username, userId, profilePic } = member;
     return (
         <WhiteContainer>
-            <Box
-                display={"flex"}
-                width={"100%"}
-                // justifyContent={"space-between"}
-            >
+            <Box display={"flex"} width={"100%"}>
                 <Image
                     src={profilePic}
                     alt={username}
@@ -344,6 +325,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                     width={"-webkit-fill-available"}
                     alignSelf={"center"}
                 >
+                    {userId == creatorId ? <>(Owner)</> : null}
                     {userId == user.userId ? <>(Me)</> : null} {username}
                 </Text>
                 <Menu>
@@ -360,7 +342,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                         <MenuItem>
                             <MenuItem>View</MenuItem>
                         </MenuItem>
-                        {userId != user.userId ? (
+                        {userId != user.userId && user.userId == creatorId ? (
                             <>
                                 <MenuItem>
                                     <MenuItem>Remove</MenuItem>

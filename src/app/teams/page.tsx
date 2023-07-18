@@ -36,6 +36,7 @@ import CustomGrid from "@/components/general/CustomGrid";
 import { userLoginProtection } from "@/routeProtectors";
 import { createNewTeam } from "@/firebaseFunctions/teams/teamAdd";
 import { getUserTeams } from "@/firebaseFunctions/teams/teamGet";
+import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
 
 // ==========================import external variables==========================
 
@@ -179,16 +180,31 @@ const MembershipContainer = ({
 }: // clickFunction,
 {
     membership: MembershipDisplay;
-    clickFunction: (teamId: string) => void;
+    clickFunction: (
+        teamId: string,
+        teamName: string,
+        creatorId: string
+    ) => void;
 }) => {
     const router = useRouter();
 
+    const getCurrentTeam = async () => {
+        const currentTeam = await getTeamById(membership.teamId);
+        if (currentTeam) {
+            const { id, teamName, userId } = currentTeam;
+            clickFunction(id, teamName, userId);
+            router.push(`/team/${membership.teamId}`);
+        }
+    };
+
     return (
-        <NextLink
-            href={`/team/${membership.teamId}`}
+        <Box
+            // href={`/team/${membership.teamId}`}
             onClick={() => {
-                clickFunction(membership.teamId);
+                //
+                getCurrentTeam();
             }}
+
             // target="_blank"
         >
             <CustomButton
@@ -199,6 +215,6 @@ const MembershipContainer = ({
                 buttonText={membership.teamName}
                 buttonWidth="100%"
             />
-        </NextLink>
+        </Box>
     );
 };

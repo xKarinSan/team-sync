@@ -8,12 +8,9 @@ export const realtimeFileChanges = (
     setCurrentData: (data: any) => void
 ) => {
     const currentFileRef = getFileRef(parentId);
-    // console.log("parentId", parentId);
     onValue(currentFileRef, (snapshot) => {
-        // console.log("snapshot", snapshot.exists());
         if (snapshot.exists()) {
             const data = snapshot.val();
-            // console.log("data", data);
             let dataIds = Object.keys(data);
             const res = [];
             dataIds.forEach((id: string) => {

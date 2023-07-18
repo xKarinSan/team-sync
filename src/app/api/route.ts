@@ -10,8 +10,6 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: NextRequest) {
-    // const data = await req.json();
-    // console.log("name", data);
     const { name } = await req.json();
     const addUserReq = await addUser(name);
     if (addUserReq) {

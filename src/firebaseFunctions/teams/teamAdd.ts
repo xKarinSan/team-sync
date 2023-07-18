@@ -11,7 +11,6 @@ export const addTeam = async (newTeam: TeamInput) => {
             createdDate: Date.now(),
         });
         if (res) {
-            // console.log("key", res.key);
             return res.key;
         }
         return null;

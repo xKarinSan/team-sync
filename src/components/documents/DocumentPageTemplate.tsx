@@ -240,7 +240,6 @@ export default function DocumentPageTemplate({
                             <>
                                 {" "}
                                 {files.map((file: DocumentRecord, index) => {
-                                    // console.log("file", file);
                                     return (
                                         <FileContainer
                                             file={file}

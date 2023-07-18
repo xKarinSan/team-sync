@@ -5,13 +5,19 @@ export const useTeam = create(
     persist(
         (set) => ({
             teamId: null,
-            setTeam: (teamId: string) =>
+            teamName: null,
+            creatorId: null,
+            setTeam: (teamId: string, teamName: string, creatorId: string) =>
                 set(() => ({
-                    teamId: teamId,
+                    teamId,
+                    teamName,
+                    creatorId,
                 })),
             removeTeam: () =>
                 set(() => ({
                     teamId: null,
+                    teamName: null,
+                    creatorId: null,
                 })),
         }),
         {

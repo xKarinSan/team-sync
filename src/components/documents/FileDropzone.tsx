@@ -54,7 +54,6 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     // ===============main functions (will be directly triggered)===============
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
-            console.log("acceptedFiles", acceptedFiles);
             const fileCount: number = acceptedFiles.length;
             toast({
                 title: `Adding ${fileCount} file(s)`,
@@ -68,8 +67,6 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                 selectedFiles.push(file);
             });
 
-            // console.log("tempFiles after", tempFiles);
-            // tempFiles = tempFiles.concat(updatedFiles);
             setSelectedFiles(selectedFiles);
             setEntering(false);
             toast({
@@ -81,9 +78,6 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     );
 
     const deleteFile = (id: string) => {
-        // const filteredFiles = selectedFiles.filter((file: DocumentEntry) => {
-        //     return file.fileId != id;
-        // });
         setSelectedFiles([
             ...selectedFiles.filter((file: DocumentEntry) => {
                 return file.fileId != id;
@@ -92,8 +86,6 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
     };
 
     const clearSelection = () => {
-        // let tempFiles: File[] = selectedFiles;
-        // tempFiles = [];
         setSelectedFiles([]);
     };
 
@@ -117,9 +109,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             });
         }
     };
-    // useEffect(() => {
-    //     console.log("selectedFiles", selectedFiles.length);
-    // }, [selectedFiles]);
+
     const { getRootProps, getInputProps } = useDropzone({ onDrop });
     const selectedImages = selectedFiles?.map((file: DocumentEntry) => {
         const { fileId, name, preview } = file;
@@ -165,7 +155,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             </Heading>
             <br />
             <CustomButton
-            FiChevronDown
+                FiChevronDown
                 buttonText={`Upload ${selectedFiles.length} files`}
                 clickFunction={uploadFiles}
                 LeftButtonIcon={FiFilePlus}
