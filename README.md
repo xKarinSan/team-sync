@@ -41,13 +41,13 @@ TeamSync is a collaborative platform that offers various features for efficient 
 3. Explore and utilize the various features such as team management, document management, calendars, video conferencing, and realtime chat.
 
 ## Essentials to read
-1. [Client Templates(Components/Pages/Layouts)](toRead/ClientFormat.md)
+1. [Folder Structure](toRead/folderStructure.md)
+2. [Client Templates(Components/Pages/Layouts)](toRead/ClientFormat.md)
 
 
 ## Contributing
 
 Contributions are welcome! If you would like to contribute to TeamSync, follow these steps:
-
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature/your-feature`
 3. Make your changes and commit them: `git commit -m 'Add some feature'`
