@@ -331,10 +331,7 @@ function ContactUsForm() {
 
 function Footer() {
     const clickSourceCode = () => {
-        window.open(
-            "https://github.com/xKarinSan/team-sync/blob/main/toRead/folderStructure.md",
-            "_blank"
-        );
+        window.open("https://github.com/xKarinSan/team-sync", "_blank");
     };
     return (
         <Box
