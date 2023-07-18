@@ -31,6 +31,7 @@ import CustomFormInput from "@/components/general/CustomFormInput";
 import CustomModal from "@/components/general/CustomModal";
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import NoRecordsDisplay from "@/components/general/NoRecordsDisplay";
+import CustomGrid from "@/components/general/CustomGrid";
 // ==========================import external functions==========================
 import { userLoginProtection } from "@/routeProtectors";
 import { createNewTeam } from "@/firebaseFunctions/teams/teamAdd";
@@ -122,10 +123,7 @@ export default function TeamPage() {
                         {memberships.length > 0 ? (
                             <>
                                 {" "}
-                                <SimpleGrid
-                                    columns={[2, 3, 4, 5, 6]}
-                                    spacing={1}
-                                >
+                                <CustomGrid>
                                     {memberships.map(
                                         (
                                             membership: MembershipDisplay,
@@ -140,7 +138,7 @@ export default function TeamPage() {
                                             );
                                         }
                                     )}
-                                </SimpleGrid>
+                                </CustomGrid>
                             </>
                         ) : (
                             <>

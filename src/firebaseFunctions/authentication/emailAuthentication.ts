@@ -1,18 +1,23 @@
-import {
-    User,
-} from "@/types/User/usertypes";
+import { User } from "@/types/User/usertypes";
 import { auth } from "@/config/firebaseConfig";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     updateProfile,
 } from "firebase/auth";
+import { addUser } from "../users/usersAdd";
 
 // if successful, return the user
 // else return null
-export const emailLogin = async ({ email, password, setUser, toast,router }: any) => {
+export const emailLogin = async ({
+    email,
+    password,
+    setUser,
+    toast,
+    router,
+}: any) => {
     await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
             // Signed in
             const user = userCredential.user;
             if (user) {
@@ -23,13 +28,14 @@ export const emailLogin = async ({ email, password, setUser, toast,router }: any
                     email: email,
                     profilePic: photoURL,
                 };
+                await addUser(user);
                 setUser(currentUser);
                 toast({
                     title: "Logged In.",
                     description: "Login Successful!",
                     status: "success",
                 });
-                router.replace("/home")
+                router.replace("/home");
             }
         })
         .catch((e) => {
@@ -74,7 +80,7 @@ export const emailRegistration = async ({
                 description: "Registration Successful!",
                 status: "success",
             });
-            router.replace("/home")
+            router.replace("/home");
         })
         .catch((e) => {
             toast({

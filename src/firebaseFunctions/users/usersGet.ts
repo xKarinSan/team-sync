@@ -1,18 +1,16 @@
 import { realtimeDB } from "../../config/firebaseConfig";
-import { ref, get } from "firebase/database";
+import { ref, get, orderByChild, equalTo, query } from "firebase/database";
+import { userRefById, userRef } from "./userRefs";
+import { getSnapshotData } from "../general/getSnapshotData";
 
-export const allUsers = async () => {
-    const userRef = ref(realtimeDB, "users/");
-    const dataSnapshot = await get(userRef);
-    if (dataSnapshot.exists()) {
-        const res:any[] = [];
-        dataSnapshot.forEach((child) => {
-            // console.log(child.key, child.val());
-            res.push(child.val());
-        });
-        return res;
-    } else {
-        console.log("No data available");
-        return [];
-    }
+export const getUserbyUserId = async (userId: string) => {
+    const dataSnapshot = await get(
+        query(userRef, orderByChild("userId"), equalTo(userId))
+    );
+    return getSnapshotData(dataSnapshot);
+};
+
+export const getAllUsers = async () => {
+    const snapshot = await get(userRef);
+    return getSnapshotData(snapshot);
 };

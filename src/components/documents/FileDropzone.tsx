@@ -9,7 +9,6 @@ import useUser from "@/store/userStore";
 // ==========================import chakraui components==========================
 import {
     Box,
-    SimpleGrid,
     useToast,
     Text,
     Link,
@@ -34,6 +33,7 @@ import { DocumentEntry } from "@/types/Documents/documentTypes";
 import { useDropzone } from "react-dropzone";
 import { Heading } from "@chakra-ui/react";
 import NoRecordsDisplay from "../general/NoRecordsDisplay";
+import CustomGrid from "../general/CustomGrid";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -224,9 +224,9 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                     </>
                 ) : (
                     <>
-                        <SimpleGrid columns={[2, 4, null]} spacing={1}>
+                        <CustomGrid gridCols={[2, 4, null]}>
                             {selectedImages}
-                        </SimpleGrid>
+                        </CustomGrid>
                     </>
                 )}
             </WhiteContainer>

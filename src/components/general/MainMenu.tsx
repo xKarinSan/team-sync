@@ -10,10 +10,10 @@ import NextLink from "next/link";
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
-import { SimpleGrid, Box, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 // ==========================import custom components==========================
-
+import CustomGrid from "./CustomGrid";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
@@ -43,19 +43,14 @@ export default function MainMenu({
         <>
             {menuOptions ? (
                 <>
-                    <SimpleGrid
-                        columns={[1, 2, null, 4]}
-                        width="100%"
-                    >
+                    <CustomGrid gridCols={[1, 2, null, 4]}>
                         {menuOptions.map(
                             (
                                 { label, icon, path }: MenuOption,
                                 index: number
                             ) => {
                                 return (
-                                    <NextLink
-                                        href={path}
-                                        key={index}                                    >
+                                    <NextLink href={path} key={index}>
                                         <Box
                                             margin="10px"
                                             background="white"
@@ -71,7 +66,7 @@ export default function MainMenu({
                                 );
                             }
                         )}
-                    </SimpleGrid>
+                    </CustomGrid>
                 </>
             ) : (
                 <></>

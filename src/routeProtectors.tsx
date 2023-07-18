@@ -25,8 +25,8 @@ export const isMemberProtection = async (
     const { userId } = user;
     // check if userId is among the teamMembers
     const userIsMember = await memmberInTeam(teamId, userId);
-    console.log("userIsMember", userIsMember);
-    console.log("!userIsMember", !userIsMember);
+    // console.log("userIsMember", userIsMember);
+    // console.log("!userIsMember", !userIsMember);
     if (!userIsMember) {
 
         router.replace("/home");

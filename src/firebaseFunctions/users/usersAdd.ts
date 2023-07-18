@@ -1,29 +1,29 @@
 import { realtimeDB } from "../../config/firebaseConfig";
 import { ref, push } from "firebase/database";
+import { getUserbyUserId } from "./usersGet";
+import { userRef } from "./userRefs";
+import { User } from "@/types/User/usertypes";
+export const addUser = async (createdUser: User) => {
+    const { username, userId, profilePic } = createdUser;
+    try {
+        // cannot add duplicate
+        const userFound = await getUserbyUserId(userId);
+        console.log("userFound", userFound);
+        if (userFound.length > 0) {
+            return false;
+        }
+        const res = await push(userRef, {
+            username,
+            userId,
+            profilePic,
+        });
 
-export const addUser = async (name: any) => {
-    // try{
-    const userRef = ref(realtimeDB, "users/");
-    // set(ref(db, "users/" + userId), {
-    //     username: name,
-    //     email: email,
-    //     profile_picture: imageUrl,
-    // });
-
-    const user = {
-        userId: "0",
-        name,
-    };
-
-    const res = await push(userRef, user);
-    if (res) {
-        return true;
+        if (res) {
+            return true;
+        }
+        return false;
+    } catch (e) {
+        console.log(e);
+        return false;
     }
-    return false;
-
-    // return addUserReq.
-    // }
-    // catch(e){
-    //     return e
-    // }
 };

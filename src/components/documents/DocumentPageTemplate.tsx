@@ -14,7 +14,6 @@ import useTeam from "@/store/teamStore";
 import {
     Box,
     Heading,
-    SimpleGrid,
     Menu,
     MenuItem,
     MenuButton,
@@ -32,7 +31,6 @@ import {
     AlertDialogHeader,
     AlertDialogContent,
     AlertDialogOverlay,
-    AlertDialogCloseButton,
     Breadcrumb,
     BreadcrumbItem,
 } from "@chakra-ui/react";
@@ -44,7 +42,7 @@ import FileDropzone from "./FileDropzone";
 import CustomButton from "../general/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
 import LoadingDisplay from "../general/LoadingDisplay";
-
+import CustomGrid from "../general/CustomGrid";
 // ==========================import external functions==========================
 // =============protection=============
 import { isMemberProtection, userLoginProtection } from "@/routeProtectors";
@@ -211,7 +209,7 @@ export default function DocumentPageTemplate({
                         <LoadingDisplay displayText="Getting folders ..." />
                     </>
                 ) : (
-                    <SimpleGrid columns={[2, null, 3, 4, 6]} spacing={1}>
+                    <CustomGrid>
                         {" "}
                         {folders.length > 0 ? (
                             <>
@@ -228,7 +226,7 @@ export default function DocumentPageTemplate({
                         ) : (
                             <></>
                         )}
-                    </SimpleGrid>
+                    </CustomGrid>
                 )}
             </WhiteContainer>
             <Heading fontWeight={"nomral"} size="md">
@@ -240,7 +238,7 @@ export default function DocumentPageTemplate({
                         <LoadingDisplay displayText="Getting Documents ..." />
                     </>
                 ) : (
-                    <SimpleGrid columns={[2, null, 3, 4, 6]} spacing={1}>
+                    <CustomGrid>
                         {" "}
                         {files.length > 0 ? (
                             <>
@@ -258,7 +256,7 @@ export default function DocumentPageTemplate({
                         ) : (
                             <></>
                         )}
-                    </SimpleGrid>
+                    </CustomGrid>
                 )}
             </WhiteContainer>
 

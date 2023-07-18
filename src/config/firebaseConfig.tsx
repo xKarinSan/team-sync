@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+// import { initializeApp as adminInitializeApp } from "firebase-admin";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
@@ -20,6 +21,8 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
+// const adminApp = adminInitializeApp(firebaseConfig);
+// export const adminAuth = getAuth(adminApp);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
