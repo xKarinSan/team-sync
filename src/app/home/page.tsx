@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -23,7 +23,6 @@ import { userLoginProtection } from "@/routeProtectors";
 
 // ==========================import types/interfaces==========================
 import { MenuOption } from "@/types/HomePage/menuOptions";
-
 // ==========================etc==========================
 
 import TeamsImage from "../../images/homepage/TeamsImage.png";
@@ -35,9 +34,9 @@ import LogoutImage from "../../images/homepage/LogoutImage.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function HomePage() {
+const HomePage = () => {
     // ===============constants===============
-    const { user } = useUser();
+    const { userId, username } = useUser();
     const router = useRouter();
     const menuOptions: MenuOption[] = [
         {
@@ -75,22 +74,26 @@ export default function HomePage() {
 
     // ===============useEffect===============
     useEffect(() => {
-        userLoginProtection(user, router);
-    }, []);
+        userLoginProtection(userId, router);
+    }, [userId, router]);
+
     return (
         <Box p={10}>
-            {user ? (
+            {userId ? (
                 <>
                     <Heading textAlign={"center"} fontWeight={"normal"}>
-                        Hello {user.username}, what would you like to do today?
+                        Hello {username || "Guest"}, what would you like to do
+                        today?
                     </Heading>
                 </>
             ) : null}
             <MainMenu menuOptions={menuOptions} />
         </Box>
     );
-}
+};
+
+export default HomePage;
 
 // ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
-// the rest are pretty much similar like the main components
+// the rest are pretty much similar to the main components

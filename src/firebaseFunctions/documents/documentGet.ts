@@ -12,7 +12,7 @@ export const realtimeFileChanges = (
         if (snapshot.exists()) {
             const data = snapshot.val();
             let dataIds = Object.keys(data);
-            const res = [];
+            const res: any[] = [];
             dataIds.forEach((id: string) => {
                 res.push({ ...data[id], id });
             });

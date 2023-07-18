@@ -14,7 +14,7 @@ export default function NotFound() {
                     <Image src={NotFoundImage} alt="Not found" />
                 </Box>
                 <Text textAlign={"center"}>
-                    We can't find anything here. Click{" "}
+                    We could not find anything here. Click{" "}
                     <NextLink href={"/"}>
                         <Text as="span" color="#0239C8" fontWeight={"bold"}>
                             here

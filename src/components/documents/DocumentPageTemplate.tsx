@@ -17,7 +17,6 @@ import {
     Menu,
     MenuItem,
     MenuButton,
-    Button,
     Text,
     MenuList,
     Link,
@@ -28,7 +27,7 @@ import {
     Breadcrumb,
     BreadcrumbItem,
 } from "@chakra-ui/react";
-import { FiFile, FiMoreVertical, FiFolderPlus } from "react-icons/fi";
+import { FiMoreVertical, FiFolderPlus } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import WhiteContainer from "../general/WhiteContainer";
@@ -77,7 +76,7 @@ export default function DocumentPageTemplate({
 }) {
     // ===============constants===============
     const toast = useToast();
-    const { user } = useUser();
+    const { userId } = useUser();
     const { teamId } = useTeam();
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -115,7 +114,7 @@ export default function DocumentPageTemplate({
                 teamId,
                 folderName,
                 parentId: folderId ? folderId : teamId,
-                creatorId: user.userId,
+                creatorId: userId,
                 createdDate: new Date(),
             });
             if (addFolderRes) {
@@ -135,8 +134,7 @@ export default function DocumentPageTemplate({
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        isMemberProtection(user, teamId, router);
-        // userLoginProtection(user, router);
+        isMemberProtection(userId, teamId, router);
         getCurrentPlace();
         realtimeFileChanges(folderId && teamId ? folderId : teamId, setFiles);
         realtimeFolderChanges(

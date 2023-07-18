@@ -36,7 +36,7 @@ export default function TeamHomePage({
     params: { teamId: string };
 }) {
     // ===============constants===============
-    const { user } = useUser();
+    const { userId } = useUser();
     const router = useRouter();
     const menuOptions: MenuOption[] = [
         {
@@ -68,7 +68,7 @@ export default function TeamHomePage({
 
     // ===============states===============
     const [loading, setLoading] = useState<boolean>(false);
-    const [currTeam, setCurrTeam] = useState(null);
+    const [currTeam, setCurrTeam] = useState<any>(null);
 
     // ===============helper functions (will not be directly triggered)===============
     const retrieveCurrentTeam = async () => {
@@ -83,7 +83,7 @@ export default function TeamHomePage({
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        userLoginProtection(user, router);
+        userLoginProtection(userId, router);
         retrieveCurrentTeam();
         setLoading(false);
     }, []);

@@ -18,7 +18,7 @@ export default function RootLayout({
                         defaultOptions: { duration: 3000, isClosable: true },
                     }}
                 >
-                    <Navbar children={children} />
+                    <Navbar>{children}</Navbar>
                 </ChakraProvider>
             </body>
         </html>

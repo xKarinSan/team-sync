@@ -1,23 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { allUsers } from "../../firebaseFunctions/users/usersGet";
-import { addUser } from "../../firebaseFunctions/users/usersAdd";
-export async function GET(req: Request) {
-    const data = await allUsers();
+export async function GET(req: NextRequest) {
     return NextResponse.json({
         message: "OK",
-        data,
     });
-}
-
-export async function POST(req: NextRequest) {
-    const { name } = await req.json();
-    const addUserReq = await addUser(name);
-    if (addUserReq) {
-        return NextResponse.json({ message: "Added" });
-    } else {
-        return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
-    }
 }

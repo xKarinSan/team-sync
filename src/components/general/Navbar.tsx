@@ -30,6 +30,8 @@ import {
     FiMessageSquare,
     FiArrowLeft,
 } from "react-icons/fi";
+import { IconType } from "react-icons";
+
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { usePathname } from "next/navigation";
 
@@ -42,20 +44,20 @@ import { useState, useEffect, ReactNode } from "react";
 export default function Navbar({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
     const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
-    const { user } = useUser();
+    const { userId } = useUser();
 
     useEffect(() => {
         setLoading(true);
 
         setLoading(false);
-    }, [user]);
+    }, [userId]);
 
     return (
         <>
             {loading ? null : (
                 <>
                     <Box>
-                        {user ? (
+                        {userId ? (
                             <>
                                 <SidebarContent
                                     onClose={() => onClose}
@@ -91,20 +93,14 @@ export default function Navbar({ children }: { children: ReactNode }) {
                         ) : (
                             <>
                                 <Flex
-                                    bg={useColorModeValue("white", "gray.800")}
-                                    color={useColorModeValue(
-                                        "gray.600",
-                                        "white"
-                                    )}
+                                    // bg={useColorModeValue("white", "gray.800")}
+                                    color={"gray.600"}
                                     minH={"60px"}
                                     py={{ base: 2 }}
                                     px={{ base: 4 }}
                                     borderBottom={1}
                                     borderStyle={"solid"}
-                                    borderColor={useColorModeValue(
-                                        "gray.200",
-                                        "gray.900"
-                                    )}
+                                    borderColor={"gray.200"}
                                     align={"center"}
                                 >
                                     <Flex
@@ -138,10 +134,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
                                         <Text
                                             textAlign={["center", null, "left"]}
                                             fontFamily={"heading"}
-                                            color={useColorModeValue(
-                                                "gray.800",
-                                                "white"
-                                            )}
+                                            color={"gray.800"}
                                         >
                                             Logo
                                         </Text>

@@ -52,10 +52,10 @@ export default function Home() {
             featureImage: PlaceboImage,
         },
     ];
-    const { user } = useUser();
+    const { userId } = useUser();
     const router = useRouter();
     useEffect(() => {
-        userLoggedProtection(user, router);
+        userLoggedProtection(userId, router);
     }, []);
     return (
         <Box>
@@ -365,11 +365,11 @@ function Footer() {
                     py={4}
                     direction={{ base: "column", md: "row" }}
                     spacing={4}
-                    justify={{ base: "center", md: "space-between" }}
+                    justify={{ base: "center" }}
                     align={{ base: "center", md: "center" }}
                 >
                     <CustomButton
-                        margin={"0 auto"}
+                        margin={0}
                         LeftButtonIcon={FiGithub}
                         buttonText="Source Code"
                         buttonColor="white"

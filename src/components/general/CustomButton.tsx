@@ -59,8 +59,8 @@ export default function CustomButton({
             borderRadius={5}
             background={buttonColor ? buttonColor : "#0239C8"}
             color={textColor ? textColor : "white"}
-            leftIcon={LeftButtonIcon ? <LeftButtonIcon /> : null}
-            rightIcon={RightButtonIcon ? <RightButtonIcon /> : null}
+            leftIcon={<LeftButtonIcon /> ?? null}
+            rightIcon={<RightButtonIcon /> ?? null}
             margin={margin}
             width={buttonWidth ? buttonWidth : "auto"}
             onClick={() => {

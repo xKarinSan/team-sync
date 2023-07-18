@@ -1,12 +1,18 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+// type TeamStorage = {
+//     teamId: string;
+//     teamName: string;
+//     creatorId: string;
+// };
 export const useTeam = create(
     persist(
-        (set) => ({
-            teamId: null,
-            teamName: null,
-            creatorId: null,
+        // <TeamStorage>
+        (set: any) => ({
+            teamId: "",
+            teamName: "",
+            creatorId: "",
             setTeam: (teamId: string, teamName: string, creatorId: string) =>
                 set(() => ({
                     teamId,
@@ -15,9 +21,9 @@ export const useTeam = create(
                 })),
             removeTeam: () =>
                 set(() => ({
-                    teamId: null,
-                    teamName: null,
-                    creatorId: null,
+                    teamId: "",
+                    teamName: "",
+                    creatorId: "",
                 })),
         }),
         {

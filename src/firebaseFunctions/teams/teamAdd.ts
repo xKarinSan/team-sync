@@ -24,7 +24,7 @@ export const createNewTeam = async (newTeam: TeamInput) => {
     const { userId } = newTeam;
     const newTeamId = await addTeam(newTeam);
     if (newTeamId) {
-        const newMembership = await addMembership({
+        const newMembership: any = await addMembership({
             teamId: newTeamId,
             userId,
             joinedDate: Date.now(),

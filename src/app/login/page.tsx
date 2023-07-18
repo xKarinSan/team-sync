@@ -29,7 +29,7 @@ import { userLoggedProtection } from "@/routeProtectors";
 export default function Home() {
     // ===============constants===============
     const router = useRouter();
-    const { user, addUser } = useUser();
+    const { userId, addUser } = useUser();
 
     // ===============states===============
 
@@ -39,7 +39,7 @@ export default function Home() {
 
     // ===============useEffect===============
     useEffect(() => {
-        userLoggedProtection(user, router);
+        userLoggedProtection(userId, router);
     });
 
     return (

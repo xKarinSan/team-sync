@@ -1,5 +1,4 @@
 "use client";
-
 // ===================================all imports===================================
 
 // ==========================import from react==========================
@@ -59,7 +58,7 @@ export default function MembersPage({
 }) {
     // ===============constants===============
     const { creatorId } = useTeam();
-    const { user } = useUser();
+    const { userId } = useUser();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // ===============states===============
@@ -93,7 +92,7 @@ export default function MembersPage({
                         LeftButtonIcon={FiUserPlus}
                         clickFunction={onOpen}
                         buttonText={"Invite Teammates"}
-                        isDisabled={user.userId !== creatorId}
+                        isDisabled={userId !== creatorId}
                     />
                     <InvitationBox isOpen={isOpen} onClose={onClose} />
                     <WhiteContainer>
@@ -116,30 +115,41 @@ export default function MembersPage({
 
 // ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
+interface currentUser {
+    username: string;
+    profilePic: string;
+    userId: string;
+}
 // the rest are pretty much similar like the main components
-export function InvitationBox({
+function InvitationBox({
     isOpen,
     onClose,
 }: {
     isOpen: boolean;
     onClose: () => void;
 }) {
-    const { user } = useUser();
+    const { userId } = useUser();
     const { teamId } = useTeam();
     const toast = useToast();
 
-    const [allUsers, setAllUsers] = useState();
-    const [allUsersDict, setAllUsersDict] = useState({});
-    const [invitedMembers, setInvitedMembers] = useState([]);
+    const [allUsers, setAllUsers] = useState<currentUser[]>();
+    const [allUsersDict, setAllUsersDict] = useState<{
+        [key: string]: string[];
+    }>({});
+    const [invitedMembers, setInvitedMembers] = useState<string[]>([]);
     const [memberName, setMembersName] = useState("");
 
     const getAllUsersHelper = async () => {
-        let usersDict = await getUserDict();
-        let currentUsers = [];
-        Object.keys(usersDict).forEach((userId) => {
-            if (!(userId == user.userId)) {
-                const [username, profilePic] = usersDict[userId];
-                currentUsers.push({ username, profilePic, userId });
+        let usersDict: { [key: string]: string[] } = await getUserDict();
+        let currentUsers: currentUser[] = [];
+        Object.keys(usersDict).forEach((currentUserId: string) => {
+            if (!(userId == currentUserId)) {
+                const [username, profilePic] = usersDict[currentUserId];
+                currentUsers.push({
+                    username,
+                    profilePic,
+                    userId: currentUserId,
+                });
             }
         });
         setAllUsers(currentUsers);
@@ -147,7 +157,7 @@ export function InvitationBox({
     };
 
     const onSelectUser = (userId: string) => {
-        let newMembers = [...invitedMembers];
+        let newMembers: string[] = [...invitedMembers];
         if (!newMembers.includes(userId)) {
             newMembers.push(userId);
         } else {
@@ -192,7 +202,7 @@ export function InvitationBox({
         >
             <Box display={"flex"}>
                 <CustomFormInput
-                    id={"addMemberName"}
+                    formId={"addMemberName"}
                     placeholder="Enter member name or email"
                     formLabel="Member Name"
                     value={memberName}
@@ -260,7 +270,7 @@ export function InvitationBox({
             {invitedMembers && invitedMembers.length > 0 ? (
                 <>
                     <CustomGrid gridCols={[1, null, null, 2]}>
-                        {invitedMembers.map((invitedMember) => {
+                        {invitedMembers.map((invitedMember: string) => {
                             const [username, profilePic] =
                                 allUsersDict[invitedMember];
                             return (
@@ -290,6 +300,7 @@ export function InvitationBox({
                                             {username}
                                         </Text>
                                         <IconButton
+                                            aria-label="Remove Invited User"
                                             onClick={() => {
                                                 deleteUser(invitedMember);
                                             }}
@@ -315,7 +326,7 @@ export function InvitationBox({
 }
 
 const MemberContainer = ({ member }: { member: any }) => {
-    const { user } = useUser();
+    const { userId: currUserId } = useUser();
     const { creatorId } = useTeam();
 
     const { username, userId, profilePic } = member;
@@ -339,7 +350,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                     alignSelf={"center"}
                 >
                     {userId == creatorId ? <>(Owner)</> : null}
-                    {userId == user.userId ? <>(Me)</> : null} {username}
+                    {userId == currUserId ? <>(Me)</> : null} {username}
                 </Text>
                 <Menu>
                     <MenuButton
@@ -355,7 +366,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                         <MenuItem>
                             <MenuItem>View</MenuItem>
                         </MenuItem>
-                        {userId != user.userId && user.userId == creatorId ? (
+                        {userId != currUserId && currUserId == creatorId ? (
                             <>
                                 <MenuItem>
                                     <MenuItem>Remove</MenuItem>

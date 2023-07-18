@@ -6,13 +6,13 @@ export type User = {
 };
 
 export type EmailLoginUser = {
-    email:string
-    password:string     
-}
+    email: string;
+    password: string;
+};
 
 export type EmailRegisterUser = {
-    username:string
-    email:string
-    password:string  
-    confirmPassword?:string
-}
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword?: string;
+};

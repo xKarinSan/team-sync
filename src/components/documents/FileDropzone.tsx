@@ -42,11 +42,9 @@ import CustomGrid from "../general/CustomGrid";
 export default function FileDropzone({ folderId }: { folderId: string }) {
     // ===============constants===============
     const toast = useToast();
-    const { user } = useUser();
+    const { userId } = useUser();
     // ===============states===============
-    const [selectedFiles, setSelectedFiles] = useState<
-        File[] | DocumentEntry[]
-    >([]);
+    const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
     const [entering, setEntering] = useState<boolean>(false);
 
     // ===============helper functions (will not be directly triggered)===============
@@ -95,7 +93,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             status: "info",
         });
         try {
-            await addFilesToTeam(folderId, selectedFiles, user.userId);
+            await addFilesToTeam(folderId, selectedFiles, userId);
             toast({
                 title: "File(s) uploaded",
                 status: "success",
@@ -155,7 +153,6 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             </Heading>
             <br />
             <CustomButton
-                FiChevronDown
                 buttonText={`Upload ${selectedFiles.length} files`}
                 clickFunction={uploadFiles}
                 LeftButtonIcon={FiFilePlus}

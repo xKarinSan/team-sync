@@ -41,7 +41,7 @@ export const realtimeFolderChanges = (
         if (snapshot.exists()) {
             const data = snapshot.val();
             let dataIds = Object.keys(data);
-            const res = [];
+            const res:any[] = [];
             dataIds.forEach((id: string) => {
                 if (data[id].parentId === parentId) {
                     res.push({ ...data[id], id });

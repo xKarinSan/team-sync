@@ -3,7 +3,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { ReactNode, useRef } from "react";
+import React, { ReactNode, useRef } from "react";
 
 // ==========================import from next==========================
 
@@ -54,7 +54,7 @@ export default function CustomDialog({
     cancelText?: string;
 }) {
     // ===============constants===============
-    const cancelRef = useRef();
+    const cancelRef = useRef<any>();
     // ===============states===============
     // ===============helper functions (will not be directly triggered)===============
     // ===============main functions (will be directly triggered)===============
@@ -76,11 +76,9 @@ export default function CustomDialog({
             leastDestructiveRef={cancelRef}
             isOpen={isOpen}
             onClose={onClose}
-            width={"100%"}
         >
             <AlertDialogOverlay>
-                <AlertDialogContent
-                minW={["100%","70%","60%","50%","40%"]}>
+                <AlertDialogContent minW={["100%", "70%", "60%", "50%", "40%"]}>
                     <AlertDialogHeader fontSize="lg" fontWeight="bold">
                         {dialogTitle ? dialogTitle : "Dialogue Title"}
                     </AlertDialogHeader>

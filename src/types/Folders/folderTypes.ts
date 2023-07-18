@@ -8,7 +8,7 @@ export type folderEntry = {
     // userId of whoever that created it
     creatorId: string;
     // date which folder is created
-    createdDate: Date;
+    createdDate: any;
 };
 
 export interface Folder extends folderEntry {

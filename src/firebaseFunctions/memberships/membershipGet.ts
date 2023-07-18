@@ -19,7 +19,7 @@ export const getAllTeamMembers = async (teamId: string) => {
             query(membershipRef, orderByChild("teamId"), equalTo(teamId))
         );
         const teamMembers = getSnapshotData(dataSnapshot);
-        let userIdDict = {};
+        let userIdDict: { [key: string]: string[] } = {};
         const allUsers = await getAllUsers();
         allUsers.forEach((user) => {
             const { userId, username, profilePic } = user;
@@ -59,11 +59,11 @@ export const realtimeMembershipChanges = (
     setCurrentData: (data: any) => void
 ) => {
     onValue(membershipRef, async (snapshot) => {
-        const userDict = await getUserDict();
+        const userDict: { [key: string]: string[] } = await getUserDict();
         if (snapshot.exists()) {
             const data = snapshot.val();
             let dataIds = Object.keys(data);
-            const res = [];
+            const res: any = [];
             dataIds.forEach((id: string) => {
                 if (data[id].teamId === teamId) {
                     const [username, profilePic] = userDict[data[id].userId];

@@ -24,12 +24,13 @@ export const emailLogin = async ({
                 const { uid, displayName, email, photoURL } = user;
                 const currentUser: User = {
                     userId: uid,
-                    username: displayName,
-                    email: email,
-                    profilePic: photoURL,
+                    username: displayName || "",
+                    email: email || "",
+                    profilePic: photoURL || "",
                 };
-                await addUser(user);
-                setUser(currentUser);
+                await addUser(currentUser);
+                const { username, userId } = currentUser;
+                setUser(username, userId);
                 toast({
                     title: "Logged In.",
                     description: "Login Successful!",
@@ -69,13 +70,13 @@ export const emailRegistration = async ({
                 const { uid, displayName, email, photoURL } = user;
                 const currentUser: User = {
                     userId: uid,
-                    username: displayName,
-                    email: email,
+                    username: displayName || "",
+                    email: email || "",
                     profilePic: photoURL ? photoURL : "",
                 };
-
+                const { userId, username } = currentUser;
                 await addUser(currentUser);
-                setUser(currentUser);
+                setUser(userId, username);
             }
             toast({
                 title: "Registered.",

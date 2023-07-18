@@ -2,7 +2,16 @@ import { auth } from "@/config/firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { User } from "@/types/User/usertypes";
 import { addUser } from "../users/usersAdd";
-export const gmailLogin = async ({ setUser, toast, router }: any) => {
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+export const gmailLogin = async ({
+    setUser,
+    toast,
+    router,
+}: {
+    setUser: (userId: string, username: string) => void;
+    toast: any;
+    router: AppRouterInstance;
+}) => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
         .then(async (result) => {
@@ -12,12 +21,13 @@ export const gmailLogin = async ({ setUser, toast, router }: any) => {
                 const { uid, displayName, email, photoURL } = user;
                 const currentUser: User = {
                     userId: uid,
-                    username: displayName,
-                    email,
-                    profilePic: photoURL,
+                    username: displayName || "",
+                    email: email || "",
+                    profilePic: photoURL || "",
                 };
                 await addUser(currentUser);
-                setUser(currentUser);
+                // const { userId, username } = currentUser;
+                setUser(uid, displayName || "");
                 toast({
                     title: "Auth successful.",
                     description: "Gmail Login Successful!",

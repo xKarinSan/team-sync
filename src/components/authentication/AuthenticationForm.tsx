@@ -9,7 +9,6 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 
 // ==========================import state management==========================
-import { User } from "@/types/User/usertypes";
 
 // ==========================import chakraui components==========================
 
@@ -41,18 +40,16 @@ type AuthenticationFormProps = {
     isLogin: boolean;
     submitFunction: (
         props: any,
-        setUser: (props: User) => void
-        // toast: any
+        setUser: (userId: string, username: string) => void
     ) => Promise<void>;
-    setUser: (props: User) => void;
+    setUser: (userId: string, username: string) => void;
 };
 
 export default function AuthenticationForm({
     isLogin,
     submitFunction,
     setUser,
-}: // submitFunction,
-AuthenticationFormProps) {
+}: AuthenticationFormProps) {
     // ===============constants===============
 
     const toast = useToast();
@@ -119,7 +116,7 @@ AuthenticationFormProps) {
     };
 
     const gmailAuth = async () => {
-        const submitProps: any = {
+        const submitProps = {
             setUser,
             toast,
             router,
@@ -206,7 +203,7 @@ AuthenticationFormProps) {
                         <Text textAlign={"center"}>
                             {isLogin ? (
                                 <>
-                                    Don't have an account? Sign up{" "}
+                                    Do not have an account? Sign up{" "}
                                     <NextLink href="/register">
                                         <Text as="span" color="#0239C8">
                                             here

@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -30,7 +30,7 @@ import { userLoggedProtection } from "@/routeProtectors";
 export default function Home() {
     // ===============constants===============
     const router = useRouter();
-    const { user, addUser } = useUser();
+    const { userId, addUser } = useUser();
 
     // ===============states===============
 
@@ -41,9 +41,9 @@ export default function Home() {
     // ===============useEffect===============
 
     useEffect(() => {
-        userLoggedProtection(user, router);
+        userLoggedProtection(userId, router);
     });
-    
+
     return (
         <Box>
             <AuthenticationForm

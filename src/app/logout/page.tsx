@@ -30,7 +30,7 @@ import { userLoginProtection } from "@/routeProtectors";
 export default function LogoutPage() {
     // ===============constants===============
     const router = useRouter();
-    const { user, removeUser } = useUser();
+    const { userId, removeUser } = useUser();
     const toast = useToast();
 
     // ===============states===============
@@ -39,7 +39,7 @@ export default function LogoutPage() {
 
     // ===============main functions (will be directly triggered)===============
     const checkLogout = async () => {
-        userLoginProtection(user, router);
+        userLoginProtection(userId, router);
         await logoutUser({ toast, removeUser, router });
     };
 

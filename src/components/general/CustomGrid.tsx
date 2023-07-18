@@ -30,7 +30,7 @@ export default function CustomGrid({
     spacing,
 }: {
     children: ReactNode;
-    gridCols?: number | null[];
+    gridCols?: any[];
     spacing?: number;
 }) {
     // ===============constants===============

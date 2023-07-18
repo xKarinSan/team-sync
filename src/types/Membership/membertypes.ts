@@ -6,12 +6,12 @@ export type Membership = {
     userId: string;
 
     // date when joined
-    joinedDate: Date;
+    joinedDate: any;
 
 };
 
 export type MembershipDisplay = {
     teamId: string;
     teamName: string;
-    createdDate: Date;
+    createdDate: any;
 };

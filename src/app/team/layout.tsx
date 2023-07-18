@@ -27,7 +27,7 @@ import { isMemberProtection } from "@/routeProtectors";
 export default function ComponentName({ children }: { children: ReactNode }) {
     // ===============constants===============
     const router = useRouter();
-    const { user } = useUser();
+    const { userId } = useUser();
     const { teamId } = useTeam();
     // ===============states===============
 
@@ -37,7 +37,7 @@ export default function ComponentName({ children }: { children: ReactNode }) {
 
     // ===============useEffect===============
     useEffect(() => {
-        isMemberProtection(user, teamId, router);
+        isMemberProtection(userId, teamId, router);
     });
     return <>{children}</>;
 }

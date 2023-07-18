@@ -1,28 +1,33 @@
-import { User } from "./types/User";
+import { User } from "./types/User/usertypes";
 import { memmberInTeam } from "./firebaseFunctions/memberships/membershipGet";
-import { Router } from "next/router";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
 // kicks uer out to login page
-export const userLoginProtection = (user: User, router: Router) => {
-    if (!user) {
+export const userLoginProtection = (
+    userId: string,
+    router: AppRouterInstance
+) => {
+    if (!userId) {
         router.replace("/login");
     }
 };
 
 // redirects user to homepage if logged in
-export const userLoggedProtection = (user: User, router: Router) => {
-    if (user) {
+export const userLoggedProtection = (
+    userId: string,
+    router: AppRouterInstance
+) => {
+    if (userId) {
         router.replace("/home");
     }
 };
 
 // check if member belongs to team
 export const isMemberProtection = async (
-    user: User,
+    userId: string,
     teamId: string,
-    router: Router
+    router: AppRouterInstance
 ) => {
-    userLoginProtection(user, router);
-    const { userId } = user;
+    userLoginProtection(userId, router);
     const userIsMember = await memmberInTeam(teamId, userId);
     if (!userIsMember) {
         router.replace("/home");

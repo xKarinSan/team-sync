@@ -52,7 +52,7 @@ import NoResults from "../../images/general/NoResults.png";
 export default function TeamPage() {
     // ===============constants===============
     const router = useRouter();
-    const { user } = useUser();
+    const { userId } = useUser();
     const { setTeam } = useTeam();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
@@ -64,14 +64,12 @@ export default function TeamPage() {
 
     // ===============helper functions (will not be directly triggered)===============
     const getMemberships = async () => {
-        const { userId } = user;
         const userMemberships = await getUserTeams(userId);
         setMemberships(userMemberships);
     };
 
     // ===============main functions (will be directly triggered)===============
     const submitTeam = async () => {
-        const { userId } = user;
         const teamObject: TeamInput = {
             userId,
             teamName,
@@ -99,7 +97,7 @@ export default function TeamPage() {
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        userLoginProtection(user, router);
+        userLoginProtection(userId, router);
         getMemberships();
         setLoading(false);
     }, []);

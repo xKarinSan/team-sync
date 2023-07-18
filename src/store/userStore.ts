@@ -1,19 +1,20 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import { User } from "../types/User/usertypes";
-
 export const useUser = create(
     persist(
-        (set) => ({
-            user: null,
-            addUser: (currUser: User) =>
+        (set: any) => ({
+            userId: "",
+            username: "",
+            addUser: (userId: string, username: string) =>
                 set(() => ({
-                    user: currUser,
+                    userId,
+                    username,
                 })),
             removeUser: () =>
                 set(() => ({
-                    user: null,
+                    userId: "",
+                    username: "",
                 })),
         }),
         {

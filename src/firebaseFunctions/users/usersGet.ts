@@ -11,7 +11,7 @@ export const getUserbyUserId = async (userId: string) => {
 };
 
 export const getUserDict = async () => {
-    let userIdDict = {};
+    let userIdDict: { [key: string]: string[] } = {};
     const allUsers = await getAllUsers();
     allUsers.forEach((user) => {
         const { userId, username, profilePic } = user;
