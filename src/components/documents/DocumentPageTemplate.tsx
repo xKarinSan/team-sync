@@ -47,7 +47,7 @@ import LoadingDisplay from "../general/LoadingDisplay";
 
 // ==========================import external functions==========================
 // =============protection=============
-import { userLoginProtection } from "@/routeProtectors";
+import { isMemberProtection, userLoginProtection } from "@/routeProtectors";
 
 // =============team=============
 import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
@@ -142,7 +142,8 @@ export default function DocumentPageTemplate({
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        userLoginProtection(user, router);
+        isMemberProtection(user, teamId, router);
+        // userLoginProtection(user, router);
         getCurrentPlace();
         realtimeFileChanges(folderId && teamId ? folderId : teamId, setFiles);
         realtimeFolderChanges(
