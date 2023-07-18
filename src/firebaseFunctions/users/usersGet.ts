@@ -10,7 +10,37 @@ export const getUserbyUserId = async (userId: string) => {
     return getSnapshotData(dataSnapshot);
 };
 
+export const getUserDict = async () => {
+    let userIdDict = {};
+    const allUsers = await getAllUsers();
+    allUsers.forEach((user) => {
+        const { userId, username, profilePic } = user;
+        userIdDict[userId] = [username, profilePic];
+    });
+    return userIdDict;
+};
+
 export const getAllUsers = async () => {
     const snapshot = await get(userRef);
     return getSnapshotData(snapshot);
 };
+
+// export const getAllUsersWithInfo = async () => {
+//     try {
+
+//         let userIdDict = {};
+//         const allUsers = await getAllUsers();
+//         allUsers.forEach((user) => {
+//             const { userId, username, profilePic } = user;
+//             userIdDict[userId] = [username, profilePic];
+//         });
+//         teamMembers.forEach((teamMember) => {
+//             const [username, profilePic] = userIdDict[teamMember.userId];
+//             Object.assign(teamMember, { username, profilePic });
+//         });
+//         return teamMembers;
+//     } catch (e) {
+//         console.log(e);
+//         return [];
+//     }
+// };

@@ -21,18 +21,29 @@ import {
     MenuItem,
     MenuButton,
     Image,
+    useDisclosure,
 } from "@chakra-ui/react";
-import { FiMoreVertical } from "react-icons/fi";
+import { FiMoreVertical, FiUserPlus, FiSearch, FiX } from "react-icons/fi";
 // ==========================import custom components==========================
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import TeamBreadcrumbs from "@/components/team/TeamBreadcrumbs";
 import WhiteContainer from "@/components/general/WhiteContainer";
 import CustomGrid from "@/components/general/CustomGrid";
+import CustomButton from "@/components/general/CustomButton";
+import CustomFormInput from "@/components/general/CustomFormInput";
+import CustomDialog from "@/components/general/CustomDialog";
+
 // ==========================import external functions==========================
 // =========== security ===========
 // import { isMemberProtection } from "@/routeProtectors";
 // =========== membership ===========
-import { getAllTeamMembers } from "@/firebaseFunctions/memberships/membershipGet";
+import {
+    getAllTeamMembers,
+    realtimeMembershipChanges,
+} from "@/firebaseFunctions/memberships/membershipGet";
+// =========== users ===========
+import { getUserDict } from "@/firebaseFunctions/users/usersGet";
+
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -50,6 +61,8 @@ export default function MembersPage({
     // ===============constants===============
     // const {user} = useUser();
     // const
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     // ===============states===============
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -62,11 +75,13 @@ export default function MembersPage({
     };
 
     // ===============main functions (will be directly triggered)===============
-
+    const inviteTeamates = () => {};
+    const triggerInviteModal = () => {};
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        initMembers();
+        // initMembers();
+        realtimeMembershipChanges(params.teamId, setMembers);
         // getAllTeamMembers(params.teamId);
         setLoading(false);
     }, []);
@@ -83,7 +98,12 @@ export default function MembersPage({
                         Members
                     </Heading>
                     <TeamBreadcrumbs currentPage="Members" />
-
+                    <CustomButton
+                        LeftButtonIcon={FiUserPlus}
+                        clickFunction={onOpen}
+                        buttonText={"Invite Teammates"}
+                    />
+                    <InvitationBox isOpen={isOpen} onClose={onClose} />
                     <WhiteContainer>
                         <CustomGrid gridCols={[1, null, 2, null, 3, 4]}>
                             {members.map((member, index) => {
@@ -105,6 +125,185 @@ export default function MembersPage({
 // ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
+export function InvitationBox({
+    isOpen,
+    onClose,
+    teamMembers,
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    teamMembers: any;
+}) {
+    const { user } = useUser();
+    const [allUsers, setAllUsers] = useState();
+    const [allUsersDict, setAllUsersDict] = useState({});
+    const [invitedMembers, setInvitedMembers] = useState([]);
+    const [memberName, setMembersName] = useState("");
+
+    const getAllUsersHelper = async () => {
+        let usersDict = await getUserDict();
+        let currentUsers = [];
+        Object.keys(usersDict).forEach((userId) => {
+            if (!(userId == user.userId)) {
+                const [username, profilePic] = usersDict[userId];
+                currentUsers.push({ username, profilePic, userId });
+            }
+        });
+        setAllUsers(currentUsers);
+        setAllUsersDict(usersDict);
+    };
+
+    const onSelectUser = (userId: string) => {
+        let newMembers = [...invitedMembers];
+        if (!newMembers.includes(userId)) {
+            newMembers.push(userId);
+        } else {
+            newMembers = newMembers.filter((memberId) => {
+                return memberId !== userId;
+            });
+        }
+        setInvitedMembers(newMembers);
+    };
+
+    const deleteUser = (userId: string) => {
+        let newMembers = [...invitedMembers];
+        newMembers = newMembers.filter((memberId) => {
+            return memberId !== userId;
+        });
+        setInvitedMembers(newMembers);
+    };
+
+    const triggerSubmit = () => {
+        // alert("LOL")
+    };
+    const cancelSubmit = () => {
+        setInvitedMembers([]);
+    };
+
+    useEffect(() => {
+        getAllUsersHelper();
+    }, []);
+    return (
+        <CustomDialog
+            dialogTitle="Add Member"
+            isOpen={isOpen}
+            onSubmit={triggerSubmit}
+            onCancel={cancelSubmit}
+            onClose={onClose}
+        >
+            <Box display={"flex"}>
+                <CustomFormInput
+                    id={"addMemberName"}
+                    placeholder="Enter member name or email"
+                    formLabel="Member Name"
+                    value={memberName}
+                    changeHandler={(e) => setMembersName(e.target.value)}
+                />
+                <Menu>
+                    <MenuButton
+                        border={"none"}
+                        alignSelf={"flex-end"}
+                        as={IconButton}
+                        aria-label="Options"
+                        icon={<FiSearch />}
+                        variant="outline"
+                        size="sm"
+                        m={1}
+                    />
+                    <MenuList>
+                        {allUsers && allUsers.length > 0 ? (
+                            <>
+                                {allUsers.map((user) => {
+                                    const { userId, username, profilePic } =
+                                        user;
+                                    return (
+                                        <MenuItem
+                                            key={userId}
+                                            onClick={() => {
+                                                onSelectUser(userId);
+                                            }}
+                                        >
+                                            <Image
+                                                src={profilePic}
+                                                alt={username}
+                                                height="25px"
+                                                width="25px"
+                                                borderRadius={"50%"}
+                                                m={1}
+                                            />
+                                            <Text>{username}</Text>
+                                        </MenuItem>
+                                    );
+                                })}
+                            </>
+                        ) : (
+                            <>
+                                <MenuItem>
+                                    <Text>No members available</Text>
+                                </MenuItem>
+                            </>
+                        )}
+                    </MenuList>
+                </Menu>
+            </Box>
+            <br />
+            <Heading size={"md"} fontWeight={"normal"}>
+                Invited Members
+            </Heading>
+            {/* <WhiteContainer> */}
+            {invitedMembers && invitedMembers.length > 0 ? (
+                <>
+                    <CustomGrid gridCols={[1, null, null, 2]}>
+                        {invitedMembers.map((invitedMember) => {
+                            const [username, profilePic] =
+                                allUsersDict[invitedMember];
+                            return (
+                                <WhiteContainer>
+                                    <Box display={"flex"}>
+                                        <Image
+                                            src={profilePic}
+                                            alt={username}
+                                            height="25px"
+                                            width="25px"
+                                            borderRadius={"50%"}
+                                            alignSelf={"center"}
+                                            // margin ={"5px auto"}
+                                        />
+                                        <Text
+                                            noOfLines={1}
+                                            textAlign={"left"}
+                                            overflow="hidden"
+                                            textOverflow={"ellipsis"}
+                                            width={"-webkit-fill-available"}
+                                            alignSelf={"center"}
+                                        >
+                                            {username}
+                                        </Text>
+                                        <IconButton
+                                            onClick={() => {
+                                                deleteUser(invitedMember);
+                                            }}
+                                            border={"none"}
+                                            icon={<FiX />}
+                                            variant="outline"
+                                            size="sm"
+                                            m={1}
+                                        />
+                                    </Box>
+                                </WhiteContainer>
+                            );
+                        })}
+                    </CustomGrid>
+                </>
+            ) : (
+                <>
+                    <Text>Invite some members?</Text>
+                </>
+            )}
+            {/* </WhiteContainer> */}
+        </CustomDialog>
+    );
+}
 
 const MemberContainer = ({ member }: { member: any }) => {
     const { user } = useUser();
@@ -130,7 +329,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                     textAlign={"left"}
                     overflow="hidden"
                     textOverflow={"ellipsis"}
-                    width={"-webkit-fill-available;"}
+                    width={"-webkit-fill-available"}
                     alignSelf={"center"}
                 >
                     {userId == user.userId ? <>(Me)</> : null} {username}

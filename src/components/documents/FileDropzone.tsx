@@ -165,6 +165,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             </Heading>
             <br />
             <CustomButton
+            FiChevronDown
                 buttonText={`Upload ${selectedFiles.length} files`}
                 clickFunction={uploadFiles}
                 LeftButtonIcon={FiFilePlus}

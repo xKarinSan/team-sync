@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";
@@ -25,12 +25,6 @@ import {
     IconButton,
     useToast,
     useDisclosure,
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogContent,
-    AlertDialogOverlay,
     Breadcrumb,
     BreadcrumbItem,
 } from "@chakra-ui/react";
@@ -43,9 +37,10 @@ import CustomButton from "../general/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
 import LoadingDisplay from "../general/LoadingDisplay";
 import CustomGrid from "../general/CustomGrid";
+import CustomDialog from "../general/CustomDialog";
 // ==========================import external functions==========================
 // =============protection=============
-import { isMemberProtection, userLoginProtection } from "@/routeProtectors";
+import { isMemberProtection } from "@/routeProtectors";
 
 // =============team=============
 import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
@@ -202,6 +197,7 @@ export default function DocumentPageTemplate({
                 currentFolderName={folderName}
                 onSubmitFunction={createFolder}
             />
+
             {/* <br /> */}
             <WhiteContainer>
                 {loading ? (
@@ -567,21 +563,17 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
 
 export function AddFileDialog({
     isOpen,
-    // cancelRef,
     currentFolderName,
     setCurrentFolderName,
     onSubmitFunction,
     onClose,
 }: {
     isOpen: boolean;
-    // cancelRef: any;
     currentFolderName: string;
     setCurrentFolderName: (value: string) => void;
-    onSubmitFunction: () => Promise<void>;
+    onSubmitFunction: () => void | Promise<void>;
     onClose: () => void;
 }) {
-    const cancelRef = useRef();
-
     const triggerSubmit = async () => {
         if (onSubmitFunction) {
             await onSubmitFunction();
@@ -595,42 +587,23 @@ export function AddFileDialog({
         onClose();
     };
     return (
-        <AlertDialog
-            isOpen={isOpen}
-            leastDestructiveRef={cancelRef}
-            onClose={onClose}
-        >
-            <AlertDialogOverlay>
-                <AlertDialogContent>
-                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                        Add Folder
-                    </AlertDialogHeader>
-
-                    <AlertDialogBody>
-                        <CustomFormInput
-                            formLabel="New Folder Name"
-                            placeholder="Enter Folder Name"
-                            formId={"addFolder"}
-                            value={currentFolderName}
-                            changeHandler={setCurrentFolderName}
-                        />
-                    </AlertDialogBody>
-
-                    <AlertDialogFooter>
-                        <CustomButton
-                            buttonColor="grey"
-                            clickFunction={cancelSubmit}
-                            buttonText="Cancel"
-                        />
-
-                        <CustomButton
-                            // buttonColor="grey"
-                            clickFunction={triggerSubmit}
-                            buttonText="Add"
-                        />
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialogOverlay>
-        </AlertDialog>
+        <>
+            <CustomDialog
+                dialogTitle="Add Folder"
+                isOpen={isOpen}
+                onSubmit={triggerSubmit}
+                onCancel={cancelSubmit}
+                onClose={onClose}
+                submitText="Create folder"
+            >
+                <CustomFormInput
+                    formLabel="New Folder Name"
+                    placeholder="Enter Folder Name"
+                    formId={"addFolder"}
+                    value={currentFolderName}
+                    changeHandler={setCurrentFolderName}
+                />
+            </CustomDialog>
+        </>
     );
 }

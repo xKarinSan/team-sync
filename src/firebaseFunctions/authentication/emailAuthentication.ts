@@ -71,8 +71,11 @@ export const emailRegistration = async ({
                     userId: uid,
                     username: displayName,
                     email: email,
-                    profilePic: photoURL,
+                    profilePic: photoURL ? photoURL : "",
                 };
+                console.log("currentUser", currentUser);
+
+                await addUser(currentUser);
                 setUser(currentUser);
             }
             toast({
