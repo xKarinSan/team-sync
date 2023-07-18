@@ -12,7 +12,7 @@ import {
     Textarea,
     useColorModeValue,
 } from "@chakra-ui/react";
-
+import { FiGithub } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ import PlaceboImage from "../images/landing/PlaceboImage.png";
 import ContactMeImage from "../images/landing/ContactMeImage.png";
 import useUser from "@/store/userStore";
 import { userLoggedProtection } from "@/routeProtectors";
+import CustomButton from "@/components/general/CustomButton";
 export default function Home() {
     const keyFeatures: KeyFeature[] = [
         {
@@ -329,17 +330,35 @@ function ContactUsForm() {
 }
 
 function Footer() {
+    const clickSourceCode = () => {
+        window.open(
+            "https://github.com/xKarinSan/team-sync/blob/main/toRead/folderStructure.md",
+            "_blank"
+        );
+    };
     return (
         <Box
             // bg={useColorModeValue("gray.50", "gray.900")}
-            bg="#0239C8"
+            bg="#0131AE"
             color={useColorModeValue("gray.700", "gray.200")}
         >
             <Box
                 borderTopWidth={1}
                 borderStyle={"solid"}
                 borderColor={useColorModeValue("gray.200", "gray.700")}
+                p={5}
             >
+                <Heading
+                    textAlign={"center"}
+                    color="white"
+                    fontWeight={"normal"}
+                    size={"md"}
+                >
+                    Done by{" "}
+                    <Heading as="span" fontWeight={"bold"} size="md">
+                        Siang Meng
+                    </Heading>
+                </Heading>
                 <Container
                     as={Stack}
                     maxW={"6xl"}
@@ -348,7 +367,16 @@ function Footer() {
                     spacing={4}
                     justify={{ base: "center", md: "space-between" }}
                     align={{ base: "center", md: "center" }}
-                ></Container>
+                >
+                    <CustomButton
+                        margin={"0 auto"}
+                        LeftButtonIcon={FiGithub}
+                        buttonText="Source Code"
+                        buttonColor="white"
+                        textColor="black"
+                        clickFunction={clickSourceCode}
+                    />
+                </Container>
             </Box>
         </Box>
     );
