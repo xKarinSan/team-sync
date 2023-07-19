@@ -17,6 +17,7 @@ import {
     FlexProps,
     CloseButton,
     Icon,
+    Image,
 } from "@chakra-ui/react";
 import {
     FiHome,
@@ -36,10 +37,10 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { usePathname } from "next/navigation";
 
 import NextLink from "next/link";
-import { User } from "@/types/User/usertypes";
 import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
 import { useState, useEffect, ReactNode } from "react";
+import TeamsyncLogo from "@/images/general/TeamsyncLogo.png";
 
 export default function Navbar({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -130,13 +131,14 @@ export default function Navbar({ children }: { children: ReactNode }) {
                                             md: "start",
                                         }}
                                     >
-                                        <Text
-                                            textAlign={["center", null, "left"]}
-                                            fontFamily={"heading"}
-                                            color={"gray.800"}
-                                        >
-                                            Logo
-                                        </Text>
+                                        <NextLink href="/">
+                                            <Image
+                                                src={TeamsyncLogo.src}
+                                                alt="Logo"
+                                                width="150px"
+                                                m="auto"
+                                            />
+                                        </NextLink>
 
                                         <Flex
                                             display={{
@@ -275,9 +277,21 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 mx="8"
                 justifyContent="space-between"
             >
-                <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                    Logo
+                <Text
+                    textAlign={["center", null, "left"]}
+                    fontFamily={"heading"}
+                    color={"gray.800"}
+                >
+                    <NextLink href="/">
+                        <Image
+                            src={TeamsyncLogo.src}
+                            alt="Logo"
+                            width="150px"
+                            m="0 auto"
+                        />
+                    </NextLink>
                 </Text>
+
                 <CloseButton
                     display={{ base: "flex", md: "none" }}
                     onClick={onClose}
@@ -354,14 +368,20 @@ const SideMobileNav = ({ onOpen, ...rest }: SideMobileProps) => {
                 icon={<FiMenu />}
             />
 
-            <Text
-                fontSize="2xl"
-                ml="8"
-                fontFamily="monospace"
-                fontWeight="bold"
-            >
-                Logo
-            </Text>
+            <NextLink href="/">
+                <Text
+                    textAlign={["center", null, "left"]}
+                    fontFamily={"heading"}
+                    color={"gray.800"}
+                >
+                    <Image
+                        src={TeamsyncLogo.src}
+                        alt="Logo"
+                        width="150px"
+                        m="auto"
+                    />
+                </Text>
+            </NextLink>
         </Flex>
     );
 };
