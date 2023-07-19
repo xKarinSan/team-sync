@@ -17,10 +17,6 @@ import { Box, CircularProgress, Heading } from "@chakra-ui/react";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-interface loadingDisplayProps {
-    displayText: string;
-    width?: number;
-}
 
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
@@ -28,7 +24,10 @@ interface loadingDisplayProps {
 export default function LoadingDisplay({
     displayText,
     width,
-}: loadingDisplayProps) {
+}: {
+    displayText?: string;
+    width?: number;
+}) {
     // ===============constants===============
 
     // ===============states===============
@@ -55,7 +54,7 @@ export default function LoadingDisplay({
                 color="#0239C8"
             />
             <Heading textAlign="center" fontWeight={"normal"}>
-                {displayText}
+                {displayText ? displayText : "Loading ..."}
             </Heading>
         </Box>
     );

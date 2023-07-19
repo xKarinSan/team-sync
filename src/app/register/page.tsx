@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -33,6 +33,7 @@ export default function Home() {
     const { userId, addUser } = useUser();
 
     // ===============states===============
+    const [loading, setLoading] = useState<boolean>(false);
 
     // ===============helper functions (will not be directly triggered)===============
 
@@ -41,7 +42,9 @@ export default function Home() {
     // ===============useEffect===============
 
     useEffect(() => {
+        setLoading(true);
         userLoggedProtection(userId, router);
+        setLoading(false);
     });
 
     return (

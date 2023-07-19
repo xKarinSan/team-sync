@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ import { Box } from "@chakra-ui/react";
 
 // ==========================import custom components==========================
 import AuthenticationForm from "@/components/authentication/AuthenticationForm";
-
+import LoadingDisplay from "@/components/general/LoadingDisplay";
 // ==========================import external functions==========================
 import { emailLogin } from "@/firebaseFunctions/authentication/emailAuthentication";
 import { userLoggedProtection } from "@/routeProtectors";
@@ -32,6 +32,7 @@ export default function Home() {
     const { userId, addUser } = useUser();
 
     // ===============states===============
+    const [loading, setLoading] = useState<boolean>(false);
 
     // ===============helper functions (will not be directly triggered)===============
 
@@ -39,16 +40,27 @@ export default function Home() {
 
     // ===============useEffect===============
     useEffect(() => {
+        setLoading(true);
         userLoggedProtection(userId, router);
+        setLoading(false);
     });
 
     return (
         <Box>
-            <AuthenticationForm
-                isLogin={true}
-                submitFunction={emailLogin}
-                setUser={addUser}
-            />
+            {loading ? (
+                <>
+                    <LoadingDisplay />
+                </>
+            ) : (
+                <>
+                    {" "}
+                    <AuthenticationForm
+                        isLogin={true}
+                        submitFunction={emailLogin}
+                        setUser={addUser}
+                    />
+                </>
+            )}
         </Box>
     );
 }

@@ -203,24 +203,28 @@ export default function DocumentPageTemplate({
                         <LoadingDisplay displayText="Getting folders ..." />
                     </>
                 ) : (
-                    <CustomGrid>
-                        {" "}
+                    <>
                         {folders.length > 0 ? (
                             <>
-                                {" "}
-                                {folders.map((folder: Folder, index) => {
-                                    return (
-                                        <FolderContainer
-                                            folder={folder}
-                                            key={index}
-                                        />
-                                    );
-                                })}
+                                <CustomGrid>
+                                    {folders.map((folder: Folder, index) => {
+                                        return (
+                                            <FolderContainer
+                                                folder={folder}
+                                                key={index}
+                                            />
+                                        );
+                                    })}
+                                </CustomGrid>
                             </>
                         ) : (
-                            <></>
+                            <>
+                                <Heading fontWeight={"normal"}>
+                                    No folders for this team, add some?
+                                </Heading>
+                            </>
                         )}
-                    </CustomGrid>
+                    </>
                 )}
             </WhiteContainer>
             <Heading fontWeight={"nomral"} size="md">
@@ -232,10 +236,9 @@ export default function DocumentPageTemplate({
                         <LoadingDisplay displayText="Getting Documents ..." />
                     </>
                 ) : (
-                    <CustomGrid>
-                        {" "}
+                    <>
                         {files.length > 0 ? (
-                            <>
+                            <CustomGrid>
                                 {" "}
                                 {files.map((file: DocumentRecord, index) => {
                                     return (
@@ -245,11 +248,15 @@ export default function DocumentPageTemplate({
                                         />
                                     );
                                 })}
-                            </>
+                            </CustomGrid>
                         ) : (
-                            <></>
+                            <>
+                                <Heading fontWeight={"normal"}>
+                                    No documents here, add some?
+                                </Heading>
+                            </>
                         )}
-                    </CustomGrid>
+                    </>
                 )}
             </WhiteContainer>
 

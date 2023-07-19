@@ -93,7 +93,6 @@ export default function Navbar({ children }: { children: ReactNode }) {
                         ) : (
                             <>
                                 <Flex
-                                    // bg={useColorModeValue("white", "gray.800")}
                                     color={"gray.600"}
                                     minH={"60px"}
                                     py={{ base: 2 }}

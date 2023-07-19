@@ -45,7 +45,6 @@ import { TeamInput } from "@/types/Team/teamtypes";
 import { MembershipDisplay } from "@/types/Membership/membertypes";
 
 // ==========================etc==========================
-import NoResults from "../../images/general/NoResults.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
