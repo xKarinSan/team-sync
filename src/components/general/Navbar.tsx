@@ -18,6 +18,7 @@ import {
     CloseButton,
     Icon,
     Image,
+    Heading,
 } from "@chakra-ui/react";
 import {
     FiHome,
@@ -135,7 +136,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
                                             <Image
                                                 src={TeamsyncLogo.src}
                                                 alt="Logo"
-                                                width="150px"
+                                                width="120px"
                                                 m="auto"
                                             />
                                         </NextLink>
@@ -392,11 +393,13 @@ const DesktopNav = () => {
     return (
         <Stack direction={"row"} spacing={4}>
             {NAV_ITEMS.map((navItem) => (
-                <Box key={navItem.label}>
+                <Box key={navItem.label} margin={"auto"}>
                     <Popover trigger={"hover"} placement={"bottom-start"}>
                         <PopoverTrigger>
                             <NextLink href={`/${navItem.href}`}>
-                                {navItem.label}
+                                <Heading size="md" fontWeight={"normal"}>
+                                    {navItem.label}
+                                </Heading>
                             </NextLink>
                         </PopoverTrigger>
                     </Popover>
@@ -426,12 +429,13 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
     return (
         <Stack spacing={4} onClick={children && onToggle}>
             <NextLink href={`/${href}`}>
-                <Text
+                <Heading
                     fontWeight={600}
+                    size="md"
                     color={useColorModeValue("gray.600", "gray.200")}
                 >
                     {label}
-                </Text>
+                </Heading>
             </NextLink>
         </Stack>
     );
