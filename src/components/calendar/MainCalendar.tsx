@@ -4,7 +4,8 @@
 // ==========================import from react==========================
 import { useState, useEffect } from "react";
 // ==========================import from next==========================
-
+import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
@@ -195,10 +196,10 @@ export default function MainCalendar({}: {}) {
                                         />
                                     </>
                                 ) : null}
-                                <CustomButton
+                                {/* <CustomButton
                                     buttonText="Export"
                                     clickFunction={exportEvents}
-                                />
+                                /> */}
                             </CustomGrid>
                         </WhiteContainer>
                         <WhiteContainer>
@@ -224,31 +225,39 @@ export default function MainCalendar({}: {}) {
                                         </Box>
                                     );
                                 })}
-                                {calendarDays.map((week) => {
-                                    return week.map(
-                                        (
-                                            calendarDay: number,
-                                            index: number
-                                        ) => {
-                                            // console.log("day", day);
-                                            return (
-                                                <>
-                                                    <CalendarCell
-                                                        key={index}
-                                                        year={year}
-                                                        month={month}
-                                                        day={calendarDay}
-                                                        isToday={
-                                                            currentDay ==
-                                                                calendarDay &&
-                                                            currentMonth ==
-                                                                month &&
-                                                            currentYear == year
-                                                        }
-                                                    />
-                                                </>
-                                            );
-                                        }
+                                {calendarDays.map((week, index) => {
+                                    return (
+                                        <>
+                                            {" "}
+                                            {week.map(
+                                                (
+                                                    calendarDay: number,
+                                                    index: number
+                                                ) => {
+                                                    // console.log("day", day);
+                                                    return (
+                                                        <>
+                                                            <CalendarCell
+                                                                key={index}
+                                                                year={year}
+                                                                month={month}
+                                                                day={
+                                                                    calendarDay
+                                                                }
+                                                                isToday={
+                                                                    currentDay ==
+                                                                        calendarDay &&
+                                                                    currentMonth ==
+                                                                        month &&
+                                                                    currentYear ==
+                                                                        year
+                                                                }
+                                                            />
+                                                        </>
+                                                    );
+                                                }
+                                            )}
+                                        </>
                                     );
                                 })}
                             </CustomGrid>
@@ -266,26 +275,36 @@ export default function MainCalendar({}: {}) {
 function CalendarCell({
     year,
     month,
-    isToday,
     day,
+    isToday,
 }: {
     year: number;
     month: number;
-    isToday?: boolean;
     day?: number;
+    isToday?: boolean;
 }) {
-    const getGivenDay = () => {
-        return new Date(year, month, day);
+    const router = useRouter();
+    const redirectToGivenDay = () => {
+        if (day && month && day) {
+            router.push(`/calendar/${year}/${month}/${day}`);
+        }
     };
     return (
+        // <Box>
         <Box
             background={day ? (isToday ? "#0239C8" : "#3d73ff") : "FFFFFF"}
+            transition={"background-color 200ms linear, color 200ms linear"}
             margin={0.5}
             p={2}
-            borderRadius={5}
+            borderRadius={[5, null, 10]}
             height={["50px", "75px", "100px"]}
             alignContent={"center"}
             boxShadow={"0px 0px 4px 0px rgba(0, 0, 0, 0.25);"}
+            onClick={redirectToGivenDay}
+            _hover={{
+                background: day ? (isToday ? "#0e1834" : "#244ebd") : "FFFFFF",
+                cursor: day ? "pointer" : "default",
+            }}
         >
             <Heading
                 textAlign="center"
@@ -297,5 +316,6 @@ function CalendarCell({
                 {day}
             </Heading>
         </Box>
+        // </Box>
     );
 }
