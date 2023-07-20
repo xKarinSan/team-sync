@@ -47,17 +47,17 @@ const HomePage = () => {
         {
             label: "View Calendar",
             icon: CalendarImage,
-            path: "/profile/calendar",
+            path: "/calendar",
         },
         {
             label: "Manage Profile",
             icon: ProfileImage,
-            path: "/home/profile",
+            path: "/profile",
         },
         {
             label: "Manage Notifications",
             icon: NotificationImage,
-            path: "/home/notifications",
+            path: "/notifications",
         },
         {
             label: "Logout",

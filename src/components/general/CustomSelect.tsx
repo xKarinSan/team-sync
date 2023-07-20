@@ -8,8 +8,7 @@
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
-
+import { Select, FormControl, FormLabel } from "@chakra-ui/react";
 // ==========================import custom components==========================
 
 // ==========================import external functions==========================
@@ -18,23 +17,27 @@ import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
 // ==========================import types/interfaces==========================
 
+// ==========================etc==========================
+
 // ===================================main component===================================
+export interface SelectOptions {
+    value: any;
+    placeholder: string;
+}
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function CustomFormInput({
-    placeholder,
-    formLabel,
-    formType,
-    value,
-    formId,
+export default function CustomSelect({
     changeHandler,
+    value,
+    options,
+    selectLabel,
+    selectPlaceholder,
 }: {
-    placeholder?: string;
-    formLabel?: string;
-    formType?: string;
-    value: any;
-    formId: string;
     changeHandler: (e: any) => void;
+    value: any;
+    options: SelectOptions[];
+    selectLabel?: string;
+    selectPlaceholder?: string;
 }) {
     // ===============constants===============
 
@@ -47,19 +50,29 @@ export default function CustomFormInput({
     // ===============useEffect===============
 
     return (
-        <FormControl id={formId}>
-            {formLabel ? (
-                <>
-                    <FormLabel>{formLabel}</FormLabel>
-                </>
-            ) : null}
-
-            <Input
-                type={formType ? formType : "text"}
-                placeholder={placeholder ? placeholder : "Enter a placeholder"}
+        <FormControl>
+            {/* {value} */}
+            <FormLabel>
+                {selectLabel ? selectLabel : "Label:"}
+            </FormLabel>
+            <Select
                 value={value}
-                onChange={(e) => changeHandler(e.target.value)}
-            />
+                placeholder={
+                    selectPlaceholder ? selectPlaceholder : "Select option"
+                }
+                onChange={(e) => {
+                    changeHandler(e.target.value);
+                }}
+            >
+                {options.map((option, index) => (
+                    <option key={index} value={option.value}>
+                        {option.placeholder}
+                    </option>
+                ))}
+                {/* <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option> */}
+            </Select>
         </FormControl>
     );
 }

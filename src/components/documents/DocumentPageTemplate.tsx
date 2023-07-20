@@ -146,8 +146,7 @@ export default function DocumentPageTemplate({
 
     return (
         <Box>
-            <Heading fontWeight={"nomral"}>
-                {" "}
+            <Heading fontWeight={"normal"}>
                 Documents in {folderId ? "Folder" : "Team"} {""} {currentPlace}
             </Heading>
             <br />

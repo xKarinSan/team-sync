@@ -37,11 +37,7 @@ export default function TeamDocumentPage() {
 
     // ===============useEffect===============
 
-    return (
-        <>
-            <DocumentPageTemplate />
-        </>
-    );
+    return <DocumentPageTemplate />;
 }
 
 // ===================================sub component(s) if any===================================
