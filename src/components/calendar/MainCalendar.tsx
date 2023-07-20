@@ -14,6 +14,7 @@ import CustomGrid from "../general/CustomGrid";
 import WhiteContainer from "../general/WhiteContainer";
 import LoadingDisplay from "../general/LoadingDisplay";
 import CustomSelect from "../general/CustomSelect";
+import CustomButton from "../general/CustomButton";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
@@ -114,7 +115,6 @@ export default function MainCalendar({}: {}) {
             weekRows.push(weekRow);
             weekCounts += 1;
         }
-        // console.log("weekRows", weekRows);
         setCalendarDays(weekRows);
     };
     const getTodayDate = () => {
@@ -141,6 +141,7 @@ export default function MainCalendar({}: {}) {
     };
 
     // ===============main functions (will be directly triggered)===============
+    const exportEvents = () => {};
 
     // ===============useEffect===============
     // when month or year change
@@ -194,6 +195,10 @@ export default function MainCalendar({}: {}) {
                                         />
                                     </>
                                 ) : null}
+                                <CustomButton
+                                    buttonText="Export"
+                                    clickFunction={exportEvents}
+                                />
                             </CustomGrid>
                         </WhiteContainer>
                         <WhiteContainer>

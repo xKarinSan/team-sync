@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -18,7 +18,6 @@ import AuthenticationForm from "@/components/authentication/AuthenticationForm";
 
 // ==========================import external functions==========================
 import { emailRegistration } from "@/firebaseFunctions/authentication/emailAuthentication";
-import { userLoggedProtection } from "@/routeProtectors";
 
 // ==========================import external variables==========================
 
@@ -30,22 +29,15 @@ import { userLoggedProtection } from "@/routeProtectors";
 export default function Home() {
     // ===============constants===============
     const router = useRouter();
-    const { userId, addUser } = useUser();
+    const { addUser } = useUser();
 
     // ===============states===============
-    const [loading, setLoading] = useState<boolean>(false);
 
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
-
-    useEffect(() => {
-        setLoading(true);
-        userLoggedProtection(userId, router);
-        setLoading(false);
-    });
 
     return (
         <Box>

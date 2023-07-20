@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
@@ -15,9 +15,7 @@ import { Heading, Box } from "@chakra-ui/react";
 
 // ==========================import custom components==========================
 import MainMenu from "@/components/general/MainMenu";
-import LoadingDisplay from "@/components/general/LoadingDisplay";
 // ==========================import external functions==========================
-import { userLoginProtection } from "@/routeProtectors";
 
 // ==========================import external variables==========================
 
@@ -67,39 +65,23 @@ const HomePage = () => {
     ];
 
     // ===============states===============
-    const [loading, setLoading] = useState<boolean>(false);
 
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
-    useEffect(() => {
-        setLoading(true);
-        userLoginProtection(userId, router);
-        setLoading(false);
-    }, [userId, router]);
-
     return (
         <Box p={10}>
-            {loading ? (
+            {userId ? (
                 <>
-                    <LoadingDisplay />
+                    <Heading textAlign={"center"} fontWeight={"normal"}>
+                        Hello {username || "Guest"}, what would you like to do
+                        today?
+                    </Heading>
                 </>
-            ) : (
-                <>
-                    {" "}
-                    {userId ? (
-                        <>
-                            <Heading textAlign={"center"} fontWeight={"normal"}>
-                                Hello {username || "Guest"}, what would you like
-                                to do today?
-                            </Heading>
-                        </>
-                    ) : null}
-                    <MainMenu menuOptions={menuOptions} />
-                </>
-            )}
+            ) : null}
+            <MainMenu menuOptions={menuOptions} />
         </Box>
     );
 };

@@ -12,10 +12,6 @@
 // ==========================import custom components==========================
 import DocumentPageTemplate from "@/components/documents/DocumentPageTemplate";
 // ==========================import external functions==========================
-// =============protection=============
-
-// =============folder features=============
-// =============document features=============
 
 // ==========================import external variables==========================
 

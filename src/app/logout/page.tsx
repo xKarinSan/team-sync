@@ -18,7 +18,6 @@ import LoadingDisplay from "@/components/general/LoadingDisplay";
 
 // ==========================import external functions==========================
 import { logoutUser } from "@/firebaseFunctions/authentication/userLogout";
-import { userLoginProtection } from "@/routeProtectors";
 
 // ==========================import external variables==========================
 
@@ -30,7 +29,7 @@ import { userLoginProtection } from "@/routeProtectors";
 export default function LogoutPage() {
     // ===============constants===============
     const router = useRouter();
-    const { userId, removeUser } = useUser();
+    const { removeUser } = useUser();
     const toast = useToast();
 
     // ===============states===============
@@ -39,7 +38,6 @@ export default function LogoutPage() {
 
     // ===============main functions (will be directly triggered)===============
     const checkLogout = async () => {
-        userLoginProtection(userId, router);
         await logoutUser({ toast, removeUser, router });
     };
 

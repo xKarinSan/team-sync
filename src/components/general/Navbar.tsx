@@ -44,6 +44,7 @@ import { useState, useEffect, ReactNode } from "react";
 import TeamsyncLogo from "@/images/general/TeamsyncLogo.png";
 
 export default function Navbar({ children }: { children: ReactNode }) {
+    const pathName = usePathname();
     const [loading, setLoading] = useState<boolean>(true);
     const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
     const { userId } = useUser();
@@ -52,8 +53,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
         setLoading(true);
 
         setLoading(false);
-    }, [userId]);
-
+    }, [userId, pathName]);
     return (
         <>
             {loading ? null : (

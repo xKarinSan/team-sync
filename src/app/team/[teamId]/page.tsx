@@ -12,7 +12,6 @@ import { Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
 
 // ==========================import external functions==========================
-import { userLoginProtection } from "@/routeProtectors";
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import MainMenu from "@/components/general/MainMenu";
 import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
@@ -36,8 +35,6 @@ export default function TeamHomePage({
     params: { teamId: string };
 }) {
     // ===============constants===============
-    const { userId } = useUser();
-    const router = useRouter();
     const menuOptions: MenuOption[] = [
         {
             label: "Documents",
@@ -83,7 +80,6 @@ export default function TeamHomePage({
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        userLoginProtection(userId, router);
         retrieveCurrentTeam();
         setLoading(false);
     }, []);

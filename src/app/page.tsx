@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Flex,
@@ -15,15 +15,13 @@ import {
 import { FiGithub } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { KeyFeature } from "@/types/LandingPage/features";
 
 import FirstPic from "../images/landing/FirstLandingImage.png";
 import AboutMePic from "../images/landing/AboutMeImage.png";
 import PlaceboImage from "../images/landing/PlaceboImage.png";
 import ContactMeImage from "../images/landing/ContactMeImage.png";
-import useUser from "@/store/userStore";
-import { userLoggedProtection } from "@/routeProtectors";
+
 import CustomButton from "@/components/general/CustomButton";
 export default function Home() {
     const keyFeatures: KeyFeature[] = [
@@ -52,11 +50,7 @@ export default function Home() {
             featureImage: PlaceboImage,
         },
     ];
-    const { userId } = useUser();
-    const router = useRouter();
-    useEffect(() => {
-        userLoggedProtection(userId, router);
-    }, []);
+
     return (
         <Box>
             <LandingPageSegment id="home">

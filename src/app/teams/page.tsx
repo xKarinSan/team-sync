@@ -5,9 +5,7 @@
 import { useEffect, useState } from "react";
 
 // ==========================import from next==========================
-import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
@@ -33,7 +31,6 @@ import LoadingDisplay from "@/components/general/LoadingDisplay";
 import NoRecordsDisplay from "@/components/general/NoRecordsDisplay";
 import CustomGrid from "@/components/general/CustomGrid";
 // ==========================import external functions==========================
-import { userLoginProtection } from "@/routeProtectors";
 import { createNewTeam } from "@/firebaseFunctions/teams/teamAdd";
 import { getUserTeams } from "@/firebaseFunctions/teams/teamGet";
 import { getTeamById } from "@/firebaseFunctions/teams/teamGet";
@@ -96,76 +93,77 @@ export default function TeamPage() {
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
-        userLoginProtection(userId, router);
         getMemberships();
         setLoading(false);
     }, []);
 
     return (
-        <Box>
-            <Heading fontWeight={"normal"}>Teams</Heading>
-            <CustomButton
-                LeftButtonIcon={FiUser}
-                buttonText="Create Team"
-                clickFunction={onOpen}
-            />
-            <WhiteContainer>HELLO</WhiteContainer>
+        <>
             {loading ? (
                 <>
                     <LoadingDisplay displayText="Loading contents ..." />
                 </>
             ) : (
                 <>
-                    {" "}
-                    <WhiteContainer minHeight={"50vh"}>
-                        {memberships.length > 0 ? (
-                            <>
-                                {" "}
-                                <CustomGrid>
-                                    {memberships.map(
-                                        (
-                                            membership: MembershipDisplay,
-                                            index: number
-                                        ) => {
-                                            return (
-                                                <MembershipContainer
-                                                    membership={membership}
-                                                    key={index}
-                                                    clickFunction={setTeam}
-                                                />
-                                            );
+                    <Box>
+                        <Heading fontWeight={"normal"}>Teams</Heading>
+                        <CustomButton
+                            LeftButtonIcon={FiUser}
+                            buttonText="Create Team"
+                            clickFunction={onOpen}
+                        />
+                        <WhiteContainer></WhiteContainer>{" "}
+                        <WhiteContainer minHeight={"50vh"}>
+                            {memberships.length > 0 ? (
+                                <>
+                                    {" "}
+                                    <CustomGrid>
+                                        {memberships.map(
+                                            (
+                                                membership: MembershipDisplay,
+                                                index: number
+                                            ) => {
+                                                return (
+                                                    <MembershipContainer
+                                                        membership={membership}
+                                                        key={index}
+                                                        clickFunction={setTeam}
+                                                    />
+                                                );
+                                            }
+                                        )}
+                                    </CustomGrid>
+                                </>
+                            ) : (
+                                <>
+                                    <NoRecordsDisplay
+                                        displayText={
+                                            "You are not in any teams."
                                         }
-                                    )}
-                                </CustomGrid>
-                            </>
-                        ) : (
-                            <>
-                                <NoRecordsDisplay
-                                    displayText={"You are not in any teams."}
-                                />
-                            </>
-                        )}
-                    </WhiteContainer>
+                                    />
+                                </>
+                            )}
+                        </WhiteContainer>
+                        <CustomModal
+                            isOpen={isOpen}
+                            onClose={onClose}
+                            modalTitle="Create Team"
+                            actionWord={"Create"}
+                            cancelWord={"Close"}
+                            modalSubmitFunction={submitTeam}
+                        >
+                            <CustomFormInput
+                                formId="teamName"
+                                placeholder="Enter team name"
+                                formLabel="Team Name:"
+                                value={teamName}
+                                changeHandler={setTeamName}
+                            />
+                        </CustomModal>
+                    </Box>
                 </>
             )}
-
-            <CustomModal
-                isOpen={isOpen}
-                onClose={onClose}
-                modalTitle="Create Team"
-                actionWord={"Create"}
-                cancelWord={"Close"}
-                modalSubmitFunction={submitTeam}
-            >
-                <CustomFormInput
-                    formId="teamName"
-                    placeholder="Enter team name"
-                    formLabel="Team Name:"
-                    value={teamName}
-                    changeHandler={setTeamName}
-                />
-            </CustomModal>
-        </Box>
+        </>
     );
 }
 // ===================================sub component(s) if any===================================
