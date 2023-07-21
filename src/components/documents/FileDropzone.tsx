@@ -22,7 +22,7 @@ import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import CustomContainer from "../general/CustomContainer";
-import CustomButton from "../general/CustomButton";
+import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
 import { addFilesToTeam } from "@/firebaseFunctions/documents/documentAdd";
 // ==========================import external variables==========================

@@ -29,7 +29,7 @@ import LoadingDisplay from "@/components/general/LoadingDisplay";
 import TeamBreadcrumbs from "@/components/team/TeamBreadcrumbs";
 import CustomContainer from "@/components/general/CustomContainer";
 import CustomGrid from "@/components/general/CustomGrid";
-import CustomButton from "@/components/general/CustomButton";
+import CustomButton from "@/components/custom/CustomButton";
 import CustomFormInput from "@/components/general/CustomFormInput";
 import CustomDialog from "@/components/general/CustomDialog";
 

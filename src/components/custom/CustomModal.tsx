@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 
 // ==========================import custom components==========================
-import CustomButton from "@/components/general/CustomButton";
+import CustomButton from "@/components/custom/CustomButton";
 
 // ==========================import external functions==========================
 

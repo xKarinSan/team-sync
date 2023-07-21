@@ -10,8 +10,8 @@ import { useEffect, useState, ReactNode } from "react";
 // ==========================import chakraui components==========================
 import { Box, Text, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CustomGrid from "@/components/general/CustomGrid";
-import CustomContainer from "@/components/general/CustomContainer";
+import CustomGrid from "@/components/custom/CustomGrid";
+import CustomContainer from "@/components/custom/CustomContainer";
 
 // ==========================import external functions==========================
 

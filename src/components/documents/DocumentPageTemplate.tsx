@@ -30,13 +30,13 @@ import {
 import { FiMoreVertical, FiFolderPlus } from "react-icons/fi";
 
 // ==========================import custom components==========================
-import CustomContainer from "../general/CustomContainer";
+import CustomContainer from "../custom/CustomContainer";
 import FileDropzone from "./FileDropzone";
-import CustomButton from "../general/CustomButton";
-import CustomFormInput from "../general/CustomFormInput";
+import CustomButton from "../custom/CustomButton";
+import CustomFormInput from "../custom/CustomFormInput";
 import LoadingDisplay from "../general/LoadingDisplay";
-import CustomGrid from "../general/CustomGrid";
-import CustomDialog from "../general/CustomDialog";
+import CustomGrid from "../custom/CustomGrid";
+import CustomDialog from "../custom/CustomDialog";
 // ==========================import external functions==========================
 
 // =============team=============

@@ -11,17 +11,17 @@ import { useRouter } from "next/navigation";
 // ==========================import chakraui components==========================
 import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CustomGrid from "../general/CustomGrid";
-import CustomContainer from "../general/CustomContainer";
+import CustomGrid from "../custom/CustomGrid";
+import CustomContainer from "../custom/CustomContainer";
 import LoadingDisplay from "../general/LoadingDisplay";
-import CustomSelect from "../general/CustomSelect";
-import CustomButton from "../general/CustomButton";
+import CustomSelect from "../custom/CustomSelect";
+import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-import { SelectOptions } from "../general/CustomSelect";
+import { SelectOptions } from "../custom/CustomSelect";
 // ==========================etc==========================
 
 // ===================================main component===================================

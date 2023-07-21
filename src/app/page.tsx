@@ -22,7 +22,7 @@ import AboutMePic from "../images/landing/AboutMeImage.png";
 import PlaceboImage from "../images/landing/PlaceboImage.png";
 import ContactMeImage from "../images/landing/ContactMeImage.png";
 
-import CustomButton from "@/components/general/CustomButton";
+import CustomButton from "@/components/custom/CustomButton";
 export default function Home() {
     const keyFeatures: KeyFeature[] = [
         {

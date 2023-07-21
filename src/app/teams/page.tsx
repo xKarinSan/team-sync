@@ -23,13 +23,13 @@ import {
 import { FiUser, FiUsers } from "react-icons/fi";
 
 // ==========================import custom components==========================
-import CustomContainer from "@/components/general/CustomContainer";
-import CustomButton from "@/components/general/CustomButton";
-import CustomFormInput from "@/components/general/CustomFormInput";
-import CustomModal from "@/components/general/CustomModal";
+import CustomContainer from "@/components/custom/CustomContainer";
+import CustomButton from "@/components/custom/CustomButton";
+import CustomFormInput from "@/components/custom/CustomFormInput";
+import CustomModal from "@/components/custom/CustomModal";
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import NoRecordsDisplay from "@/components/general/NoRecordsDisplay";
-import CustomGrid from "@/components/general/CustomGrid";
+import CustomGrid from "@/components/custom/CustomGrid";
 // ==========================import external functions==========================
 import { createNewTeam } from "@/firebaseFunctions/teams/teamAdd";
 import { getUserTeams } from "@/firebaseFunctions/teams/teamGet";

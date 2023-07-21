@@ -24,7 +24,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 
 // ==========================import custom components==========================
-import CustomButton from "../general/CustomButton";
+import CustomButton from "../custom/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
 
 // ==========================import external functions==========================
