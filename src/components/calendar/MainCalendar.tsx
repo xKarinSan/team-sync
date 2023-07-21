@@ -286,7 +286,7 @@ function CalendarCell({
     const router = useRouter();
     const redirectToGivenDay = () => {
         if (day && month && day) {
-            router.push(`/calendar/${year}/${month}/${day}`);
+            router.push(`/calendar/${year}-${month}-${day}`);
         }
     };
     return (

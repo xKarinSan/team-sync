@@ -56,7 +56,11 @@ export default function RootLayout({
             userLoginProtection(userId, router);
         }
         // at login or register
-        if (pathName === "/register" || pathName === "/login") {
+        if (
+            pathName === "/register" ||
+            pathName === "/login" ||
+            pathName === "/"
+        ) {
             userLoggedProtection(userId, router);
         }
         // at any team-related
