@@ -7,8 +7,11 @@
    
     - components
       - authentication (Authentication-related components)
+      - calendar (Calendar-related components)
+      - custom (Components that can be reused at any **other component** or **page**)
       - documents (Document-related components)
-      - general (Components that can be reused at ANYWHERE)
+      - general (Components that can be reused at any **page**)
+      - team (Team-related components)
      
     - config (any configuration related to this project is here)
       - firebaseConfig.tsx (The configurations of firebase)
