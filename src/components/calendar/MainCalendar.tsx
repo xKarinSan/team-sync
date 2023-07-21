@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomGrid from "../general/CustomGrid";
-import WhiteContainer from "../general/WhiteContainer";
+import CustomContainer from "../general/CustomContainer";
 import LoadingDisplay from "../general/LoadingDisplay";
 import CustomSelect from "../general/CustomSelect";
 import CustomButton from "../general/CustomButton";
@@ -169,7 +169,7 @@ export default function MainCalendar({}: {}) {
                         <Heading size={"lg"} fontWeight={"normal"}>
                             Calendar
                         </Heading>
-                        <WhiteContainer>
+                        <CustomContainer>
                             <CustomGrid gridCols={[1, null, 2, 4]}>
                                 {optionYears.length > 0 ? (
                                     <>
@@ -201,8 +201,8 @@ export default function MainCalendar({}: {}) {
                                     clickFunction={exportEvents}
                                 /> */}
                             </CustomGrid>
-                        </WhiteContainer>
-                        <WhiteContainer>
+                        </CustomContainer>
+                        <CustomContainer>
                             {" "}
                             <CustomGrid gridCols={[7]}>
                                 {weekdays.map((day, index) => {
@@ -261,7 +261,7 @@ export default function MainCalendar({}: {}) {
                                     );
                                 })}
                             </CustomGrid>
-                        </WhiteContainer>
+                        </CustomContainer>
                     </Box>
                 </>
             )}

@@ -30,7 +30,7 @@ import {
 import { FiMoreVertical, FiFolderPlus } from "react-icons/fi";
 
 // ==========================import custom components==========================
-import WhiteContainer from "../general/WhiteContainer";
+import CustomContainer from "../general/CustomContainer";
 import FileDropzone from "./FileDropzone";
 import CustomButton from "../general/CustomButton";
 import CustomFormInput from "../general/CustomFormInput";
@@ -148,7 +148,7 @@ export default function DocumentPageTemplate({
             </Heading>
             <br />
 
-            <WhiteContainer>
+            <CustomContainer>
                 {/* use breadcrumbs */}
                 <Breadcrumb separator=">">
                     <BreadcrumbItem>
@@ -175,7 +175,7 @@ export default function DocumentPageTemplate({
                         <Text>{currentPlace}</Text>
                     </BreadcrumbItem>
                 </Breadcrumb>
-            </WhiteContainer>
+            </CustomContainer>
             <Heading fontWeight={"normal"} size="md">
                 Folders
             </Heading>
@@ -193,7 +193,7 @@ export default function DocumentPageTemplate({
             />
 
             {/* <br /> */}
-            <WhiteContainer>
+            <CustomContainer>
                 {loading ? (
                     <>
                         <LoadingDisplay displayText="Getting folders ..." />
@@ -222,11 +222,11 @@ export default function DocumentPageTemplate({
                         )}
                     </>
                 )}
-            </WhiteContainer>
+            </CustomContainer>
             <Heading fontWeight={"nomral"} size="md">
                 Files
             </Heading>
-            <WhiteContainer>
+            <CustomContainer>
                 {loading ? (
                     <>
                         <LoadingDisplay displayText="Getting Documents ..." />
@@ -254,7 +254,7 @@ export default function DocumentPageTemplate({
                         )}
                     </>
                 )}
-            </WhiteContainer>
+            </CustomContainer>
 
             <FileDropzone folderId={folderId ? folderId : teamId} />
         </Box>
@@ -326,7 +326,7 @@ export function FolderContainer({ folder }: { folder: Folder }) {
         }
     };
     return (
-        <WhiteContainer>
+        <CustomContainer>
             <Box
                 display={"flex"}
                 width={"100%"}
@@ -406,7 +406,7 @@ export function FolderContainer({ folder }: { folder: Folder }) {
                     </MenuList>
                 </Menu>
             </Box>
-        </WhiteContainer>
+        </CustomContainer>
     );
 }
 
@@ -477,7 +477,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
         }
     };
     return (
-        <WhiteContainer>
+        <CustomContainer>
             <Box
                 display={"flex"}
                 width={"100%"}
@@ -557,7 +557,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                     </MenuList>
                 </Menu>
             </Box>
-        </WhiteContainer>
+        </CustomContainer>
     );
 }
 

@@ -11,8 +11,7 @@ import { useEffect, useState, ReactNode } from "react";
 import { Box, Text, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomGrid from "@/components/general/CustomGrid";
-import CustomContainer from "@/components/general/CustomColorContainer";
-import WhiteContainer from "@/components/general/WhiteContainer";
+import CustomContainer from "@/components/general/CustomContainer";
 
 // ==========================import external functions==========================
 
@@ -30,12 +29,10 @@ interface timeSlot {
 
 export default function CalendarDayList({
     params,
-    isIndivudual,
 }: {
     params: {
         currentDate: string;
     };
-    isIndivudual: boolean;
 }) {
     // ===============constants===============
 
@@ -141,14 +138,14 @@ const DatePageColumn = ({
 }) => {
     return (
         <Box>
-            <WhiteContainer>
+            <CustomContainer>
                 <Heading fontWeight={"normal"} size="lg" textAlign={"center"}>
                     {columnTitle}
                 </Heading>
-            </WhiteContainer>
-            <WhiteContainer minHeight="80vh" maxHeight="80vh">
+            </CustomContainer>
+            <CustomContainer minHeight="80vh" maxHeight="80vh">
                 {children ? children : <></>}
-            </WhiteContainer>
+            </CustomContainer>
         </Box>
     );
 };

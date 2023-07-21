@@ -27,7 +27,7 @@ import { FiMoreVertical, FiUserPlus, FiSearch, FiX } from "react-icons/fi";
 // ==========================import custom components==========================
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import TeamBreadcrumbs from "@/components/team/TeamBreadcrumbs";
-import WhiteContainer from "@/components/general/WhiteContainer";
+import CustomContainer from "@/components/general/CustomContainer";
 import CustomGrid from "@/components/general/CustomGrid";
 import CustomButton from "@/components/general/CustomButton";
 import CustomFormInput from "@/components/general/CustomFormInput";
@@ -95,7 +95,7 @@ export default function MembersPage({
                         isDisabled={userId !== creatorId}
                     />
                     <InvitationBox isOpen={isOpen} onClose={onClose} />
-                    <WhiteContainer>
+                    <CustomContainer>
                         <CustomGrid gridCols={[1, null, 2, null, 3, 4]}>
                             {members.map((member, index) => {
                                 return (
@@ -106,7 +106,7 @@ export default function MembersPage({
                                 );
                             })}
                         </CustomGrid>
-                    </WhiteContainer>
+                    </CustomContainer>
                 </Box>
             )}
         </>
@@ -274,7 +274,7 @@ function InvitationBox({
                             const [username, profilePic] =
                                 allUsersDict[invitedMember];
                             return (
-                                <WhiteContainer key={invitedMember}>
+                                <CustomContainer key={invitedMember}>
                                     <Box display={"flex"}>
                                         <Image
                                             src={
@@ -311,7 +311,7 @@ function InvitationBox({
                                             m={1}
                                         />
                                     </Box>
-                                </WhiteContainer>
+                                </CustomContainer>
                             );
                         })}
                     </CustomGrid>
@@ -331,7 +331,7 @@ const MemberContainer = ({ member }: { member: any }) => {
 
     const { username, userId, profilePic } = member;
     return (
-        <WhiteContainer>
+        <CustomContainer>
             <Box display={"flex"} width={"100%"}>
                 <Image
                     src={profilePic ? profilePic : defaultProfilePic.src}
@@ -376,7 +376,7 @@ const MemberContainer = ({ member }: { member: any }) => {
                     </MenuList>
                 </Menu>
             </Box>
-        </WhiteContainer>
+        </CustomContainer>
     );
 };
 

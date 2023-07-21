@@ -23,7 +23,7 @@ import {
 import { FiUser, FiUsers } from "react-icons/fi";
 
 // ==========================import custom components==========================
-import WhiteContainer from "@/components/general/WhiteContainer";
+import CustomContainer from "@/components/general/CustomContainer";
 import CustomButton from "@/components/general/CustomButton";
 import CustomFormInput from "@/components/general/CustomFormInput";
 import CustomModal from "@/components/general/CustomModal";
@@ -112,8 +112,8 @@ export default function TeamPage() {
                             buttonText="Create Team"
                             clickFunction={onOpen}
                         />
-                        <WhiteContainer></WhiteContainer>{" "}
-                        <WhiteContainer minHeight={"50vh"}>
+                        <CustomContainer></CustomContainer>{" "}
+                        <CustomContainer minHeight={"50vh"}>
                             {memberships.length > 0 ? (
                                 <>
                                     {" "}
@@ -143,7 +143,7 @@ export default function TeamPage() {
                                     />
                                 </>
                             )}
-                        </WhiteContainer>
+                        </CustomContainer>
                         <CustomModal
                             isOpen={isOpen}
                             onClose={onClose}

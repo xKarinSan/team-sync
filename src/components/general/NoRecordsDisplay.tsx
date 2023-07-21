@@ -10,7 +10,7 @@ import Image from "next/image";
 // ==========================import chakraui components==========================
 import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import WhiteContainer from "./WhiteContainer";
+import CustomContainer from "./CustomContainer";
 
 // ==========================import external functions==========================
 
@@ -39,7 +39,7 @@ export default function NoRecordsDisplay({
     // ===============useEffect===============
 
     return (
-        <WhiteContainer width={["80%", "60%", "40%"]}>
+        <CustomContainer width={["80%", "60%", "40%"]}>
             <Box display="grid" margin="auto" width="100%">
                 <Box margin="auto">
                     <Image
@@ -56,7 +56,7 @@ export default function NoRecordsDisplay({
                     </Heading>
                 </Box>
             </Box>
-        </WhiteContainer>
+        </CustomContainer>
     );
 }
 

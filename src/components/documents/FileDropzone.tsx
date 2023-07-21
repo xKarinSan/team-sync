@@ -21,7 +21,7 @@ import {
 import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
 
 // ==========================import custom components==========================
-import WhiteContainer from "../general/WhiteContainer";
+import CustomContainer from "../general/CustomContainer";
 import CustomButton from "../general/CustomButton";
 // ==========================import external functions==========================
 import { addFilesToTeam } from "@/firebaseFunctions/documents/documentAdd";
@@ -128,7 +128,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                     >
                         {name}
                     </Text>
-                    {/* </WhiteContainer> */}
+                    {/* </CustomContainer> */}
                 </MenuButton>
                 <MenuList>
                     <Link href={preview} target="_blank">
@@ -203,7 +203,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                     </Box>
                 </div>
             </Box>
-            <WhiteContainer>
+            <CustomContainer>
                 {selectedFiles.length == 0 ? (
                     <>
                         <Heading fontWeight={"normal"}>
@@ -217,7 +217,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                         </CustomGrid>
                     </>
                 )}
-            </WhiteContainer>
+            </CustomContainer>
         </Box>
     );
 }

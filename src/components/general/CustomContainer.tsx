@@ -21,8 +21,9 @@ import { Box } from "@chakra-ui/react";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function WhiteContainer({
+export default function CustomContainer({
     children,
+    containerColor,
     minHeight,
     minWidth,
     maxHeight,
@@ -34,6 +35,7 @@ export default function WhiteContainer({
     overflow,
 }: {
     children?: React.ReactNode;
+    containerColor?: string;
     minHeight?: string;
     minWidth?: string;
     maxHeight?: string;
@@ -57,7 +59,7 @@ export default function WhiteContainer({
     return (
         <Box
             width={width ? width : ["100%"]}
-            background="white"
+            background={containerColor ? containerColor : "white"}
             boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
             borderRadius={5}
             padding={2}

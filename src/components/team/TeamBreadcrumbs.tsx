@@ -10,7 +10,7 @@ import useTeam from "@/store/teamStore";
 // ==========================import chakraui components==========================
 import { Breadcrumb, BreadcrumbItem, Text } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import WhiteContainer from "../general/WhiteContainer";
+import CustomContainer from "../general/CustomContainer";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
@@ -38,7 +38,7 @@ export default function TeamBreadcrumbs({
     // ===============useEffect===============
 
     return (
-        <WhiteContainer>
+        <CustomContainer>
             <Breadcrumb separator=">">
                 <BreadcrumbItem>
                     <NextLink href={`/team/${teamId}`}>
@@ -55,7 +55,7 @@ export default function TeamBreadcrumbs({
                     </Text>
                 </BreadcrumbItem>
             </Breadcrumb>
-        </WhiteContainer>
+        </CustomContainer>
     );
 }
 
