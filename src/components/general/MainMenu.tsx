@@ -13,7 +13,7 @@ import NextLink from "next/link";
 import { Box, Text } from "@chakra-ui/react";
 
 // ==========================import custom components==========================
-import CustomGrid from "./CustomGrid";
+import CustomGrid from "../custom/CustomGrid";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================

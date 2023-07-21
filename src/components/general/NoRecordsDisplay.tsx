@@ -10,7 +10,7 @@ import Image from "next/image";
 // ==========================import chakraui components==========================
 import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CustomContainer from "./CustomContainer";
+import CustomContainer from "../custom/CustomContainer";
 
 // ==========================import external functions==========================
 

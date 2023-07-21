@@ -10,7 +10,7 @@ import useTeam from "@/store/teamStore";
 // ==========================import chakraui components==========================
 import { Breadcrumb, BreadcrumbItem, Text } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CustomContainer from "../general/CustomContainer";
+import CustomContainer from "../custom/CustomContainer";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================

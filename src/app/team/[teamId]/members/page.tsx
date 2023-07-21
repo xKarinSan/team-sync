@@ -27,11 +27,11 @@ import { FiMoreVertical, FiUserPlus, FiSearch, FiX } from "react-icons/fi";
 // ==========================import custom components==========================
 import LoadingDisplay from "@/components/general/LoadingDisplay";
 import TeamBreadcrumbs from "@/components/team/TeamBreadcrumbs";
-import CustomContainer from "@/components/general/CustomContainer";
-import CustomGrid from "@/components/general/CustomGrid";
+import CustomContainer from "@/components/custom/CustomContainer";
+import CustomGrid from "@/components/custom/CustomGrid";
 import CustomButton from "@/components/custom/CustomButton";
-import CustomFormInput from "@/components/general/CustomFormInput";
-import CustomDialog from "@/components/general/CustomDialog";
+import CustomFormInput from "@/components/custom/CustomFormInput";
+import CustomDialog from "@/components/custom/CustomDialog";
 
 // ==========================import external functions==========================
 // =========== security ===========
@@ -46,7 +46,6 @@ import { getUserDict } from "@/firebaseFunctions/users/usersGet";
 // ==========================import types/interfaces==========================
 
 // ==========================etc==========================
-// import defaultProfilePic from "@/images/general/defaultProfilePic.png";
 import defaultProfilePic from "../../../../images/general/defaultProfilePic.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============

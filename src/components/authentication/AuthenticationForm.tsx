@@ -25,7 +25,7 @@ import { FcGoogle } from "react-icons/fc";
 
 // ==========================import custom components==========================
 import CustomButton from "../custom/CustomButton";
-import CustomFormInput from "../general/CustomFormInput";
+import CustomFormInput from "../custom/CustomFormInput";
 
 // ==========================import external functions==========================
 import { gmailLogin } from "@/firebaseFunctions/authentication/gmailAuthentication";

@@ -21,7 +21,7 @@ import {
 import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
 
 // ==========================import custom components==========================
-import CustomContainer from "../general/CustomContainer";
+import CustomContainer from "../custom/CustomContainer";
 import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
 import { addFilesToTeam } from "@/firebaseFunctions/documents/documentAdd";
@@ -33,7 +33,7 @@ import { DocumentEntry } from "@/types/Documents/documentTypes";
 import { useDropzone } from "react-dropzone";
 import { Heading } from "@chakra-ui/react";
 import NoRecordsDisplay from "../general/NoRecordsDisplay";
-import CustomGrid from "../general/CustomGrid";
+import CustomGrid from "../custom/CustomGrid";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
