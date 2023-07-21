@@ -2,52 +2,78 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect, useState, ReactNode } from "react";
+
 // ==========================import from next==========================
 
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
-import { Box, Text, Heading } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CustomGrid from "@/components/custom/CustomGrid";
-import CustomContainer from "@/components/custom/CustomContainer";
-import CurrentDay from "@/components/calendar/CurrentDay";
-
+import CustomContainer from "../custom/CustomContainer";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
+import { timeSlot } from "@/types/Calendar/CalendarTypes";
 
 // ==========================etc==========================
 
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function CalendarDayListPage({
-    params,
+export default function TimeslotContainer({
+    hour,
+    minute,
+    isSelected,
+    handleSelectTimeslot,
 }: {
-    params: {
-        currentDate: string;
-    };
+    hour: number;
+    minute: number;
+    isSelected?: boolean;
+    handleSelectTimeslot: (timeSlot: timeSlot) => void;
 }) {
     // ===============constants===============
-
+    const formatDigit = (time: number) => {
+        if (time < 10) {
+            return "0" + time.toString();
+        } else {
+            return time.toString();
+        }
+    };
     // ===============states===============
 
-    // ======for querying======
-
-    // ======for timeslots======
-
     // ===============helper functions (will not be directly triggered)===============
-    // for the date
 
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
-    useEffect(() => {}, []);
-    return <CurrentDay currentDate={params.currentDate} />;
+
+    return (
+        <Box
+            onClick={() => {
+                handleSelectTimeslot({ hour, minute });
+            }}
+            _hover={{ cursor: "pointer" }}
+        >
+            <CustomContainer
+                margin="0 auto"
+                marginTop={1}
+                marginBottom={1}
+                width={["90%"]}
+                containerColor={isSelected ? "#0747ED" : "white"}
+            >
+                <Text
+                    fontSize={"lg"}
+                    textAlign={"center"}
+                    color={isSelected ? "white" : "black"}
+                >
+                    {formatDigit(hour)}:{formatDigit(minute)}
+                </Text>
+            </CustomContainer>
+        </Box>
+    );
 }
 
 // ===================================sub component(s) if any===================================

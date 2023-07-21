@@ -2,18 +2,15 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect, useState, ReactNode } from "react";
+import { ReactNode } from "react";
 // ==========================import from next==========================
 
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
-import { Box, Text, Heading } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CustomGrid from "@/components/custom/CustomGrid";
-import CustomContainer from "@/components/custom/CustomContainer";
-import CurrentDay from "@/components/calendar/CurrentDay";
-
+import CustomContainer from "../custom/CustomContainer";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
@@ -25,29 +22,35 @@ import CurrentDay from "@/components/calendar/CurrentDay";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function CalendarDayListPage({
-    params,
+export default function DatePageColumn({
+    children,
+    columnTitle,
 }: {
-    params: {
-        currentDate: string;
-    };
+    children?: ReactNode;
+    columnTitle: string;
 }) {
     // ===============constants===============
 
     // ===============states===============
 
-    // ======for querying======
-
-    // ======for timeslots======
-
     // ===============helper functions (will not be directly triggered)===============
-    // for the date
 
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
-    useEffect(() => {}, []);
-    return <CurrentDay currentDate={params.currentDate} />;
+
+    return (
+        <Box>
+            <CustomContainer>
+                <Heading fontWeight={"normal"} size="lg" textAlign={"center"}>
+                    {columnTitle}
+                </Heading>
+            </CustomContainer>
+            <CustomContainer minHeight="80vh" maxHeight="80vh">
+                {children ? children : <></>}
+            </CustomContainer>
+        </Box>
+    );
 }
 
 // ===================================sub component(s) if any===================================
