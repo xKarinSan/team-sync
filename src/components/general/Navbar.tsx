@@ -224,7 +224,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
     const setCurrentTeamItems = (teamId: string): LinkItemProps[] => {
         return [
-            { name: "Back to Teams", icon: FiArrowLeft, path: "/teams" },
+            { name: "Back Home", icon: FiArrowLeft, path: "/teams" },
             {
                 name: "Team Homepage",
                 icon: FiHome,
