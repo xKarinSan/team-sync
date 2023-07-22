@@ -1,6 +1,6 @@
 import { storage, realtimeDB } from "@/config/firebaseConfig";
 import { ref as stoageRef } from "firebase/storage";
-import { ref as databaseRef, onValue } from "firebase/database";
+import { onValue } from "firebase/database";
 import { getFileRef } from "./documentRefs";
 
 export const realtimeFileChanges = (

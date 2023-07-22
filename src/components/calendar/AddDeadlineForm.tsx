@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { use, useState } from "react";
+import { useState } from "react";
 // ==========================import from next==========================
 
 // ==========================import state management==========================
@@ -15,7 +15,8 @@ import CustomContainer from "../custom/CustomContainer";
 import CustomFormInput from "../custom/CustomFormInput";
 import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
-
+import { addDeadlineRecord } from "@/firebaseFunctions/deadlines/deadlineAdd";
+import { set } from "firebase/database";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -61,12 +62,35 @@ export default function AddDeadlineForm({
                 title: "Please select a date and timeslot",
                 status: "error",
             });
-        else {
-            // trigger firebase function to add deadline
+        else if (description === "") {
             toast({
-                title: "Deadline added",
-                status: "success",
+                title: "Please add a description",
+                status: "error",
             });
+        } else {
+            // trigger firebase function to add deadline
+            const addDeadlineRes = await addDeadlineRecord({
+                userId,
+                teamId: teamId ? teamId : userId,
+                year,
+                month,
+                day,
+                hour,
+                minute,
+                description,
+            });
+            if (addDeadlineRes) {
+                toast({
+                    title: "Deadline added",
+                    status: "success",
+                });
+                setDescription("");
+            } else {
+                toast({
+                    title: "Error adding deadline",
+                    status: "error",
+                });
+            }
         }
     };
 
@@ -79,7 +103,7 @@ export default function AddDeadlineForm({
                 formLabel="Description:"
                 placeholder="Add a description"
                 value={description}
-                changeHandler={(e) => setDescription(e.target.value)}
+                changeHandler={setDescription}
             />
             <br />
             <CustomButton

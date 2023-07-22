@@ -12,7 +12,6 @@ import { Box, Text } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomContainer from "../custom/CustomContainer";
 // ==========================import external functions==========================
-
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================

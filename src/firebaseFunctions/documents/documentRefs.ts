@@ -1,4 +1,3 @@
-// const { storage } = require("../firebaseConfig");
 import { storage, realtimeDB } from "@/config/firebaseConfig";
 import { ref as storageRef } from "firebase/storage";
 import { ref as databaseRef } from "firebase/database";

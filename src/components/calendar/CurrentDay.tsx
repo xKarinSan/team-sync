@@ -18,11 +18,12 @@ import DatePageColumn from "./DatePageColumn";
 import TimeslotContainer from "./TimeslotContainer";
 import AddDeadlineForm from "./AddDeadlineForm";
 // ==========================import external functions==========================
-
+import { getDeadlinesByDateTime } from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
 import { timeSlot } from "@/types/Calendar/CalendarTypes";
+import { DeadlineRecord } from "@/types/Deadline/deadlineTypes";
 // ==========================etc==========================
 
 // ===================================main component===================================
@@ -30,6 +31,8 @@ import { timeSlot } from "@/types/Calendar/CalendarTypes";
 
 export default function CurrentDay({ currentDate }: { currentDate: string }) {
     // ===============constants===============
+    const { userId } = useUser();
+    const { teamId } = useTeam();
 
     // ===============states===============
     // ======for querying======
@@ -44,6 +47,7 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
 
     // ======for timeslots======
     const [timeSlots, setTimeSlots] = useState<timeSlot[]>([]);
+    const [deadlines, setDeadlines] = useState<DeadlineRecord[]>([]);
 
     // ===============helper functions (will not be directly triggered)===============
     // for the date
@@ -83,6 +87,22 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
         }
     };
 
+    // when selected timeslot changes
+    const setCurrentDeadline = async () => {
+        if (year != -1 && month != -1 && day != -1) {
+            const currentDeadlinesAtTime = await getDeadlinesByDateTime(
+                teamId ? teamId : userId,
+                year,
+                month,
+                day,
+                selectedTimeslot.hour,
+                selectedTimeslot.minute
+            );
+            console.log("currentDeadlinesAtTime", currentDeadlinesAtTime);
+            setDeadlines(currentDeadlinesAtTime);
+        }
+    };
+
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
@@ -90,6 +110,11 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
         triggerCurrentDate();
         setupTimeslots();
     }, []);
+
+    useEffect(() => {
+        setCurrentDeadline();
+    }, [selectedTimeslot]);
+
     return (
         <Box>
             <Heading fontWeight={"normal"} size="xl">
