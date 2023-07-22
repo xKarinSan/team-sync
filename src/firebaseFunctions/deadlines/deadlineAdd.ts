@@ -19,17 +19,8 @@ export const addDeadlineRecord = async (deadlineInput: DeadlineFormInput) => {
         ).getTime();
 
         const addedDateTime = Date.now();
-        console.log("addedDateTime", addedDateTime);
         const updatedDateTime = addedDateTime;
-        console.log("deadlineDateTime", deadlineDateTime);
-
-        const newDeadline: DeadlineWithTimestamp = {
-            ...deadlineInput,
-            deadlineDateTime,
-            addedDateTime,
-            updatedDateTime,
-        };
-        console.log("newDeadline", newDeadline);
+        
         const res = await push(getDeadlineRef(teamId), {
             ...deadlineInput,
             deadlineDateTime,

@@ -1,3 +1,7 @@
+import {
+    DeadlineWithTimestamp,
+    DeadlineRecord,
+} from "@/types/Deadline/deadlineTypes";
 import { getSnapshotData } from "../general/getSnapshotData";
 import { getDeadlineRef } from "./deadlineRefs";
 import { onValue, get } from "firebase/database";
@@ -13,14 +17,17 @@ export const realtimeDeadlineChanges = (
 ) => {
     const currentDeadlineRef = getDeadlineRef(teamId);
     onValue(currentDeadlineRef, (snapshot) => {
+        console.log("trigger onchange");
+
         if (snapshot.exists()) {
             const data = snapshot.val();
             let dataIds = Object.keys(data);
             const res: any[] = [];
+
             dataIds.forEach((id: string) => {
                 res.push({ ...data[id], id });
             });
-
+            console.log("res", res);
             setCurrentData(res);
         }
     });
@@ -35,7 +42,7 @@ export const getDeadlinesByDateTime = async (
     minute: number
 ) => {
     const teamDeadlines = await getDeadlineByTeam(teamId);
-    const res = teamDeadlines.filter((deadline: any) => {
+    const res = teamDeadlines.filter((deadline: DeadlineWithTimestamp) => {
         const {
             year: deadlineYear,
             month: deadlineMonth,

@@ -17,13 +17,18 @@ import CustomContainer from "@/components/custom/CustomContainer";
 import DatePageColumn from "./DatePageColumn";
 import TimeslotContainer from "./TimeslotContainer";
 import AddDeadlineForm from "./AddDeadlineForm";
+import { DeadlineRow } from "./DeadlineRow";
 // ==========================import external functions==========================
 import { getDeadlinesByDateTime } from "@/firebaseFunctions/deadlines/deadlineGet";
+import { realtimeDeadlineChanges } from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
 import { timeSlot } from "@/types/Calendar/CalendarTypes";
-import { DeadlineRecord } from "@/types/Deadline/deadlineTypes";
+import {
+    DeadlineRecord,
+    DeadlineWithTimestamp,
+} from "@/types/Deadline/deadlineTypes";
 // ==========================etc==========================
 
 // ===================================main component===================================
@@ -48,6 +53,9 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     // ======for timeslots======
     const [timeSlots, setTimeSlots] = useState<timeSlot[]>([]);
     const [deadlines, setDeadlines] = useState<DeadlineRecord[]>([]);
+    const [filteredDeadlines, setFilteredDeadlines] = useState<
+        DeadlineRecord[]
+    >([]);
 
     // ===============helper functions (will not be directly triggered)===============
     // for the date
@@ -88,19 +96,25 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     };
 
     // when selected timeslot changes
-    const setCurrentDeadline = async () => {
-        if (year != -1 && month != -1 && day != -1) {
-            const currentDeadlinesAtTime = await getDeadlinesByDateTime(
-                teamId ? teamId : userId,
-                year,
-                month,
-                day,
-                selectedTimeslot.hour,
-                selectedTimeslot.minute
+    const displayFilteredDeadlines = () => {
+        const temp = deadlines.filter((deadline) => {
+            const { hour, minute } = selectedTimeslot;
+            const {
+                year: deadlineYear,
+                month: deadlineMonth,
+                day: deadlineDay,
+                hour: deadlineHour,
+                minute: deadlineMinute,
+            } = deadline;
+            return (
+                year == deadlineYear &&
+                month == deadlineMonth &&
+                day == deadlineDay &&
+                hour == deadlineHour &&
+                minute == deadlineMinute
             );
-            console.log("currentDeadlinesAtTime", currentDeadlinesAtTime);
-            setDeadlines(currentDeadlinesAtTime);
-        }
+        });
+        setFilteredDeadlines(temp);
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -108,12 +122,13 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     // ===============useEffect===============
     useEffect(() => {
         triggerCurrentDate();
+        realtimeDeadlineChanges(teamId ? teamId : userId, setDeadlines);
         setupTimeslots();
     }, []);
 
     useEffect(() => {
-        setCurrentDeadline();
-    }, [selectedTimeslot]);
+        displayFilteredDeadlines();
+    }, [selectedTimeslot, deadlines]);
 
     return (
         <Box>
@@ -149,6 +164,26 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
                         hour={selectedTimeslot.hour}
                         minute={selectedTimeslot.minute}
                     />
+                    {filteredDeadlines.length > 0 ? (
+                        <>
+                            {filteredDeadlines.map(
+                                (deadline: DeadlineRecord, index) => {
+                                    return (
+                                        <DeadlineRow
+                                            key={index}
+                                            deadline={deadline}
+                                        />
+                                    );
+                                }
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <CustomContainer>
+                                <Text>No deadlines</Text>
+                            </CustomContainer>
+                        </>
+                    )}
                 </DatePageColumn>
             </CustomGrid>
         </Box>
