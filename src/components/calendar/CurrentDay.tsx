@@ -168,10 +168,46 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
                         <>
                             {filteredDeadlines.map(
                                 (deadline: DeadlineRecord, index) => {
+                                    const {
+                                        id: deadlineId,
+                                        userId,
+                                        description,
+
+                                        teamId,
+
+                                        year,
+                                        month,
+                                        day,
+                                        hour,
+                                        minute,
+
+                                        deadlineDateTime,
+                                        addedDateTime,
+                                        updatedDateTime,
+                                    } = deadline;
+                                    const deadlineWithTimestamp: DeadlineWithTimestamp =
+                                        {
+                                            userId,
+                                            description,
+
+                                            teamId,
+
+                                            year,
+                                            month,
+                                            day,
+                                            hour,
+                                            minute,
+
+                                            deadlineDateTime,
+                                            addedDateTime,
+                                            updatedDateTime,
+                                        };
+
                                     return (
                                         <DeadlineRow
-                                            key={index}
-                                            deadline={deadline}
+                                            key={deadlineId}
+                                            deadline={deadlineWithTimestamp}
+                                            deadlineId={deadlineId}
                                         />
                                     );
                                 }
