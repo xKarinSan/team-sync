@@ -23,9 +23,9 @@ import MainCalendar from "@/components/calendar/MainCalendar";
 // ===============component exclusive interface(s)/type(s) if any===============
 
 export default function TeamCalendarPage({
-    props,
+    params,
 }: {
-    props: { teamId: string };
+    params: { teamId: string };
 }) {
     // ===============constants===============
 

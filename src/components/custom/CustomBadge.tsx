@@ -2,14 +2,14 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect } from "react";
+
 // ==========================import from next==========================
 
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
+import { Badge, Text, Box } from "@chakra-ui/react";
 // ==========================import custom components==========================
-import CurrentDay from "@/components/calendar/CurrentDay";
 
 // ==========================import external functions==========================
 
@@ -22,29 +22,35 @@ import CurrentDay from "@/components/calendar/CurrentDay";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function TeamCalendarDayListPage({
-    params,
+export default function Custombadge({
+    badgeText,
+    badgeColor,
 }: {
-    params: {
-        currentDate: string;
-    };
+    badgeText?: string;
+    badgeColor?: string;
 }) {
     // ===============constants===============
 
     // ===============states===============
 
-    // ======for querying======
-
-    // ======for timeslots======
-
     // ===============helper functions (will not be directly triggered)===============
-    // for the date
 
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
-    useEffect(() => {}, []);
-    return <CurrentDay currentDate={params.currentDate} />;
+
+    return (
+        <Box m={1}>
+            <Badge
+                colorScheme={badgeColor ? badgeColor : "default"}
+                variant={"outline"}
+            >
+                <Text p={0.1} m={1}>
+                    {badgeText ? <>{badgeText}</> : <>Badge Text</>}
+                </Text>
+            </Badge>
+        </Box>
+    );
 }
 
 // ===================================sub component(s) if any===================================

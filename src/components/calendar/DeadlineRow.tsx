@@ -14,6 +14,7 @@ import { Heading, Text, useToast, Box } from "@chakra-ui/react";
 import CustomContainer from "../custom/CustomContainer";
 import CustomButton from "../custom/CustomButton";
 import CustomFormInput from "../custom/CustomFormInput";
+import Custombadge from "../custom/CustomBadge";
 // ==========================import external functions==========================
 import { formatDate } from "../helperFunctions/general/DateFunctions";
 import { updateDeadline } from "@/firebaseFunctions/deadlines/deadlinePut";
@@ -41,6 +42,7 @@ export function DeadlineRow({
     const {
         userId: deadlineUserId,
         description: deadlineDescription,
+        teamId: deadlineTeamId,
         addedDateTime,
         updatedDateTime,
     } = deadline;
@@ -118,7 +120,17 @@ export function DeadlineRow({
         <CustomContainer>
             {!editing ? (
                 <>
-                    {" "}
+                    {teamId == deadlineTeamId ? (
+                        <Custombadge badgeColor={"red"} badgeText="Team" />
+                    ) : (
+                        <>
+                            {" "}
+                            <Custombadge
+                                badgeColor={"blue"}
+                                badgeText="Personal"
+                            />
+                        </>
+                    )}
                     <Heading fontWeight={"normal"} size={"lg"}>
                         {description}
                     </Heading>
