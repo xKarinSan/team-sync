@@ -22,7 +22,7 @@ import CurrentDay from "@/components/calendar/CurrentDay";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function CalendarDayListPage({
+export default function TeamCalendarDayListPage({
     params,
 }: {
     params: {

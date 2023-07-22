@@ -135,7 +135,9 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
             <Heading fontWeight={"normal"} size="xl">
                 As of {currentDate}:
             </Heading>
-            <NextLink href={`/calendar`}>Back</NextLink>
+            <NextLink href={teamId ? `/team/${teamId}/calendar` : `/calendar`}>
+                Back
+            </NextLink>
 
             <CustomGrid gridCols={[2]}>
                 <DatePageColumn columnTitle="Time">

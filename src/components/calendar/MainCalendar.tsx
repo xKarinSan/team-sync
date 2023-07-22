@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 // ==========================import state management==========================
-
+import useTeam from "@/store/teamStore";
 // ==========================import chakraui components==========================
 import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
@@ -283,10 +283,15 @@ function CalendarCell({
     day?: number;
     isToday?: boolean;
 }) {
+    const { teamId } = useTeam();
     const router = useRouter();
     const redirectToGivenDay = () => {
         if (day && month && day) {
-            router.push(`/calendar/${year}-${month}-${day}`);
+            if (teamId) {
+                router.push(`/team/${teamId}/calendar/${year}-${month}-${day}`);
+            } else {
+                router.push(`/calendar/${year}-${month}-${day}`);
+            }
         }
     };
     return (

@@ -2,15 +2,15 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect } from "react";
+
 // ==========================import from next==========================
 
 // ==========================import state management==========================
 
 // ==========================import chakraui components==========================
-// ==========================import custom components==========================
-import CurrentDay from "@/components/calendar/CurrentDay";
 
+// ==========================import custom components==========================
+import MainCalendar from "@/components/calendar/MainCalendar";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
@@ -22,29 +22,22 @@ import CurrentDay from "@/components/calendar/CurrentDay";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function CalendarDayListPage({
-    params,
+export default function TeamCalendarPage({
+    props,
 }: {
-    params: {
-        currentDate: string;
-    };
+    props: { teamId: string };
 }) {
     // ===============constants===============
 
     // ===============states===============
 
-    // ======for querying======
-
-    // ======for timeslots======
-
     // ===============helper functions (will not be directly triggered)===============
-    // for the date
 
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
-    useEffect(() => {}, []);
-    return <CurrentDay currentDate={params.currentDate} />;
+
+    return <MainCalendar />;
 }
 
 // ===================================sub component(s) if any===================================
