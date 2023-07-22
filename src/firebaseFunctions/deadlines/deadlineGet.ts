@@ -3,7 +3,7 @@ import {
     DeadlineRecord,
 } from "@/types/Deadline/deadlineTypes";
 import { getSnapshotData } from "../general/getSnapshotData";
-import { getDeadlineRef } from "./deadlineRefs";
+import { getDeadlineRef, defaultDeadlineRef } from "./deadlineRefs";
 import { onValue, get } from "firebase/database";
 
 export const getDeadlineByTeam = async (teamId: string) => {
@@ -17,8 +17,6 @@ export const realtimeDeadlineChanges = (
 ) => {
     const currentDeadlineRef = getDeadlineRef(teamId);
     onValue(currentDeadlineRef, (snapshot) => {
-        console.log("trigger onchange");
-
         if (snapshot.exists()) {
             const data = snapshot.val();
             let dataIds = Object.keys(data);
@@ -27,11 +25,35 @@ export const realtimeDeadlineChanges = (
             dataIds.forEach((id: string) => {
                 res.push({ ...data[id], id });
             });
-            console.log("res", res);
             setCurrentData(res);
         }
     });
 };
+
+// export const allRealtimeDeadlineChanges = (
+//     teamId: string,
+//     userId: string,
+//     setCurrentData: (data: any) => void
+// ) => {
+//     onValue(defaultDeadlineRef, (snapshot) => {
+//         if (snapshot.exists()) {
+//             const data = snapshot.val();
+//             let teamIds = Object.keys(data);
+
+//             const res: any[] = [];
+//             teamIds.forEach((deadlineTeamId: string) => {
+//                 if ([teamId, userId].includes(deadlineTeamId)) {
+//                     let dataIds = Object.keys(data[deadlineTeamId]);
+//                     dataIds.forEach((id: string) => {
+//                         res.push({ ...data[deadlineTeamId][id], id });
+//                     });
+//                 }
+//             });
+//             console.log("res", res);
+//             setCurrentData(res);
+//         }
+//     });
+// };
 
 export const getDeadlinesByDateTime = async (
     teamId: string,

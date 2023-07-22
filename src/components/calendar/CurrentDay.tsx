@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState } from "react";
 // ==========================import from next==========================
 import NextLink from "next/link";
 // ==========================import state management==========================
@@ -20,7 +20,10 @@ import AddDeadlineForm from "./AddDeadlineForm";
 import { DeadlineRow } from "./DeadlineRow";
 // ==========================import external functions==========================
 import { getDeadlinesByDateTime } from "@/firebaseFunctions/deadlines/deadlineGet";
-import { realtimeDeadlineChanges } from "@/firebaseFunctions/deadlines/deadlineGet";
+import {
+    realtimeDeadlineChanges,
+    // allRealtimeDeadlineChanges,
+} from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -123,6 +126,11 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     useEffect(() => {
         triggerCurrentDate();
         realtimeDeadlineChanges(teamId ? teamId : userId, setDeadlines);
+        // allRealtimeDeadlineChanges(
+        //     teamId ? teamId : userId,
+        //     userId,
+        //     setDeadlines
+        // );
         setupTimeslots();
     }, []);
 

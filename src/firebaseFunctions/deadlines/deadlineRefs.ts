@@ -1,6 +1,8 @@
 import { realtimeDB } from "@/config/firebaseConfig";
 import { ref } from "firebase/database";
 
-export const getDeadlineRef = (teamId: string) => {
+export const defaultDeadlineRef = ref(realtimeDB, "deadlines");
+
+export const getDeadlineRef = (teamId?: string) => {
     return ref(realtimeDB, `deadlines/${teamId}`);
 };
