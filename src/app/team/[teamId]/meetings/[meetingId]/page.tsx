@@ -24,9 +24,9 @@ import { Heading, Box } from "@chakra-ui/react";
 // ===============component exclusive interface(s)/type(s) if any===============
 
 export default function CurrentMeeting({
-    props,
+    params,
 }: {
-    props: {
+    params: {
         meetingId: string;
     };
 }) {
