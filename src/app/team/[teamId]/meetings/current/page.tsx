@@ -2,6 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
+import { useEffect } from "react";
 
 // ==========================import from next==========================
 
@@ -13,7 +14,7 @@ import { Heading, Box } from "@chakra-ui/react";
 // ==========================import custom components==========================
 
 // ==========================import external functions==========================
-
+import { realtimeMeetingListener } from "@/firebaseFunctions/coonferences/conferenceOperations";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -27,11 +28,11 @@ export default function CurrentMeeting({
     params,
 }: {
     params: {
-        meetingId: string;
+        teamId: string;
     };
 }) {
     // ===============constants===============
-    const { userId } = useUser();
+    const { userId, username } = useUser();
     const { teamId } = useTeam();
     // ===============states===============
 
@@ -40,6 +41,9 @@ export default function CurrentMeeting({
     // ===============main functions (will be directly triggered)===============
 
     // ===============useEffect===============
+    useEffect(() => {
+        realtimeMeetingListener(teamId, userId, username);
+    }, []);
 
     return (
         <>

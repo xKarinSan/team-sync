@@ -37,22 +37,23 @@ export default function MeetingDisplayPage({}: {}) {
     // ===============main functions (will be directly triggered)===============
     // start a meeting if there isnt already an ongoing meeting
     const startMeeting = async () => {
-        const createdNewMeeting = await createNewMeeting({
-            teamId,
-            hostId: userId,
-        });
-        if (createdNewMeeting) {
-            toast({
-                title: "Meeting created, entering ...",
-                status: "success",
-            });
-            router.push(`/team/${teamId}/meetings/${createdNewMeeting}`);
-        } else {
-            toast({
-                title: "Meeting failed to create",
-                status: "error",
-            });
-        }
+        // const createdNewMeeting = await createNewMeeting({
+        //     teamId,
+        //     hostId: userId,
+        // });
+        // if (createdNewMeeting) {
+        //     toast({
+        //         title: "Meeting created, entering ...",
+        //         status: "success",
+        //     });
+        //     router.push(`/team/${teamId}/meetings/${createdNewMeeting}`);
+        // } else {
+        //     toast({
+        //         title: "Meeting failed to create",
+        //         status: "error",
+        //     });
+        // }
+        router.push(`/team/${teamId}/meetings/current`);
     };
 
     // join a meeting if there is an ongoing meeting

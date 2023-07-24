@@ -1,6 +1,6 @@
 import { getMeetingRef } from "./meetingRefs";
 import { push } from "firebase/database";
-import { Meeting, MeetingWithTimestamp } from "@/types/Meetings/meetingTypes";
+import { Meeting, MeetingWithTimestamp } from "@/types/MeetingRecords/meetingTypes";
 
 // ================== simple modular functions ==================
 export const createNewMeeting = async (meeting: Meeting) => {
