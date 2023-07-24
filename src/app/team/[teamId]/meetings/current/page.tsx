@@ -59,7 +59,7 @@ export default function CurrentMeeting({
         participants: [],
         isActive: false,
         lastStarted: null,
-        hostId: "",
+        host: "",
     }); // [{id: string, name: string, video: boolean, audio: boolean}
     const [loading, setLoading] = useState(false);
     // ===============helper functions (will not be directly triggered)===============
@@ -83,6 +83,13 @@ export default function CurrentMeeting({
         }
     };
 
+    const endMeeting = async () => {
+        toast({
+            title: "Meeting ended",
+            status: "info",
+        });
+    };
+
     // ===============useEffect===============
     useEffect(() => {
         setLoading(true);
@@ -98,6 +105,7 @@ export default function CurrentMeeting({
 
     useEffect(() => {
         console.log(currentMeeting.participants);
+        console.log(currentMeeting.host);
     }, [currentMeeting]);
 
     return (
@@ -149,9 +157,24 @@ export default function CurrentMeeting({
                 />
                 <CustomButton
                     clickFunction={leaveMeeting}
-                    buttonText="Leave Meeting"
+                    buttonText={
+                        currentMeeting.host == userId
+                            ? "End Meeting"
+                            : "Leave Meeting"
+                    }
                     buttonColor="#AA0000"
                 />
+                {/* {currentMeeting.host == userId ? (
+                    <>
+                        <CustomButton
+                            clickFunction={leaveMeeting}
+                            buttonText="End Meeting"
+                            buttonColor="#AA0000"
+                        />
+                    </>
+                ) : (
+                    <></>
+                )} */}
             </CustomContainer>
         </Box>
     );

@@ -54,6 +54,29 @@ export const joinConference = async (
     });
 };
 
+export const endConference = async (teamId: string, userId: string) => {
+    // const currentParticipantRef = getConferenceParticipantRef(teamId);
+    // const removeParticipantsPromise = await remove(currentParticipantRef);
+    // const currentConferenceRef = getConferenceRef(teamId);
+    // const updateMeetingPromise = await update(currentConferenceRef, {
+    //     isActive: false,
+    // });
+    // Promise.all([removeParticipantsPromise, updateMeetingPromise]).then(() => {
+    //     alert("Meeting has ended");
+    //     window.close();
+    // });
+    const currentParticipantRef = getConferenceParticipantRef(teamId);
+    await remove(currentParticipantRef)
+        .then(() => {
+            alert("Meeting has ended");
+        })
+        .then(() => {
+            window.close();
+        });
+};
+
+export const changeHost = async () => {};
+
 export const leaveConference = async (teamId: string, userId: string) => {
     try {
         const currentParticipantRef = getConferenceParticipantUserRef(
@@ -84,6 +107,10 @@ export const realtimeMeetingListener = (
 
             const currParticipants: any = [];
             if (data.hasOwnProperty("participants")) {
+                if (!Object.keys(data.participants).includes(host)) {
+                    await endConference(teamId, userId);
+                    return;
+                }
                 let participantIds = Object.keys(data.participants);
                 participantIds.forEach((id: string) => {
                     currParticipants.push({ ...data.participants[id], id });

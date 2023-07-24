@@ -11,7 +11,7 @@ export type Conference = {
     lastStarted: any;
 
     // userId of host
-    hostId: string;
+    host: string;
 };
 
 // id is uerId
