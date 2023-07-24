@@ -30,7 +30,7 @@ export const emailLogin = async ({
                 };
                 await addUser(currentUser);
                 const { username, userId } = currentUser;
-                setUser(userId, username);
+                setUser(userId, username, photoURL || "");
                 toast({
                     title: "Logged In.",
                     description: "Login Successful!",

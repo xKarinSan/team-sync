@@ -2,7 +2,7 @@
 // id is teamid
 export type Conference = {
     // team which meeting is occuring at
-    participants: Participant[];
+    participants: ParticipantPreferencesRecord[];
     // is the meeting currenlty active?
     isActive: boolean;
 
@@ -15,19 +15,25 @@ export type Conference = {
 };
 
 // id is uerId
-export type Participant = {
-    preferences: ParticipantPreferences;
-};
+// export type Participant = {
+//     preferences: ParticipantPreferences;
+// };
 
 export type ParticipantPreferences = {
     // id of participant
     // userId: string;
     // name of participant
     username: string;
+    // profile picture of participant
+    profilePic: string;
     // is user's camera on?
-    videoEnbaled: boolean;
+    videoEnabled: boolean;
     // is user's mic on?
     micEnabled: boolean;
     // is user screen-sharing?
     screenShareEnabled: boolean;
 };
+
+export interface ParticipantPreferencesRecord extends ParticipantPreferences {
+    id: string;
+}

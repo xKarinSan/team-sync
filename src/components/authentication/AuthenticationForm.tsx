@@ -40,9 +40,9 @@ type AuthenticationFormProps = {
     isLogin: boolean;
     submitFunction: (
         props: any,
-        setUser: (userId: string, username: string) => void
+        setUser: (userId: string, username: string, profilePic: string) => void
     ) => Promise<void>;
-    setUser: (userId: string, username: string) => void;
+    setUser: (userId: string, username: string, profilePic: string) => void;
 };
 
 export default function AuthenticationForm({

@@ -33,6 +33,7 @@ export default function CustomContainer({
     marginTop,
     marginBottom,
     overflow,
+    display,
 }: {
     children?: React.ReactNode;
     containerColor?: string;
@@ -45,6 +46,7 @@ export default function CustomContainer({
     marginTop?: number;
     marginBottom?: number;
     overflow?: string;
+    display?: string;
 }) {
     // ===============constants===============
 
@@ -71,6 +73,7 @@ export default function CustomContainer({
             maxHeight={maxHeight ? maxHeight : "auto"}
             maxWidth={maxWidth ? maxWidth : "auto"}
             overflow={overflow ? overflow : "auto"}
+            display={display ? display : "block"}
         >
             {children}
         </Box>

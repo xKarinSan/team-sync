@@ -6,15 +6,18 @@ export const useUser = create(
         (set: any) => ({
             userId: "",
             username: "",
-            addUser: (userId: string, username: string) =>
+            profilePic: "",
+            addUser: (userId: string, username: string, profilePic: string) =>
                 set(() => ({
                     userId,
                     username,
+                    profilePic,
                 })),
             removeUser: () =>
                 set(() => ({
                     userId: "",
                     username: "",
+                    profilePic: "",
                 })),
         }),
         {

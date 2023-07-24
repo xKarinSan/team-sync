@@ -8,7 +8,7 @@ export const gmailLogin = async ({
     toast,
     router,
 }: {
-    setUser: (userId: string, username: string) => void;
+    setUser: (userId: string, username: string, profilePic: string) => void;
     toast: any;
     router: AppRouterInstance;
 }) => {
@@ -27,7 +27,7 @@ export const gmailLogin = async ({
                 };
                 await addUser(currentUser);
                 // const { userId, username } = currentUser;
-                setUser(uid, displayName || "");
+                setUser(uid, displayName || "", photoURL || "");
                 toast({
                     title: "Auth successful.",
                     description: "Gmail Login Successful!",

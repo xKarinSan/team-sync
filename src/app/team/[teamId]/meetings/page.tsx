@@ -5,6 +5,7 @@
 import { useEffect } from "react";
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
+import NextLink from "next/link";
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
@@ -36,7 +37,7 @@ export default function MeetingDisplayPage({}: {}) {
 
     // ===============main functions (will be directly triggered)===============
     // start a meeting if there isnt already an ongoing meeting
-    const startMeeting = async () => {
+    const startMeeting = () => {
         // const createdNewMeeting = await createNewMeeting({
         //     teamId,
         //     hostId: userId,
@@ -53,7 +54,11 @@ export default function MeetingDisplayPage({}: {}) {
         //         status: "error",
         //     });
         // }
-        router.push(`/team/${teamId}/meetings/current`);
+        toast({
+            title: "Entering meeting ...",
+            status: "info",
+        });
+        // router.push(`/team/${teamId}/meetings/current`);
     };
 
     // join a meeting if there is an ongoing meeting
@@ -67,12 +72,13 @@ export default function MeetingDisplayPage({}: {}) {
                 Meetings
             </Heading>
             <br />
-            {/* if theres an ongoing meeting, click "join" */}
-            <CustomButton
-                buttonText="Start Meeting"
-                buttonColor="#0747ED"
-                clickFunction={startMeeting}
-            />
+            <NextLink href={`/team/${teamId}/meetings/current`} target="_blank">
+                <CustomButton
+                    buttonText="Start Meeting"
+                    buttonColor="#0747ED"
+                    clickFunction={startMeeting}
+                />
+            </NextLink>
         </Box>
     );
 }
