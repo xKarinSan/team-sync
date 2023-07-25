@@ -6,7 +6,6 @@ import { Meeting } from "@/types/MeetingRecords/meetingTypes";
 export const createNewMeeting = async (newMeeting: Meeting) => {
     try {
         const res = await push(meetingRef, newMeeting);
-        console.log("res",res)
         if (res) {
             return res.key;
         }

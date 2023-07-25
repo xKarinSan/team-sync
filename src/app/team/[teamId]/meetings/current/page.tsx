@@ -26,6 +26,7 @@ import { FiMic, FiMicOff, FiVideo, FiVideoOff } from "react-icons/fi";
 import {
     realtimeMeetingListener,
     leaveConference,
+    updatePreferences,
     // endConference,
 } from "@/firebaseFunctions/conferences/conferenceOperations";
 import CustomButton from "@/components/custom/CustomButton";
@@ -62,25 +63,34 @@ export default function CurrentMeeting({
         lastStarted: null,
         host: "",
     }); // [{id: string, name: string, video: boolean, audio: boolean}
+
+    const [userSettings, setUserSettings] = useState<any>({
+        videoEnabled: false,
+        micEnabled: false,
+        screenShareEnabled: false,
+    });
+
     const [loading, setLoading] = useState(false);
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
-    const toggleMic = () => {};
-    const toggleCam = () => {};
+    const toggleMic = async () => {
+        await updatePreferences(teamId, userId, {
+            micEnabled: !userSettings.micEnabled,
+        });
+    };
+    const toggleCam = async () => {
+        await updatePreferences(teamId, userId, {
+            videoEnabled: !userSettings.videoEnabled,
+        });
+    };
     const leaveMeeting = async () => {
         const left = await leaveConference(teamId, userId).then(() => {
             toast({
                 title: "Left the meeting, going back to teams...",
                 status: "info",
             });
-        });
-    };
-
-    const endMeeting = async () => {
-        toast({
-            title: "Meeting ended",
-            status: "info",
+            window.close();
         });
     };
 
@@ -92,16 +102,12 @@ export default function CurrentMeeting({
             userId,
             username,
             profilePic,
-            setCurrentMeeting
+            setCurrentMeeting,
+            setUserSettings
         );
+        // configureUserSettings();
         setLoading(false);
     }, []);
-
-    useEffect(() => {
-        console.log(currentMeeting.participants);
-        console.log(currentMeeting.host);
-    }, [currentMeeting]);
-
     return (
         <Box>
             {" "}
@@ -140,35 +146,28 @@ export default function CurrentMeeting({
             </CustomContainer>
             <CustomContainer>
                 <IconButton
-                    icon={<FiMic />}
+                    icon={userSettings.micEnabled ? <FiMic /> : <FiMicOff />}
                     aria-label="toggle-mic"
                     margin="5px"
+                    onClick={() => {
+                        toggleMic();
+                    }}
                 />
                 <IconButton
-                    icon={<FiVideo />}
+                    icon={
+                        userSettings.videoEnabled ? <FiVideo /> : <FiVideoOff />
+                    }
                     aria-label="toggle-mic"
                     margin="5px"
+                    onClick={() => {
+                        toggleCam();
+                    }}
                 />
                 <CustomButton
                     clickFunction={leaveMeeting}
-                    buttonText={
-                        currentMeeting.host == userId
-                            ? "End Meeting"
-                            : "Leave Meeting"
-                    }
+                    buttonText={"Leave Meeting"}
                     buttonColor="#AA0000"
                 />
-                {/* {currentMeeting.host == userId ? (
-                    <>
-                        <CustomButton
-                            clickFunction={leaveMeeting}
-                            buttonText="End Meeting"
-                            buttonColor="#AA0000"
-                        />
-                    </>
-                ) : (
-                    <></>
-                )} */}
             </CustomContainer>
         </Box>
     );
@@ -189,13 +188,7 @@ const ParticipantScreen = ({
         micEnabled,
         screenShareEnabled,
     } = participant;
-    console.log({
-        username,
-        profilePic,
-        videoEnabled,
-        micEnabled,
-        screenShareEnabled,
-    });
+
     return (
         <CustomContainer
             containerColor="#282828"

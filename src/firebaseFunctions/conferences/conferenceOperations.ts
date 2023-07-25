@@ -14,6 +14,17 @@ import {
 import { createNewMeeting } from "../meetings/meetingAdd";
 import { Meeting } from "@/types/MeetingRecords/meetingTypes";
 
+// ==================== retrieve conference ====================
+export const getTeamConference = async (teamId: string) => {
+    const confRef = getConferenceRef(teamId);
+    const currConferenceSnapshot = await get(confRef);
+    if (currConferenceSnapshot.exists()) {
+        return currConferenceSnapshot.val();
+    }
+    return null;
+};
+
+// ==================== start conference ====================
 export const conferenceInit = async (
     teamId: string,
     userId: string,
@@ -36,6 +47,7 @@ export const conferenceInit = async (
     });
 };
 
+// ==================== join conference ====================
 export const joinConference = async (
     teamId: string,
     userId: string,
@@ -54,15 +66,7 @@ export const joinConference = async (
     });
 };
 
-export const getTeamConference = async (teamId: string) => {
-    const confRef = getConferenceRef(teamId);
-    const currConferenceSnapshot = await get(confRef);
-    if (currConferenceSnapshot.exists()) {
-        return currConferenceSnapshot.val();
-    }
-    return null;
-};
-
+// ==================== change host ====================
 export const changeHost = async (teamId: string) => {
     const conferenceRef = getConferenceRef(teamId);
     await update(conferenceRef, {
@@ -70,6 +74,7 @@ export const changeHost = async (teamId: string) => {
     });
 };
 
+// ==================== leave conference ====================
 export const leaveConference = async (teamId: string, userId: string) => {
     try {
         const currentConference = await getTeamConference(teamId);
@@ -107,12 +112,27 @@ export const leaveConference = async (teamId: string, userId: string) => {
     }
 };
 
+// ==================== update preferences ====================
+export const updatePreferences = async (
+    teamId: string,
+    userId: string,
+    preferences: any
+) => {
+    const currentParticipantRef = getConferenceParticipantUserRef(
+        teamId,
+        userId
+    );
+    await update(currentParticipantRef, preferences);
+};
+
+// ==================== realtime listener ====================
 export const realtimeMeetingListener = (
     teamId: string,
     userId: string,
     userName: string,
     profilePic: string,
-    setCurrentData: (data: any) => void
+    setCurrentData: (data: any) => void,
+    setCurrentUser: (data: any) => void
 ) => {
     const conferenceRef = getConferenceRef(teamId);
     onValue(conferenceRef, async (snapshot) => {
@@ -129,6 +149,15 @@ export const realtimeMeetingListener = (
                 }
                 let participantIds = Object.keys(data.participants);
                 participantIds.forEach((id: string) => {
+                    if (id == userId) {
+                        const { videoEnabled, micEnabled, screenShareEnabled } =
+                            data.participants[id];
+                        setCurrentUser({
+                            videoEnabled,
+                            micEnabled,
+                            screenShareEnabled,
+                        });
+                    }
                     currParticipants.push({ ...data.participants[id], id });
                 });
             }
@@ -142,7 +171,6 @@ export const realtimeMeetingListener = (
             if (!data.hasOwnProperty("participants") || host === "") {
                 await conferenceInit(teamId, userId, userName, profilePic);
             } else {
-                console.log(data.participants);
                 if (!data.participants.hasOwnProperty(userId)) {
                     await joinConference(teamId, userId, userName, profilePic);
                 }
