@@ -26,7 +26,8 @@ import { FiMic, FiMicOff, FiVideo, FiVideoOff } from "react-icons/fi";
 import {
     realtimeMeetingListener,
     leaveConference,
-} from "@/firebaseFunctions/coonferences/conferenceOperations";
+    // endConference,
+} from "@/firebaseFunctions/conferences/conferenceOperations";
 import CustomButton from "@/components/custom/CustomButton";
 import CustomContainer from "@/components/custom/CustomContainer";
 import CustomGrid from "@/components/custom/CustomGrid";
@@ -68,19 +69,12 @@ export default function CurrentMeeting({
     const toggleMic = () => {};
     const toggleCam = () => {};
     const leaveMeeting = async () => {
-        const left = await leaveConference(teamId, userId);
-        if (left) {
+        const left = await leaveConference(teamId, userId).then(() => {
             toast({
                 title: "Left the meeting, going back to teams...",
                 status: "info",
             });
-            window.close();
-        } else {
-            toast({
-                title: "Failed to leave the meeting",
-                status: "error",
-            });
-        }
+        });
     };
 
     const endMeeting = async () => {

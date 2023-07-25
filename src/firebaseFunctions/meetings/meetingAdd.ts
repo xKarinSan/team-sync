@@ -1,16 +1,12 @@
-import { getMeetingRef } from "./meetingRefs";
+import { getMeetingRef, meetingRef } from "./meetingRefs";
 import { push } from "firebase/database";
-import { Meeting, MeetingWithTimestamp } from "@/types/MeetingRecords/meetingTypes";
+import { Meeting } from "@/types/MeetingRecords/meetingTypes";
 
 // ================== simple modular functions ==================
-export const createNewMeeting = async (meeting: Meeting) => {
+export const createNewMeeting = async (newMeeting: Meeting) => {
     try {
-        const newMeeting: MeetingWithTimestamp = {
-            ...meeting,
-            startDate: Date.now(),
-            endDate: -1,
-        };
-        const res = await push(getMeetingRef(meeting.teamId), newMeeting);
+        const res = await push(meetingRef, newMeeting);
+        console.log("res",res)
         if (res) {
             return res.key;
         }

@@ -1,25 +1,26 @@
-import { onValue, set, remove, onDisconnect, update } from "firebase/database";
+import {
+    onValue,
+    set,
+    remove,
+    onDisconnect,
+    update,
+    get,
+} from "firebase/database";
 import {
     getConferenceRef,
     getConferenceParticipantRef,
     getConferenceParticipantUserRef,
 } from "./conferenceRefs";
-import {
-    Conference,
-    ParticipantPreferences,
-} from "@/types/MeetingRecords/realtimeMeeting";
-// meeting exists? create it
-// if the meeting is not ongoing, you start it as the host
-// if the meeting is already ongoing, you join it
+import { createNewMeeting } from "../meetings/meetingAdd";
+import { Meeting } from "@/types/MeetingRecords/meetingTypes";
+
 export const conferenceInit = async (
     teamId: string,
     userId: string,
     userName: string,
     profilePic: string
 ) => {
-    // meeting exists? create it
-    // if the meeting is not ongoing, you start it as the host
-    // if the meeting is already ongoing, you join it
+    const startDate = Date.now();
     await set(getConferenceRef(teamId), {
         host: userId,
         participants: {
@@ -31,8 +32,7 @@ export const conferenceInit = async (
                 screenShareEnabled: false,
             },
         },
-        isActive: true,
-        lastStarted: Date.now(),
+        lastStarted: startDate,
     });
 };
 
@@ -54,36 +54,52 @@ export const joinConference = async (
     });
 };
 
-export const endConference = async (teamId: string, userId: string) => {
-    // const currentParticipantRef = getConferenceParticipantRef(teamId);
-    // const removeParticipantsPromise = await remove(currentParticipantRef);
-    // const currentConferenceRef = getConferenceRef(teamId);
-    // const updateMeetingPromise = await update(currentConferenceRef, {
-    //     isActive: false,
-    // });
-    // Promise.all([removeParticipantsPromise, updateMeetingPromise]).then(() => {
-    //     alert("Meeting has ended");
-    //     window.close();
-    // });
-    const currentParticipantRef = getConferenceParticipantRef(teamId);
-    await remove(currentParticipantRef)
-        .then(() => {
-            alert("Meeting has ended");
-        })
-        .then(() => {
-            window.close();
-        });
+export const getTeamConference = async (teamId: string) => {
+    const confRef = getConferenceRef(teamId);
+    const currConferenceSnapshot = await get(confRef);
+    if (currConferenceSnapshot.exists()) {
+        return currConferenceSnapshot.val();
+    }
+    return null;
 };
 
-export const changeHost = async () => {};
+export const changeHost = async (teamId: string) => {
+    const conferenceRef = getConferenceRef(teamId);
+    await update(conferenceRef, {
+        host: "",
+    });
+};
 
 export const leaveConference = async (teamId: string, userId: string) => {
     try {
-        const currentParticipantRef = getConferenceParticipantUserRef(
-            teamId,
-            userId
-        );
-        await remove(currentParticipantRef);
+        const currentConference = await getTeamConference(teamId);
+        if (currentConference) {
+            const { lastStarted, host } = currentConference;
+            const newMeeting: Meeting = {
+                teamId,
+                startDate: lastStarted,
+                endDate: Date.now(),
+            };
+            if (userId === host) {
+                // Update the host to an empty string before creating a new meeting
+                await changeHost(teamId);
+
+                const newMeetingPromise = createNewMeeting(newMeeting);
+                const currentParticipantRef =
+                    getConferenceParticipantRef(teamId);
+                const removeMeetingPromise = remove(currentParticipantRef);
+
+                await Promise.all([newMeetingPromise, removeMeetingPromise]);
+                window.close();
+            } else {
+                const currentParticipantRef = getConferenceParticipantUserRef(
+                    teamId,
+                    userId
+                );
+                await remove(currentParticipantRef);
+            }
+        }
+
         return true;
     } catch (e) {
         console.log(e);
@@ -101,14 +117,14 @@ export const realtimeMeetingListener = (
     const conferenceRef = getConferenceRef(teamId);
     onValue(conferenceRef, async (snapshot) => {
         if (snapshot.exists()) {
-            console.log("check");
             const data = snapshot.val();
-            const { host, isActive, lastStarted } = data;
+            const { host, lastStarted } = data;
 
             const currParticipants: any = [];
             if (data.hasOwnProperty("participants")) {
                 if (!Object.keys(data.participants).includes(host)) {
-                    await endConference(teamId, userId);
+                    // Host has left, handle this situation as needed.
+                    await leaveConference(teamId, userId);
                     return;
                 }
                 let participantIds = Object.keys(data.participants);
@@ -118,13 +134,12 @@ export const realtimeMeetingListener = (
             }
             const currentConference = {
                 host,
-                isActive,
                 lastStarted,
                 participants: currParticipants,
             };
             setCurrentData(currentConference);
 
-            if (!data.hasOwnProperty("participants") || !data.isActive) {
+            if (!data.hasOwnProperty("participants") || host === "") {
                 await conferenceInit(teamId, userId, userName, profilePic);
             } else {
                 console.log(data.participants);
