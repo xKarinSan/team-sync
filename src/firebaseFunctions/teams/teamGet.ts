@@ -34,7 +34,7 @@ export const getUserTeams = async (userId: string) => {
         const currentTeamInfo = allTeams.filter(
             (currentTeam: any) => currentTeam.id == teamId
         );
-        if (currentTeamInfo) {
+        if (currentTeamInfo && currentTeamInfo[0]) {
             const { createdDate, teamName } = currentTeamInfo[0];
             data.push({ createdDate, teamName, teamId });
         }
