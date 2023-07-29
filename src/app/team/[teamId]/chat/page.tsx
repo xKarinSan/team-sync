@@ -15,11 +15,11 @@ import CustomContainer from "@/components/custom/CustomContainer";
 import CustomFormInput from "@/components/custom/CustomFormInput";
 import CustomButton from "@/components/custom/CustomButton";
 // ==========================import external functions==========================
-
+import { realtimeTeamChatListener } from "@/firebaseFunctions/chats/chatGet";
 // ==========================import external variables==========================
 import { formatDate } from "@/components/helperFunctions/general/DateFunctions";
 // ==========================import types/interfaces==========================
-
+import { Chat, ChatMessage, ChatParticipant } from "@/types/Chat/chatTypes";
 // ==========================etc==========================
 import { FiSend } from "react-icons/fi";
 
@@ -33,7 +33,12 @@ export default function ComponentName({}: {}) {
 
     // ===============states===============
     const [message, setMessage] = useState<string>("");
-    const [teamMessages, setTeamMessages] = useState<any>([]);
+    // const [teamMessages, setTeamMessages] = useState<any>([]);
+    const [teamChat, setTeamChat] = useState<Chat>({
+        chatName: "",
+        messages: {},
+        participants: {},
+    });
 
     // ===============helper functions (will not be directly triggered)===============
 
@@ -45,6 +50,13 @@ export default function ComponentName({}: {}) {
     // ===============useEffect===============
     useEffect(() => {
         // listen to any team messages
+        realtimeTeamChatListener(
+            teamId,
+            userId,
+            username,
+            profilePic,
+            setTeamChat
+        );
     }, []);
 
     return (
@@ -73,22 +85,6 @@ export default function ComponentName({}: {}) {
                     marginBottom={0}
                     marginTop={0}
                 >
-                    <MessageBubble originalSender={true} />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
-                    <MessageBubble />
                 </CustomContainer>
                 <CustomContainer
                     margin="0"
@@ -138,7 +134,7 @@ const MessageBubble = ({ originalSender }: { originalSender?: boolean }) => {
                     fontSize={"sm"}
                     color={originalSender ? "white" : "black"}
                 >
-                   Date 
+                    Date
                 </Text>
             </CustomContainer>
         </Box>
