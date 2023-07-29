@@ -36,7 +36,7 @@ export default function CustomButton({
     LeftButtonIcon?: any;
     RightButtonIcon?: any;
     clickFunction?: () => void;
-    buttonText: string;
+    buttonText?: string;
     textColor?: string;
     buttonColor?: string;
     buttonWidth?: string;
@@ -75,7 +75,7 @@ export default function CustomButton({
         >
             {" "}
             <Text overflow={"hidden"} textOverflow={"ellipsis"}>
-                {buttonText}
+                {buttonText ? buttonText : null}
             </Text>
         </Button>
     );

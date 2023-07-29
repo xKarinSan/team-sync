@@ -22,6 +22,7 @@ import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 // ===============component exclusive interface(s)/type(s) if any===============
 
 export default function CustomFormInput({
+    margin,
     placeholder,
     formLabel,
     formType,
@@ -29,6 +30,7 @@ export default function CustomFormInput({
     formId,
     changeHandler,
 }: {
+    margin?: number;
     placeholder?: string;
     formLabel?: string;
     formType?: string;
@@ -47,7 +49,7 @@ export default function CustomFormInput({
     // ===============useEffect===============
 
     return (
-        <FormControl id={formId}>
+        <FormControl id={formId} margin={margin ? margin : 0}>
             {formLabel ? (
                 <>
                     <FormLabel>{formLabel}</FormLabel>
