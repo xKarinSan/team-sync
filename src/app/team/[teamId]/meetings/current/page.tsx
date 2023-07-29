@@ -350,13 +350,11 @@ const ParticipantScreen = ({
                             />
                         </>
                     )}
-                    {videoEnabled && (
-                        <Box
-                            id={containerId ? containerId : "local-stream"}
-                            height="100%"
-                            width="100%"
-                        ></Box>
-                    )}
+                    <Box
+                        id={containerId ? containerId : "local-stream"}
+                        height="100%"
+                        width="100%"
+                    ></Box>
                 </Box>
             </Box>
             <Text textAlign="center" color="white">
