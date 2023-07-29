@@ -66,6 +66,14 @@ export default function TeamPage() {
 
     // ===============main functions (will be directly triggered)===============
     const submitTeam = async () => {
+        if (teamName.length == 0) {
+            toast({
+                title: "Creation Unsuccessful",
+                description: "Team name cannot be empty",
+                status: "error",
+            });
+            return;
+        }
         const teamObject: TeamInput = {
             userId,
             teamName,
@@ -172,8 +180,7 @@ export default function TeamPage() {
 const MembershipContainer = ({
     membership,
     clickFunction,
-}: // clickFunction,
-{
+}: {
     membership: MembershipDisplay;
     clickFunction: (
         teamId: string,
@@ -194,13 +201,10 @@ const MembershipContainer = ({
 
     return (
         <Box
-            // href={`/team/${membership.teamId}`}
             onClick={() => {
                 //
                 getCurrentTeam();
             }}
-
-            // target="_blank"
         >
             <CustomButton
                 buttonColor="rgba(243, 246, 251, 1)"
