@@ -28,10 +28,12 @@ export default function CustomGrid({
     children,
     gridCols,
     spacing,
+    ref,
 }: {
     children: ReactNode;
     gridCols?: any[];
     spacing?: number;
+    ref?: any;
 }) {
     // ===============constants===============
 
@@ -45,6 +47,7 @@ export default function CustomGrid({
 
     return (
         <SimpleGrid
+            ref={ref}
             columns={gridCols ? gridCols : [2, null, 3, 4, 6]}
             spacing={spacing ? spacing : 1}
         >

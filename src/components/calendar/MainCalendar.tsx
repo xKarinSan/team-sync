@@ -88,7 +88,6 @@ export default function MainCalendar({}: {}) {
             0,
             0
         );
-        // console.log("firstDayOfMonth", firstDayOfMonth);
         var weekRows = [];
         var dayCounts = 0;
         var weekCounts = 0;
@@ -234,7 +233,6 @@ export default function MainCalendar({}: {}) {
                                                     calendarDay: number,
                                                     index: number
                                                 ) => {
-                                                    // console.log("day", day);
                                                     return (
                                                         <>
                                                             <CalendarCell

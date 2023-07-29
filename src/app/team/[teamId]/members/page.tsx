@@ -154,6 +154,7 @@ function InvitationBox({
         setAllUsers(currentUsers);
         setAllUsersDict(usersDict);
     };
+    
 
     const onSelectUser = (userId: string) => {
         let newMembers: string[] = [...invitedMembers];
@@ -205,7 +206,7 @@ function InvitationBox({
                     placeholder="Enter member name or email"
                     formLabel="Member Name"
                     value={memberName}
-                    changeHandler={(e) => setMembersName(e.target.value)}
+                    changeHandler={setMembersName}
                 />
                 <Menu>
                     <MenuButton
@@ -224,10 +225,6 @@ function InvitationBox({
                                 {allUsers.map((user) => {
                                     const { userId, username, profilePic } =
                                         user;
-                                    // console.log(
-                                    //     "profilePic.length > 0",
-                                    //     profilePic
-                                    // );
                                     return (
                                         <MenuItem
                                             key={userId}

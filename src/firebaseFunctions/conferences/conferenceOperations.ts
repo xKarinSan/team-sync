@@ -133,6 +133,7 @@ export const realtimeMeetingListener = (
     profilePic: string,
     setCurrentData: (data: any) => void,
     setCurrentUser: (data: any) => void
+    // initAgoraClient: () => Promise<void>
 ) => {
     const conferenceRef = getConferenceRef(teamId);
     onValue(conferenceRef, async (snapshot) => {
@@ -140,7 +141,8 @@ export const realtimeMeetingListener = (
             const data = snapshot.val();
             const { host, lastStarted } = data;
 
-            const currParticipants: any = [];
+            // const currParticipants: any = [];
+            const currParticipants: any = {};
             if (data.hasOwnProperty("participants")) {
                 if (!Object.keys(data.participants).includes(host)) {
                     // Host has left, handle this situation as needed.
@@ -158,7 +160,8 @@ export const realtimeMeetingListener = (
                             screenShareEnabled,
                         });
                     }
-                    currParticipants.push({ ...data.participants[id], id });
+                    currParticipants[id] = { ...data.participants[id] };
+                    // currParticipants.push({ ...data.participants[id], id });
                 });
             }
             const currentConference = {
@@ -167,6 +170,7 @@ export const realtimeMeetingListener = (
                 participants: currParticipants,
             };
             setCurrentData(currentConference);
+            // await initAgoraClient();
 
             if (!data.hasOwnProperty("participants") || host === "") {
                 await conferenceInit(teamId, userId, userName, profilePic);

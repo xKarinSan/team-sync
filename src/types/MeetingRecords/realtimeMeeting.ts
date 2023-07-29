@@ -2,7 +2,8 @@
 // id is teamid
 export type Conference = {
     // team which meeting is occuring at
-    participants: ParticipantPreferencesRecord[];
+    // participants: ParticipantPreferencesRecord[];
+    participants: { [key: string]: ParticipantPreferencesRecord };
     // is the meeting currenlty active?
     isActive: boolean;
 

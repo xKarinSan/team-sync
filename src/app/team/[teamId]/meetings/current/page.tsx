@@ -2,8 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect, useState } from "react";
-
+import React, { useEffect, useState, useRef } from "react";
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
 // ==========================import state management==========================
@@ -40,7 +39,9 @@ import {
     ParticipantPreferencesRecord,
 } from "@/types/MeetingRecords/realtimeMeeting";
 // ==========================etc==========================
-
+import AgoraRTC from "agora-rtc-sdk-ng";
+import { rtc, options } from "@/config/agoraConfig";
+import DefaultProfilePic from "@/images/general/defaultProfilePic.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -56,9 +57,12 @@ export default function CurrentMeeting({
     const { teamId } = useTeam();
     const router = useRouter();
     const toast = useToast();
+    const participantRef = useRef<any>(null);
+
     // ===============states===============
     const [currentMeeting, setCurrentMeeting] = useState<Conference>({
-        participants: [],
+        // participants: [],
+        participants: {},
         isActive: false,
         lastStarted: null,
         host: "",
@@ -70,22 +74,111 @@ export default function CurrentMeeting({
         screenShareEnabled: false,
     });
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [remoteUsers, setRemoteUsers] = useState<any>({});
+
     // ===============helper functions (will not be directly triggered)===============
+    const initAgoraClient = async () => {
+        if (rtc.client) {
+            return;
+        }
+        rtc.client = AgoraRTC.createClient({
+            mode: "rtc",
+            codec: "h264",
+        });
+
+        setRemoteUsers(rtc.client.remoteUsers);
+        rtc.client.remoteUsers.forEach((user: any) => {
+            if (user.audioTrack) {
+                user.audioTrack.play();
+            }
+            if (user.videoTrack) {
+                user.videoTrack.play(`player-${user.uid}`);
+            }
+        });
+        // event handling
+        rtc.client.on("user-published", async (user: any, mediaType: any) => {
+            await subscribe(user, mediaType);
+        });
+        rtc.client.on("user-unpublished", async (user: any) => {
+            await handleUserLeft(user);
+        });
+        await rtc.client.join(options.appId, teamId, null, userId);
+        // Create an audio track from the audio captured by a microphone
+        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+
+        rtc.localAudioTrack.play();
+        // Create a video track from the video captured by a camera
+        rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+        rtc.localVideoTrack.play("local-stream");
+
+        const { localAudioTrack, localVideoTrack } = rtc;
+
+        await rtc.client.publish([localAudioTrack, localVideoTrack]);
+    };
+
+    const subscribe = async (user: any, mediaType: any) => {
+        const id = user.uid;
+        const currentRemoteUsers = remoteUsers;
+        currentRemoteUsers[id] = user;
+        setRemoteUsers(currentRemoteUsers);
+        const uid = user.uid;
+        await rtc.client.subscribe(user, mediaType);
+        if (mediaType === "video") {
+            user.videoTrack.play(`player-${uid}`);
+        }
+        if (mediaType === "audio") {
+            user.audioTrack.play();
+        }
+    };
+
+    // Handle user leave
+    const handleUserLeft = (user: any) => {
+        const id = user.uid;
+        delete remoteUsers[id];
+    };
+
+    const muteAudio = async () => {
+        await rtc.localAudioTrack.setEnabled(false);
+    };
+
+    const unmuteAudio = async () => {
+        await rtc.localAudioTrack.setEnabled(true);
+    };
+
+    const muteVideo = async () => {
+        await rtc.localVideoTrack.setEnabled(false);
+    };
+
+    const unmuteVideo = async () => {
+        await rtc.localVideoTrack.setEnabled(true);
+    };
 
     // ===============main functions (will be directly triggered)===============
     const toggleMic = async () => {
+        if (userSettings.micEnabled) {
+            await muteAudio();
+        } else {
+            await unmuteAudio();
+        }
         await updatePreferences(teamId, userId, {
             micEnabled: !userSettings.micEnabled,
         });
     };
     const toggleCam = async () => {
+        if (userSettings.videoEnabled) {
+            await muteVideo();
+        } else {
+            await unmuteVideo();
+        }
         await updatePreferences(teamId, userId, {
             videoEnabled: !userSettings.videoEnabled,
         });
     };
     const leaveMeeting = async () => {
-        const left = await leaveConference(teamId, userId).then(() => {
+        await handleLeave();
+        await leaveConference(teamId, userId).then(async () => {
+            // await handleLeave();
             toast({
                 title: "Left the meeting, going back to teams...",
                 status: "info",
@@ -94,9 +187,17 @@ export default function CurrentMeeting({
         });
     };
 
+    const handleLeave = async () => {
+        try {
+            await rtc.client.leave();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     // ===============useEffect===============
     useEffect(() => {
-        setLoading(true);
+        initAgoraClient();
         realtimeMeetingListener(
             teamId,
             userId,
@@ -105,42 +206,68 @@ export default function CurrentMeeting({
             setCurrentMeeting,
             setUserSettings
         );
-        // configureUserSettings();
-        setLoading(false);
     }, []);
+
+    useEffect(() => {
+        if (rtc.client.remoteUsers) {
+            rtc.client.remoteUsers.forEach((user: any) => {
+                if (user.audioTrack) {
+                    user.audioTrack.play();
+                }
+                if (user.videoTrack) {
+                    user.videoTrack.play(`player-${user.uid}`);
+                }
+            });
+        }
+    }, [currentMeeting, rtc.client]);
     return (
         <Box>
             {" "}
             <Heading fontWeight={"normal"} size="lg">
                 Ongoing Meeting
             </Heading>
-            <CustomContainer>
+            <CustomContainer minHeight="80vh" maxHeight="80vh">
                 <Box padding="5px">
-                    <CustomGrid gridCols={[1, null, null, null, 2]}>
-                        {/* participants */}
-                        <Box
-                            height={["40vh", null, null, null, "80vh"]}
-                            overflow="scroll"
-                        >
-                            {currentMeeting.participants.map(
-                                (participant, index) => {
+                    <CustomGrid
+                        gridCols={[1, null, null, null, 2, 3]}
+                        ref={participantRef}
+                    >
+                        {/* <Box height={["40vh", null, null, null, "80vh"]}> */}
+                        <ParticipantScreen
+                            containerId={"local-stream"}
+                            username={username + " (You)"}
+                            profilePic={profilePic}
+                            videoEnabled={userSettings.videoEnabled}
+                            micEnabled={userSettings.micEnabled}
+                            screenShareEnabled={false}
+                        />
+                        {Object.keys(currentMeeting.participants).map(
+                            (uid, index) => {
+                                if (uid != userId) {
+                                    const {
+                                        username,
+                                        videoEnabled,
+                                        micEnabled,
+                                        screenShareEnabled,
+                                        profilePic,
+                                    } = currentMeeting.participants[uid];
                                     return (
                                         <ParticipantScreen
-                                            participant={participant}
                                             key={index}
+                                            containerId={`player-${uid}`}
+                                            username={username}
+                                            profilePic={profilePic}
+                                            videoEnabled={videoEnabled}
+                                            micEnabled={micEnabled}
+                                            screenShareEnabled={
+                                                screenShareEnabled
+                                            }
                                         />
                                     );
                                 }
-                            )}
-                        </Box>
-                        <Box height={["40vh", null, null, null, "80vh"]}>
-                            <CustomContainer
-                                containerColor="black"
-                                minHeight="100%"
-                            >
-                                IDK
-                            </CustomContainer>
-                        </Box>
+                            }
+                        )}
+                        {/* </Box> */}
                     </CustomGrid>
                 </Box>
             </CustomContainer>
@@ -177,18 +304,20 @@ export default function CurrentMeeting({
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
 const ParticipantScreen = ({
-    participant,
+    containerId,
+    username,
+    profilePic,
+    videoEnabled,
+    micEnabled,
+    screenShareEnabled,
 }: {
-    participant: ParticipantPreferencesRecord;
+    containerId?: string;
+    username: string;
+    profilePic: string;
+    videoEnabled: boolean;
+    micEnabled: boolean;
+    screenShareEnabled: boolean;
 }) => {
-    const {
-        username,
-        profilePic,
-        videoEnabled,
-        micEnabled,
-        screenShareEnabled,
-    } = participant;
-
     return (
         <CustomContainer
             containerColor="#282828"
@@ -196,28 +325,51 @@ const ParticipantScreen = ({
             display="grid"
             margin="5px auto"
         >
-            <Box margin="10px auto" alignSelf={"center"} maxHeight={"500px"}>
-                {/* <CustomContainer> */}
-                <Image
-                    src={profilePic}
-                    borderRadius={"50%"}
-                    margin="10px auto"
-                />
-                <Text textAlign={"center"} color="white">
-                    {username}
-                </Text>
-                {/* </CustomContainer> */}
+            <Box margin="10px auto" alignSelf="center" width="100%">
+                <Box
+                    position="relative"
+                    height={
+                        videoEnabled
+                            ? ["400px", "300px", "200px", "300px"]
+                            : "auto"
+                    }
+                    margin={"0 autp"}
+                >
+                    {videoEnabled ? null : (
+                        <>
+                            <Image
+                                src={
+                                    profilePic
+                                        ? profilePic
+                                        : DefaultProfilePic.src
+                                }
+                                height={["80px", null, "100px", "120px"]}
+                                width={["80px", null, "100px", "120px"]}
+                                borderRadius="50%"
+                                margin={"0 auto"}
+                            />
+                        </>
+                    )}
+                    {videoEnabled && (
+                        <Box
+                            id={containerId ? containerId : "local-stream"}
+                            height="100%"
+                            width="100%"
+                        ></Box>
+                    )}
+                </Box>
             </Box>
-            <Box margin="10px auto" alignSelf={"center"}>
+            <Text textAlign="center" color="white">
+                {username}
+            </Text>
+            <Box margin="10px auto" alignSelf="center">
                 <Icon
                     as={micEnabled ? FiMic : FiMicOff}
-                    // as={FiMic}
                     color="white"
                     margin="10px"
                 />
                 <Icon
                     as={videoEnabled ? FiVideo : FiVideoOff}
-                    // as={FiVideo}
                     color="white"
                     margin="10px"
                 />
