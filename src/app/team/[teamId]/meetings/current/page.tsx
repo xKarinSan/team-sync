@@ -79,6 +79,7 @@ export default function CurrentMeeting({
 
     // ===============helper functions (will not be directly triggered)===============
     const initAgoraClient = async () => {
+        // const AgoraRTC = (await import("agora-rtc-sdk-ng")).default;
         if (rtc.client) {
             return;
         }
@@ -232,7 +233,6 @@ export default function CurrentMeeting({
                         gridCols={[1, null, null, null, 2, 3]}
                         ref={participantRef}
                     >
-                        {/* <Box height={["40vh", null, null, null, "80vh"]}> */}
                         <ParticipantScreen
                             containerId={"local-stream"}
                             username={username + " (You)"}

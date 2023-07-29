@@ -293,7 +293,6 @@ function CalendarCell({
         }
     };
     return (
-        // <Box>
         <Box
             background={day ? (isToday ? "#0239C8" : "#3d73ff") : "FFFFFF"}
             transition={"background-color 200ms linear, color 200ms linear"}
@@ -319,6 +318,5 @@ function CalendarCell({
                 {day}
             </Heading>
         </Box>
-        // </Box>
     );
 }

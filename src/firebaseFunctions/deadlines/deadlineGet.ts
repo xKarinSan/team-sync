@@ -3,7 +3,7 @@ import {
     DeadlineRecord,
 } from "@/types/Deadline/deadlineTypes";
 import { getSnapshotData } from "../general/getSnapshotData";
-import { getDeadlineRef, defaultDeadlineRef } from "./deadlineRefs";
+import { getDeadlineRef } from "./deadlineRefs";
 import { onValue, get } from "firebase/database";
 
 export const getDeadlineByTeam = async (teamId: string) => {

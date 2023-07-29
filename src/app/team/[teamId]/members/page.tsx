@@ -4,7 +4,6 @@
 // ==========================import from react==========================
 import { useEffect, useState } from "react";
 // ==========================import from next==========================
-// import Image from "next/image";
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
@@ -13,7 +12,6 @@ import {
     Heading,
     Box,
     Text,
-    Input,
     IconButton,
     Menu,
     MenuList,
@@ -283,7 +281,6 @@ function InvitationBox({
                                             width="25px"
                                             borderRadius={"50%"}
                                             alignSelf={"center"}
-                                            // margin ={"5px auto"}
                                         />
                                         <Text
                                             noOfLines={1}
