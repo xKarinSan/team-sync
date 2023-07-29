@@ -79,3 +79,27 @@ export const realtimeMembershipChanges = (
         }
     });
 };
+
+export const realtimeMembershipListener = (
+    teamId: string,
+    setCurrentData: (data: any) => void
+) => {
+    onValue(membershipRef, async (snapshot) => {
+        const userDict: { [key: string]: string[] } = await getUserDict();
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            let dataIds = Object.keys(data);
+            const res: any = {};
+            dataIds.forEach((id: string) => {
+                if (data[id].teamId === teamId) {
+                    const [username, profilePic] = userDict[data[id].userId];
+                    res[data[id].userId] = {
+                        username,
+                        profilePic,
+                    };
+                }
+            });
+            setCurrentData(res);
+        }
+    });
+};

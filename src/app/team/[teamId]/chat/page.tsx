@@ -16,12 +16,14 @@ import {
     Textarea,
     Text,
     useToast,
+    Image,
 } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomContainer from "@/components/custom/CustomContainer";
 import CustomFormInput from "@/components/custom/CustomFormInput";
 import CustomButton from "@/components/custom/CustomButton";
 // ==========================import external functions==========================
+import { realtimeMembershipListener } from "@/firebaseFunctions/memberships/membershipGet";
 import { realtimeTeamChatListener } from "@/firebaseFunctions/chats/chatGet";
 import { sendNewMessage } from "@/firebaseFunctions/chats/chatAdd";
 // ==========================import external variables==========================
@@ -30,6 +32,7 @@ import { formatDate } from "@/components/helperFunctions/general/DateFunctions";
 import { Chat, ChatMessage, ChatParticipant } from "@/types/Chat/chatTypes";
 // ==========================etc==========================
 import { FiSend } from "react-icons/fi";
+import DefaultProfilePic from "@/images/general/defaultProfilePic.png";
 
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
@@ -48,6 +51,10 @@ export default function ComponentName({}: {}) {
         messages: {},
         participants: {},
     });
+
+    const [currentMembers, setCurrentMembers] = useState<{
+        [key: string]: ChatParticipant;
+    }>({});
 
     // ===============helper functions (will not be directly triggered)===============
 
@@ -75,6 +82,7 @@ export default function ComponentName({}: {}) {
             profilePic,
             setTeamChat
         );
+        realtimeMembershipListener(teamId, setCurrentMembers);
     }, []);
 
     return (
@@ -109,27 +117,39 @@ export default function ComponentName({}: {}) {
                     marginBottom={0}
                     marginTop={0}
                 >
-                    {
-                        // for each message
-                        Object.keys(teamChat.messages).map(
-                            (messageId: string) => {
-                                const { content, sentDate, senderId } =
-                                    teamChat.messages[messageId];
-                                const message: ChatMessage =
-                                    teamChat.messages[messageId];
-                                const originalSender: boolean =
-                                    message.senderId === userId;
-                                return (
-                                    <MessageBubble
-                                        key={messageId}
-                                        content={content}
-                                        sentDate={sentDate}
-                                        originalSender={originalSender}
-                                    />
-                                );
-                            }
-                        )
-                    }
+                    {teamChat.messages &&
+                    Object.keys(currentMembers).length > 0 ? (
+                        <>
+                            {Object.keys(teamChat.messages).map(
+                                (messageId: string) => {
+                                    const { content, sentDate, senderId } =
+                                        teamChat.messages[messageId];
+                                    const message: ChatMessage =
+                                        teamChat.messages[messageId];
+                                    const originalSender: boolean =
+                                        message.senderId === userId;
+                                    const { username, profilePic } =
+                                        currentMembers[senderId];
+                                    return (
+                                        <MessageBubble
+                                            username={username}
+                                            profilePic={
+                                                profilePic
+                                                    ? profilePic
+                                                    : DefaultProfilePic.src
+                                            }
+                                            key={messageId}
+                                            content={content}
+                                            sentDate={sentDate}
+                                            originalSender={originalSender}
+                                        />
+                                    );
+                                }
+                            )}
+                        </>
+                    ) : (
+                        <></>
+                    )}
                 </CustomContainer>
                 <CustomContainer
                     margin="0"
@@ -163,37 +183,65 @@ export default function ComponentName({}: {}) {
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
 const MessageBubble = ({
+    username,
+    profilePic,
     originalSender,
     content,
     sentDate,
 }: {
+    username?: string;
+    profilePic?: string;
     originalSender?: boolean;
     content: string;
     sentDate: any;
 }) => {
     return (
         <Box display="grid" justifyContent={originalSender ? "end" : "start"}>
-            <CustomContainer
-                width={["fit-content"]}
-                // containerColor="white"
-                margin="auto"
-                marginTop={1}
-                marginBottom={1}
-                containerColor={originalSender ? "#0239C8" : "white"}
-            >
-                <Text
-                    fontSize={"lg"}
-                    color={originalSender ? "white" : "black"}
+            <Box display="flex">
+                {profilePic && !originalSender ? (
+                    <>
+                        {" "}
+                        <Image
+                            src={profilePic}
+                            borderRadius="full"
+                            boxSize="40px"
+                            margin="10px"
+                        />
+                    </>
+                ) : null}
+                <CustomContainer
+                    width={["fit-content"]}
+                    margin="auto"
+                    marginTop={1}
+                    marginBottom={1}
+                    containerColor={originalSender ? "#0747ED" : "white"}
                 >
-                    {content}
-                </Text>
-                <Text
-                    fontSize={"xs"}
-                    color={originalSender ? "white" : "black"}
-                >
-                    {formatDate(sentDate)}
-                </Text>
-            </CustomContainer>
+                    {username && !originalSender ? (
+                        <>
+                            <Text
+                                fontSize={"lg"}
+                                color={"#042C94"}
+                                fontWeight={"bold"}
+                            >
+                                {username}
+                            </Text>
+                        </>
+                    ) : null}
+
+                    <Text
+                        fontSize={"lg"}
+                        color={originalSender ? "white" : "black"}
+                    >
+                        {content}
+                    </Text>
+                    <Text
+                        fontSize={"xs"}
+                        color={originalSender ? "white" : "black"}
+                    >
+                        {formatDate(sentDate)}
+                    </Text>
+                </CustomContainer>
+            </Box>
         </Box>
     );
 };
