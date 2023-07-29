@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";
@@ -13,12 +13,14 @@ import useTeam from "@/store/teamStore";
 import { Heading, Box, useToast } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomButton from "@/components/custom/CustomButton";
+import CustomContainer from "@/components/custom/CustomContainer";
 // ==========================import external functions==========================
 import { createNewMeeting } from "@/firebaseFunctions/meetings/meetingAdd";
+import { realtimeTeamMeetingRecordChanges } from "@/firebaseFunctions/meetings/meetingGet";
+import { formatDate } from "@/components/helperFunctions/general/DateFunctions";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-// import { Meeting } from "@/types/Meetings/meetingTypes";
 // ==========================etc==========================
 
 // ===================================main component===================================
@@ -32,39 +34,25 @@ export default function MeetingDisplayPage({}: {}) {
     const { teamId } = useTeam();
 
     // ===============states===============
+    const [teamMeetings, setTeamMeetings] = useState<any>(null);
 
     // ===============helper functions (will not be directly triggered)===============
 
     // ===============main functions (will be directly triggered)===============
     // start a meeting if there isnt already an ongoing meeting
     const startMeeting = () => {
-        // const createdNewMeeting = await createNewMeeting({
-        //     teamId,
-        //     hostId: userId,
-        // });
-        // if (createdNewMeeting) {
-        //     toast({
-        //         title: "Meeting created, entering ...",
-        //         status: "success",
-        //     });
-        //     router.push(`/team/${teamId}/meetings/${createdNewMeeting}`);
-        // } else {
-        //     toast({
-        //         title: "Meeting failed to create",
-        //         status: "error",
-        //     });
-        // }
         toast({
             title: "Entering meeting ...",
             status: "info",
         });
-        // router.push(`/team/${teamId}/meetings/current`);
     };
 
     // join a meeting if there is an ongoing meeting
     const joinMeeting = () => {};
     // ===============useEffect===============
-    useEffect(() => {}, []);
+    useEffect(() => {
+        realtimeTeamMeetingRecordChanges(teamId, setTeamMeetings);
+    }, []);
 
     return (
         <Box>
@@ -79,6 +67,25 @@ export default function MeetingDisplayPage({}: {}) {
                     clickFunction={startMeeting}
                 />
             </NextLink>
+            <br />
+            <Heading fontWeight={"normal"} size="lg" marginTop="10px">
+                History
+            </Heading>
+            {teamMeetings ? (
+                <>
+                    {teamMeetings.map((meeting: any, index: number) => {
+                        // const { startDate, endDate, id } = meeting;
+                        return (
+                            <MeetingRecordContainer
+                                key={index}
+                                meeting={meeting}
+                            />
+                        );
+                    })}
+                </>
+            ) : (
+                <></>
+            )}
         </Box>
     );
 }
@@ -86,3 +93,20 @@ export default function MeetingDisplayPage({}: {}) {
 // ===================================sub component(s) if any===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 // the rest are pretty much similar like the main components
+const MeetingRecordContainer = ({ meeting }: { meeting: any }) => {
+    const { startDate, endDate, id } = meeting;
+    return (
+        <CustomContainer>
+            <Heading fontWeight={"normal"} size="lg">
+                Team Meeting
+            </Heading>
+            <br/>
+            <Heading fontWeight={"normal"} size="sm">
+                Started at: {formatDate(startDate)}
+            </Heading>
+            <Heading fontWeight={"normal"} size="sm">
+                Ended at: {formatDate(endDate)}
+            </Heading>
+        </CustomContainer>
+    );
+};

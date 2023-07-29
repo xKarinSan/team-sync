@@ -1,7 +1,7 @@
 // the base
 export type Meeting = {
     // team which meeting is occuring at
-    teamId: string;
+    // teamId: string;
     // start & end
     startDate: any;
     // default is -1

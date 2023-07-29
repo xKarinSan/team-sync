@@ -81,7 +81,6 @@ export const leaveConference = async (teamId: string, userId: string) => {
         if (currentConference) {
             const { lastStarted, host } = currentConference;
             const newMeeting: Meeting = {
-                teamId,
                 startDate: lastStarted,
                 endDate: Date.now(),
             };
@@ -89,7 +88,7 @@ export const leaveConference = async (teamId: string, userId: string) => {
                 // Update the host to an empty string before creating a new meeting
                 await changeHost(teamId);
 
-                const newMeetingPromise = createNewMeeting(newMeeting);
+                const newMeetingPromise = createNewMeeting(teamId, newMeeting);
                 const currentParticipantRef =
                     getConferenceParticipantRef(teamId);
                 const removeMeetingPromise = remove(currentParticipantRef);
