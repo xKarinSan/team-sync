@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // ==========================import from next==========================
 
 // ==========================import state management==========================
@@ -42,6 +42,7 @@ export default function ComponentName({}: {}) {
     const { userId, username, profilePic } = useUser();
     const { teamId, teamName } = useTeam();
     const toast = useToast();
+    const bottomRef = useRef();
 
     // ===============states===============
     const [message, setMessage] = useState<string>("");
@@ -57,6 +58,11 @@ export default function ComponentName({}: {}) {
     }>({});
 
     // ===============helper functions (will not be directly triggered)===============
+    const handleScrollToBottom = () => {
+        if (bottomRef && bottomRef.current) {
+            bottomRef.current.scrollIntoView();
+        }
+    };
 
     // ===============main functions (will be directly triggered)===============
     const sendMessage = async () => {
@@ -69,6 +75,7 @@ export default function ComponentName({}: {}) {
                 status: "success",
             });
             setMessage("");
+            handleScrollToBottom();
         }
     };
 
@@ -83,8 +90,11 @@ export default function ComponentName({}: {}) {
             setTeamChat
         );
         realtimeMembershipListener(teamId, setCurrentMembers);
+        handleScrollToBottom();
     }, []);
-
+    useEffect(() => {
+        handleScrollToBottom();
+    }, [teamChat]);
     return (
         <Box
             width={["100%", null, "80%", null, "60%"]}
@@ -150,7 +160,9 @@ export default function ComponentName({}: {}) {
                     ) : (
                         <></>
                     )}
+                    <div ref={bottomRef}></div>
                 </CustomContainer>
+
                 <CustomContainer
                     margin="0"
                     width={["100%"]}
