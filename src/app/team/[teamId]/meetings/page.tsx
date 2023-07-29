@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 // ==========================import from next==========================
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";
@@ -18,6 +18,7 @@ import CustomContainer from "@/components/custom/CustomContainer";
 import { createNewMeeting } from "@/firebaseFunctions/meetings/meetingAdd";
 import { realtimeTeamMeetingRecordChanges } from "@/firebaseFunctions/meetings/meetingGet";
 import { formatDate } from "@/components/helperFunctions/general/DateFunctions";
+import { realtimeMeetingReadOnlyListener } from "@/firebaseFunctions/conferences/conferenceOperations";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -35,6 +36,10 @@ export default function MeetingDisplayPage({}: {}) {
 
     // ===============states===============
     const [teamMeetings, setTeamMeetings] = useState<any>(null);
+    const [currMeeting, setCurrMeeting] = useState<any>({
+        lastStarted: null,
+        participantCount: 0,
+    });
 
     // ===============helper functions (will not be directly triggered)===============
 
@@ -51,26 +56,49 @@ export default function MeetingDisplayPage({}: {}) {
     const joinMeeting = () => {};
     // ===============useEffect===============
     useEffect(() => {
+        realtimeMeetingReadOnlyListener(teamId, setCurrMeeting);
         realtimeTeamMeetingRecordChanges(teamId, setTeamMeetings);
     }, []);
 
     return (
-        <Box>
+        <Box width={["100%", null, "80%", "60%"]}>
             <Heading fontWeight={"normal"} size="lg">
                 Meetings
             </Heading>
-            <br />
-            <NextLink href={`/team/${teamId}/meetings/current`} target="_blank">
-                <CustomButton
-                    buttonText="Start Meeting"
-                    buttonColor="#0747ED"
-                    clickFunction={startMeeting}
-                />
-            </NextLink>
-            <br />
-            <Heading fontWeight={"normal"} size="lg" marginTop="10px">
-                History
-            </Heading>
+            <CustomContainer>
+                <Heading fontWeight={"normal"} size="md">
+                    {currMeeting.participantCount > 0 ? (
+                        <>
+                            Ongoing since {formatDate(currMeeting.lastStarted)}.{" "}
+                            {currMeeting.participantCount}{" "}
+                            {currMeeting.participantCount > 1 ? (
+                                <>participants are </>
+                            ) : (
+                                <>participant is </>
+                            )}
+                            inside.
+                        </>
+                    ) : (
+                        <>There are no meetings occurring currently.</>
+                    )}
+                </Heading>
+                <br />
+                <NextLink
+                    href={`/team/${teamId}/meetings/current`}
+                    target="_blank"
+                >
+                    <CustomButton
+                        buttonText={
+                            currMeeting.participantCount > 0
+                                ? `Join Meeting`
+                                : "Start Meeting"
+                        }
+                        buttonColor="#0747ED"
+                        clickFunction={startMeeting}
+                    />
+                </NextLink>
+            </CustomContainer>
+
             {teamMeetings ? (
                 <>
                     {teamMeetings.map((meeting: any, index: number) => {
@@ -100,7 +128,7 @@ const MeetingRecordContainer = ({ meeting }: { meeting: any }) => {
             <Heading fontWeight={"normal"} size="lg">
                 Team Meeting
             </Heading>
-            <br/>
+            <br />
             <Heading fontWeight={"normal"} size="sm">
                 Started at: {formatDate(startDate)}
             </Heading>

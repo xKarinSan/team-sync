@@ -125,6 +125,28 @@ export const updatePreferences = async (
 };
 
 // ==================== realtime listener ====================
+export const realtimeMeetingReadOnlyListener = (
+    teamId: string,
+    setCurrentData: (data: any) => void
+) => {
+    const conferenceRef = getConferenceRef(teamId);
+    onValue(conferenceRef, async (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const { host, lastStarted } = data;
+
+            let participantCount = 0;
+            if (data.hasOwnProperty("participants")) {
+                participantCount = Object.keys(data.participants).length;
+            }
+            const currentConference = {
+                lastStarted,
+                participantCount,
+            };
+            setCurrentData(currentConference);
+        }
+    });
+};
 export const realtimeMeetingListener = (
     teamId: string,
     userId: string,
@@ -142,7 +164,6 @@ export const realtimeMeetingListener = (
 
             if (data.hasOwnProperty("participants")) {
                 if (!Object.keys(data.participants).includes(host)) {
-                    // Host has left, handle this situation as needed.
                     await leaveConference(teamId, userId);
                     return;
                 }
