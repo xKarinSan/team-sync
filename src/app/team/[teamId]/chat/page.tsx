@@ -42,7 +42,7 @@ export default function ComponentName({}: {}) {
     const { userId, username, profilePic } = useUser();
     const { teamId, teamName } = useTeam();
     const toast = useToast();
-    const bottomRef = useRef();
+    const bottomRef = useRef<any>();
 
     // ===============states===============
     const [message, setMessage] = useState<string>("");
@@ -61,6 +61,13 @@ export default function ComponentName({}: {}) {
     const handleScrollToBottom = () => {
         if (bottomRef && bottomRef.current) {
             bottomRef.current.scrollIntoView();
+        }
+    };
+
+    const submitByEnter = (keyCode: any) => {
+        //it triggers by pressing the enter key
+        if (keyCode === 13) {
+            sendMessage();
         }
     };
 
@@ -110,7 +117,7 @@ export default function ComponentName({}: {}) {
                         margin="0 auto"
                     >
                         {teamChat.chatName === "" ? (
-                            <> Team {teamName}'s chat</>
+                            <> Team {teamName}&apos;s chat</>
                         ) : (
                             <>{teamChat.chatName}</>
                         )}
@@ -173,6 +180,7 @@ export default function ComponentName({}: {}) {
                         placeholder="Type your message here ..."
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={(e) => submitByEnter(e.keyCode)}
                     />
                     <IconButton
                         margin={2}
