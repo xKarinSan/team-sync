@@ -343,6 +343,7 @@ const ParticipantScreen = ({
                                         ? profilePic
                                         : DefaultProfilePic.src
                                 }
+                                referrerPolicy="no-referrer"
                                 height={["80px", null, "100px", "120px"]}
                                 width={["80px", null, "100px", "120px"]}
                                 borderRadius="50%"

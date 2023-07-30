@@ -223,7 +223,8 @@ const MessageBubble = ({
                         {" "}
                         <Image
                             src={profilePic}
-                            borderRadius="full"
+                            referrerPolicy="no-referrer"
+                            borderRadius="50%"
                             boxSize="40px"
                             margin="10px"
                         />
