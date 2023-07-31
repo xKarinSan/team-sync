@@ -152,7 +152,6 @@ function InvitationBox({
         setAllUsers(currentUsers);
         setAllUsersDict(usersDict);
     };
-    
 
     const onSelectUser = (userId: string) => {
         let newMembers: string[] = [...invitedMembers];
@@ -327,6 +326,7 @@ const MemberContainer = ({ member }: { member: any }) => {
         <CustomContainer>
             <Box display={"flex"} width={"100%"}>
                 <Image
+                    referrerPolicy="no-referrer"
                     src={profilePic ? profilePic : defaultProfilePic.src}
                     alt={username}
                     width={50}

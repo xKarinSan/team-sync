@@ -42,6 +42,8 @@ import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
 import { useState, useEffect, ReactNode } from "react";
 import TeamsyncLogo from "@/images/general/TeamsyncLogo.png";
+import { leaveChat } from "@/firebaseFunctions/chats/chatDelete";
+import { leaveConference } from "@/firebaseFunctions/conferences/conferenceOperations";
 
 export default function Navbar({ children }: { children: ReactNode }) {
     const pathName = usePathname();
@@ -219,6 +221,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     const pathName = usePathname();
 
     const { teamId, removeTeam } = useTeam();
+    const { userId } = useUser();
 
     const [sidebarItems, setSidebarItems] = useState<LinkItemProps[]>([]);
 
@@ -253,12 +256,30 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             { name: "Members", icon: FiUsers, path: `/team/${teamId}/members` },
         ];
     };
+    const handleLeavingChat = async () => {
+        if (userId && teamId) {
+            await leaveChat(teamId, userId);
+        }
+    };
+    const handleLeavingConference = async () => {
+        if (userId && teamId) {
+            await leaveConference(teamId, userId);
+        }
+    };
     useEffect(() => {
         if (!pathName.includes("/team/")) {
+            handleLeavingChat();
+            handleLeavingConference();
             removeTeam();
             setSidebarItems(LinkItems);
         } else {
-            // print("user now in")
+            if (!pathName.includes("/chat")) {
+                // alert("pathName" + pathName);
+                handleLeavingChat();
+            }
+            if (!pathName.includes("/meetings/current")) {
+                handleLeavingConference();
+            }
             setSidebarItems(setCurrentTeamItems(teamId));
         }
     }, [pathName]);

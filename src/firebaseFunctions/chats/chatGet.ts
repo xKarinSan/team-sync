@@ -3,14 +3,17 @@ import {
     getChatParticipantRef,
     getChatParticipantUserRef,
 } from "./chatRefs";
+import { Chat, ChatMessage, ChatParticipant } from "@/types/Chat/chatTypes";
 import {
-    Chat,
-    // ChatMessageWithId,
-    ChatMessage,
-    ChatParticipant,
-} from "@/types/Chat/chatTypes";
-import { onValue, update, onDisconnect } from "firebase/database";
+    onValue,
+    update,
+    onDisconnect,
+    onChildRemoved,
+    off,
+    query,
+} from "firebase/database";
 import { createNewChat } from "./chatAdd";
+import { leaveChat } from "./chatDelete";
 
 // ================== join chat ==================
 export const joinChat = async (
@@ -80,7 +83,6 @@ export const realtimeTeamChatListener = (
                 await joinChat(teamId, userId, username, profilePic);
             }
         } else {
-            // create new chat
             await createNewChat(teamId, {
                 chatName: "General Chat",
                 messages: {},
@@ -88,6 +90,11 @@ export const realtimeTeamChatListener = (
             });
         }
     });
+    const handleOff = () => {
+        off(query(getChatRef(teamId)));
+    };
+
     const disconnectRef = getChatParticipantUserRef(teamId, userId);
+    onChildRemoved(disconnectRef, handleOff);
     onDisconnect(disconnectRef).remove();
 };

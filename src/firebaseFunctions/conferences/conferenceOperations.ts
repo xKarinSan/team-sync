@@ -5,6 +5,9 @@ import {
     onDisconnect,
     update,
     get,
+    off,
+    onChildRemoved,
+    query,
 } from "firebase/database";
 import {
     getConferenceRef,
@@ -94,7 +97,7 @@ export const leaveConference = async (teamId: string, userId: string) => {
                 const removeMeetingPromise = remove(currentParticipantRef);
 
                 await Promise.all([newMeetingPromise, removeMeetingPromise]);
-                window.close();
+                // window.close();
             } else {
                 const currentParticipantRef = getConferenceParticipantUserRef(
                     teamId,
@@ -103,6 +106,8 @@ export const leaveConference = async (teamId: string, userId: string) => {
                 await remove(currentParticipantRef);
             }
         }
+        // await rtc.client?.leave();
+        off(query(getConferenceRef(teamId)));
 
         return true;
     } catch (e) {
@@ -156,7 +161,7 @@ export const realtimeMeetingListener = (
     setCurrentUser: (data: any) => void
 ) => {
     const conferenceRef = getConferenceRef(teamId);
-    onValue(conferenceRef, async (snapshot) => {
+    const unsubscribe = onValue(conferenceRef, async (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
             const { host, lastStarted } = data;
@@ -199,6 +204,11 @@ export const realtimeMeetingListener = (
             await conferenceInit(teamId, userId, userName, profilePic);
         }
     });
+    const handleOff = () => {
+        off(query(getConferenceRef(teamId)));
+    };
+
     const disconnectRef = getConferenceParticipantUserRef(teamId, userId);
+    onChildRemoved(disconnectRef, handleOff);
     onDisconnect(disconnectRef).remove();
 };
