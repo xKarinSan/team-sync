@@ -1,4 +1,4 @@
-import { folderRef, folderRefWithId } from "./folderRefs";
+import { folderRefWithId } from "./folderRefs";
 import { remove } from "firebase/database";
 
 // ================== simple modular functions ==================

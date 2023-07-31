@@ -1,5 +1,4 @@
 import { getMeetingRef } from "./meetingRefs";
-import { Meeting } from "@/types/MeetingRecords/meetingTypes";
 import { onValue } from "firebase/database";
 
 // listen for changes to the meetings in the database

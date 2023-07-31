@@ -1,8 +1,7 @@
 import { storage, realtimeDB } from "@/config/firebaseConfig";
 import { get, query, orderByChild, equalTo } from "firebase/database";
 
-import { ref as stoageRef } from "firebase/storage";
-import { ref as databaseRef, onValue } from "firebase/database";
+import { onValue } from "firebase/database";
 import {
     getSnapshotData,
     getIndividualSnapshotData,
@@ -41,7 +40,7 @@ export const realtimeFolderChanges = (
         if (snapshot.exists()) {
             const data = snapshot.val();
             let dataIds = Object.keys(data);
-            const res:any[] = [];
+            const res: any[] = [];
             dataIds.forEach((id: string) => {
                 if (data[id].parentId === parentId) {
                     res.push({ ...data[id], id });

@@ -52,9 +52,7 @@ export default function CustomSelect({
     return (
         <FormControl>
             {/* {value} */}
-            <FormLabel>
-                {selectLabel ? selectLabel : "Label:"}
-            </FormLabel>
+            <FormLabel>{selectLabel ? selectLabel : "Label:"}</FormLabel>
             <Select
                 value={value}
                 placeholder={
@@ -69,9 +67,6 @@ export default function CustomSelect({
                         {option.placeholder}
                     </option>
                 ))}
-                {/* <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option> */}
             </Select>
         </FormControl>
     );

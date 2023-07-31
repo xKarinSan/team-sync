@@ -22,11 +22,7 @@ import MainCalendar from "@/components/calendar/MainCalendar";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
-export default function TeamCalendarPage({
-    params,
-}: {
-    params: { teamId: string };
-}) {
+export default function TeamCalendarPage({}: {}) {
     // ===============constants===============
 
     // ===============states===============

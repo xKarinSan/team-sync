@@ -12,14 +12,7 @@ import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
 
 // ==========================import chakraui components==========================
-import {
-    Box,
-    Heading,
-    useDisclosure,
-    useToast,
-    SimpleGrid,
-    Icon,
-} from "@chakra-ui/react";
+import { Box, Heading, useDisclosure, useToast } from "@chakra-ui/react";
 import { FiUser, FiUsers } from "react-icons/fi";
 
 // ==========================import custom components==========================

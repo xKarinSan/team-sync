@@ -1,5 +1,5 @@
 import { folderRef } from "./folderRefs";
-import { folderEntry, Folder } from "@/types/Folders/folderTypes";
+import { folderEntry } from "@/types/Folders/folderTypes";
 import { push } from "firebase/database";
 
 export const addFolder = async (folder: folderEntry) => {

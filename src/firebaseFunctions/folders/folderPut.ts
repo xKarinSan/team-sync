@@ -1,4 +1,4 @@
-import { folderRefWithId, folderRef } from "./folderRefs";
+import { folderRefWithId } from "./folderRefs";
 import { set } from "firebase/database";
 import { Folder } from "@/types/Folders/folderTypes";
 

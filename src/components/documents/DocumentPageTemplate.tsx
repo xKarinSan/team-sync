@@ -192,7 +192,6 @@ export default function DocumentPageTemplate({
                 onSubmitFunction={createFolder}
             />
 
-            {/* <br /> */}
             <CustomContainer>
                 {loading ? (
                     <>

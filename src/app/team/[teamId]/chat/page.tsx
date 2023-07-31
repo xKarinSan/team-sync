@@ -20,8 +20,6 @@ import {
 } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomContainer from "@/components/custom/CustomContainer";
-import CustomFormInput from "@/components/custom/CustomFormInput";
-import CustomButton from "@/components/custom/CustomButton";
 // ==========================import external functions==========================
 import { realtimeMembershipListener } from "@/firebaseFunctions/memberships/membershipGet";
 import { realtimeTeamChatListener } from "@/firebaseFunctions/chats/chatGet";

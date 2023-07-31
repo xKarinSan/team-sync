@@ -19,11 +19,7 @@ import TimeslotContainer from "./TimeslotContainer";
 import AddDeadlineForm from "./AddDeadlineForm";
 import { DeadlineRow } from "./DeadlineRow";
 // ==========================import external functions==========================
-import { getDeadlinesByDateTime } from "@/firebaseFunctions/deadlines/deadlineGet";
-import {
-    realtimeDeadlineChanges,
-    // allRealtimeDeadlineChanges,
-} from "@/firebaseFunctions/deadlines/deadlineGet";
+import { realtimeDeadlineChanges } from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -126,11 +122,6 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     useEffect(() => {
         triggerCurrentDate();
         realtimeDeadlineChanges(teamId ? teamId : userId, setDeadlines);
-        // allRealtimeDeadlineChanges(
-        //     teamId ? teamId : userId,
-        //     userId,
-        //     setDeadlines
-        // );
         setupTimeslots();
     }, []);
 

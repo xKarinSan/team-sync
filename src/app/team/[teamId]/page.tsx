@@ -4,9 +4,7 @@
 // ==========================import from react==========================
 import { useEffect, useState } from "react";
 // ==========================import from next==========================
-import { useRouter } from "next/navigation";
 // ==========================import state management==========================
-import useUser from "@/store/userStore";
 // ==========================import chakraui components==========================
 import { Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================

@@ -35,7 +35,6 @@ import LogoutImage from "../../images/homepage/LogoutImage.png";
 const HomePage = () => {
     // ===============constants===============
     const { userId, username } = useUser();
-    const router = useRouter();
     const menuOptions: MenuOption[] = [
         {
             label: "Manage Teams",

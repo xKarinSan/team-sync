@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 // ==========================import from next==========================
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
@@ -23,6 +23,8 @@ import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
 // ==========================import custom components==========================
 import CustomContainer from "../custom/CustomContainer";
 import CustomButton from "../custom/CustomButton";
+import CustomGrid from "../custom/CustomGrid";
+
 // ==========================import external functions==========================
 import { addFilesToTeam } from "@/firebaseFunctions/documents/documentAdd";
 // ==========================import external variables==========================
@@ -32,8 +34,6 @@ import { DocumentEntry } from "@/types/Documents/documentTypes";
 // ==========================etc==========================
 import { useDropzone } from "react-dropzone";
 import { Heading } from "@chakra-ui/react";
-import NoRecordsDisplay from "../general/NoRecordsDisplay";
-import CustomGrid from "../custom/CustomGrid";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 

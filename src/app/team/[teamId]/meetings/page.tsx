@@ -2,12 +2,10 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // ==========================import from next==========================
-import { useRouter } from "next/navigation";
 import NextLink from "next/link";
 // ==========================import state management==========================
-import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
 // ==========================import chakraui components==========================
 import { Heading, Box, useToast } from "@chakra-ui/react";
@@ -15,7 +13,6 @@ import { Heading, Box, useToast } from "@chakra-ui/react";
 import CustomButton from "@/components/custom/CustomButton";
 import CustomContainer from "@/components/custom/CustomContainer";
 // ==========================import external functions==========================
-import { createNewMeeting } from "@/firebaseFunctions/meetings/meetingAdd";
 import { realtimeTeamMeetingRecordChanges } from "@/firebaseFunctions/meetings/meetingGet";
 import { formatDate } from "@/components/helperFunctions/general/DateFunctions";
 import { realtimeMeetingReadOnlyListener } from "@/firebaseFunctions/conferences/conferenceOperations";
@@ -29,9 +26,7 @@ import { realtimeMeetingReadOnlyListener } from "@/firebaseFunctions/conferences
 
 export default function MeetingDisplayPage({}: {}) {
     // ===============constants===============
-    const router = useRouter();
     const toast = useToast();
-    const { userId } = useUser();
     const { teamId } = useTeam();
 
     // ===============states===============
@@ -52,8 +47,6 @@ export default function MeetingDisplayPage({}: {}) {
         });
     };
 
-    // join a meeting if there is an ongoing meeting
-    const joinMeeting = () => {};
     // ===============useEffect===============
     useEffect(() => {
         realtimeMeetingReadOnlyListener(teamId, setCurrMeeting);

@@ -1,11 +1,6 @@
 import { getDeadlineRef } from "./deadlineRefs";
 import { push } from "firebase/database";
-import {
-    Deadline,
-    DeadlineFormInput,
-    DeadlineWithTimestamp,
-    DeadlineRecord,
-} from "@/types/Deadline/deadlineTypes";
+import { DeadlineFormInput } from "@/types/Deadline/deadlineTypes";
 // ================== simple modular functions ==================
 export const addDeadlineRecord = async (deadlineInput: DeadlineFormInput) => {
     try {
@@ -20,7 +15,7 @@ export const addDeadlineRecord = async (deadlineInput: DeadlineFormInput) => {
 
         const addedDateTime = Date.now();
         const updatedDateTime = addedDateTime;
-        
+
         const res = await push(getDeadlineRef(teamId), {
             ...deadlineInput,
             deadlineDateTime,

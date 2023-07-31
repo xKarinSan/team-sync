@@ -28,7 +28,6 @@ import { emailRegistration } from "@/firebaseFunctions/authentication/emailAuthe
 
 export default function Home() {
     // ===============constants===============
-    const router = useRouter();
     const { addUser } = useUser();
 
     // ===============states===============

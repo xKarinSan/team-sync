@@ -4,7 +4,6 @@
 // ==========================import from react==========================
 import { useState, useEffect } from "react";
 // ==========================import from next==========================
-import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 // ==========================import state management==========================
 import useTeam from "@/store/teamStore";
@@ -15,7 +14,6 @@ import CustomGrid from "../custom/CustomGrid";
 import CustomContainer from "../custom/CustomContainer";
 import LoadingDisplay from "../general/LoadingDisplay";
 import CustomSelect from "../custom/CustomSelect";
-import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
 
 // ==========================import external variables==========================
@@ -53,7 +51,6 @@ export default function MainCalendar({}: {}) {
     const [currentMonth, setCurrentMonth] = useState<number>(0);
     const [currentYear, setCurrentYear] = useState<number>(0);
 
-    // const [days, setDays] = useState<number>(0);
     const [month, setMonth] = useState<number>(0);
     const handleMonthChange = (newMonth: number) => {
         if (!newMonth) {
@@ -141,7 +138,6 @@ export default function MainCalendar({}: {}) {
     };
 
     // ===============main functions (will be directly triggered)===============
-    const exportEvents = () => {};
 
     // ===============useEffect===============
     // when month or year change
@@ -195,10 +191,6 @@ export default function MainCalendar({}: {}) {
                                         />
                                     </>
                                 ) : null}
-                                {/* <CustomButton
-                                    buttonText="Export"
-                                    clickFunction={exportEvents}
-                                /> */}
                             </CustomGrid>
                         </CustomContainer>
                         <CustomContainer>

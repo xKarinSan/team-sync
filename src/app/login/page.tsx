@@ -2,10 +2,9 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import React, { useState } from "react";
+import React from "react";
 
 // ==========================import from next==========================
-import { useRouter } from "next/navigation";
 
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
@@ -26,7 +25,6 @@ import { emailLogin } from "@/firebaseFunctions/authentication/emailAuthenticati
 
 export default function Home() {
     // ===============constants===============
-    const router = useRouter();
     const { addUser } = useUser();
 
     // ===============states===============

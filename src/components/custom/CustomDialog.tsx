@@ -40,10 +40,7 @@ export default function CustomDialog({
     onClose,
     submitText,
     cancelText,
-}: // onSubmit,
-// onCancel,
-// onClose,
-{
+}: {
     dialogTitle?: string;
     isOpen: boolean;
     children?: ReactNode;

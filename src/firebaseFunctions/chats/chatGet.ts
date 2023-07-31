@@ -13,7 +13,6 @@ import {
     query,
 } from "firebase/database";
 import { createNewChat } from "./chatAdd";
-import { leaveChat } from "./chatDelete";
 
 // ================== join chat ==================
 export const joinChat = async (

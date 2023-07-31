@@ -1,6 +1,5 @@
 import { getDocumentRef, getFileRef } from "./documentRefs";
 import { uploadBytes, getDownloadURL } from "firebase/storage";
-import { DocumentRecord } from "@/types/Documents/documentTypes";
 import { push } from "firebase/database";
 // import { v4 as uuidv4 } from "uuid";
 

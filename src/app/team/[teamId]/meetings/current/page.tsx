@@ -36,7 +36,6 @@ import CustomGrid from "@/components/custom/CustomGrid";
 // ==========================import types/interfaces==========================
 import {
     Conference,
-    ParticipantPreferencesRecord,
 } from "@/types/MeetingRecords/realtimeMeeting";
 // ==========================etc==========================
 import AgoraRTC from "agora-rtc-sdk-ng";

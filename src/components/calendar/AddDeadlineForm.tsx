@@ -16,7 +16,6 @@ import CustomFormInput from "../custom/CustomFormInput";
 import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
 import { addDeadlineRecord } from "@/firebaseFunctions/deadlines/deadlineAdd";
-import { set } from "firebase/database";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================

@@ -161,7 +161,7 @@ export const realtimeMeetingListener = (
     setCurrentUser: (data: any) => void
 ) => {
     const conferenceRef = getConferenceRef(teamId);
-    const unsubscribe = onValue(conferenceRef, async (snapshot) => {
+    onValue(conferenceRef, async (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
             const { host, lastStarted } = data;
