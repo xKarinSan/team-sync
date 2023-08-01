@@ -19,7 +19,11 @@ import TimeslotContainer from "./TimeslotContainer";
 import AddDeadlineForm from "./AddDeadlineForm";
 import { DeadlineRow } from "./DeadlineRow";
 // ==========================import external functions==========================
-import { realtimeDeadlineChanges } from "@/firebaseFunctions/deadlines/deadlineGet";
+import {
+    realtimeDeadlineChanges,
+    getAllDeadlines,
+} from "@/firebaseFunctions/deadlines/deadlineGet";
+import { getUserDeadlines } from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -121,7 +125,14 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     // ===============useEffect===============
     useEffect(() => {
         triggerCurrentDate();
-        realtimeDeadlineChanges(teamId ? teamId : userId, setDeadlines);
+        // this should find all the memberships
+        getAllDeadlines();
+        getUserDeadlines(userId);
+        realtimeDeadlineChanges(
+            teamId ? teamId : userId,
+            teamId ? true : false,
+            setDeadlines
+        );
         setupTimeslots();
     }, []);
 
@@ -168,7 +179,7 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
                     {filteredDeadlines.length > 0 ? (
                         <>
                             {filteredDeadlines.map(
-                                (deadline: DeadlineRecord, index) => {
+                                (deadline: DeadlineRecord) => {
                                     const {
                                         id: deadlineId,
                                         userId,

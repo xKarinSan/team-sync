@@ -120,15 +120,11 @@ export function DeadlineRow({
         <CustomContainer>
             {!editing ? (
                 <>
-                    {teamId == deadlineTeamId ? (
-                        <Custombadge badgeColor={"red"} badgeText="Team" />
+                    {userId == deadlineTeamId ? (
+                        <Custombadge badgeColor={"blue"} badgeText="Personal" />
                     ) : (
                         <>
-                            {" "}
-                            <Custombadge
-                                badgeColor={"blue"}
-                                badgeText="Personal"
-                            />
+                            <Custombadge badgeColor={"red"} badgeText="Team" />
                         </>
                     )}
                     <Heading fontWeight={"normal"} size={"lg"}>

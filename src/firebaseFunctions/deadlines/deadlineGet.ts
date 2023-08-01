@@ -1,30 +1,66 @@
-import {
-    DeadlineWithTimestamp,
-    DeadlineRecord,
-} from "@/types/Deadline/deadlineTypes";
+import { DeadlineWithTimestamp } from "@/types/Deadline/deadlineTypes";
 import { getSnapshotData } from "../general/getSnapshotData";
-import { getDeadlineRef } from "./deadlineRefs";
+import { getDeadlineRef, defaultDeadlineRef } from "./deadlineRefs";
 import { onValue, get } from "firebase/database";
+import { getUserTeams } from "../teams/teamGet";
 
 export const getDeadlineByTeam = async (teamId: string) => {
     const snapshot = await get(getDeadlineRef(teamId));
     return getSnapshotData(snapshot);
 };
 
+export const getAllDeadlines = async () => {
+    const snapshot = await get(defaultDeadlineRef);
+    const rawDeadlines = getSnapshotData(snapshot);
+    const res: any[] = [];
+    rawDeadlines.forEach((group) => {
+        Object.keys(group).forEach((key) => {
+            res.push({ ...group[key], id: key });
+        });
+    });
+    return res;
+};
+
+// unfiltered (did not say which team)
+// user + team deadlines
+export const getUserDeadlines = async (
+    userId: string,
+    filteredDeadlines?: any
+) => {
+    // get from users first
+    const unfilteredDeadlines = filteredDeadlines
+        ? filteredDeadlines
+        : await getAllDeadlines();
+    // membership from users
+    const userMembers = await getUserTeams(userId);
+
+    // user Id and the teamId of teams useris part of
+    const idList: string[] = [];
+    idList.push(userId);
+    userMembers.forEach((member) => {
+        idList.push(member.teamId);
+    });
+
+    const res: any[] = [];
+    unfilteredDeadlines.forEach((deadline: DeadlineWithTimestamp) => {
+        // get the relevant deadlines
+        if (idList.includes(deadline.teamId)) {
+            res.push(deadline);
+        }
+    });
+    return res;
+};
+
 export const realtimeDeadlineChanges = (
     teamId: string,
+    isTeam: boolean,
     setCurrentData: (data: any) => void
 ) => {
-    const currentDeadlineRef = getDeadlineRef(teamId);
-    onValue(currentDeadlineRef, (snapshot) => {
+    // const currentDeadlineRef = getDeadlineRef(teamId);
+    const currentDeadlineRef = defaultDeadlineRef;
+    onValue(currentDeadlineRef, async (snapshot) => {
         if (snapshot.exists()) {
-            const data = snapshot.val();
-            let dataIds = Object.keys(data);
-            const res: any[] = [];
-
-            dataIds.forEach((id: string) => {
-                res.push({ ...data[id], id });
-            });
+            const res = await getUserDeadlines(teamId);
             setCurrentData(res);
         }
     });
