@@ -1,9 +1,6 @@
 import {
     onValue,
-    set,
-    remove,
     onDisconnect,
-    update,
     get,
     off,
     onChildRemoved,
@@ -11,11 +8,10 @@ import {
 } from "firebase/database";
 import {
     getConferenceRef,
-    getConferenceParticipantRef,
     getConferenceParticipantUserRef,
 } from "./conferenceRefs";
-import { createNewMeeting } from "../meetings/meetingAdd";
-import { Meeting } from "@/types/MeetingRecords/meetingTypes";
+import { conferenceInit,joinConference } from "./conferencePost";
+import { leaveConference } from "./conferenceDelete";
 
 // ==================== retrieve conference ====================
 export const getTeamConference = async (teamId: string) => {
@@ -27,107 +23,6 @@ export const getTeamConference = async (teamId: string) => {
     return null;
 };
 
-// ==================== start conference ====================
-export const conferenceInit = async (
-    teamId: string,
-    userId: string,
-    userName: string,
-    profilePic: string
-) => {
-    const startDate = Date.now();
-    await set(getConferenceRef(teamId), {
-        host: userId,
-        participants: {
-            [userId]: {
-                username: userName,
-                profilePic,
-                videoEnabled: true,
-                micEnabled: true,
-                screenShareEnabled: false,
-            },
-        },
-        lastStarted: startDate,
-    });
-};
-
-// ==================== join conference ====================
-export const joinConference = async (
-    teamId: string,
-    userId: string,
-    userName: string,
-    profilePic: string
-) => {
-    const currentParticipantRef = getConferenceParticipantRef(teamId);
-    await update(currentParticipantRef, {
-        [userId]: {
-            username: userName,
-            profilePic,
-            videoEnabled: true,
-            micEnabled: true,
-            screenShareEnabled: false,
-        },
-    });
-};
-
-// ==================== change host ====================
-export const changeHost = async (teamId: string) => {
-    const conferenceRef = getConferenceRef(teamId);
-    await update(conferenceRef, {
-        host: "",
-    });
-};
-
-// ==================== leave conference ====================
-export const leaveConference = async (teamId: string, userId: string) => {
-    try {
-        const currentConference = await getTeamConference(teamId);
-        if (currentConference) {
-            const { lastStarted, host } = currentConference;
-            const newMeeting: Meeting = {
-                startDate: lastStarted,
-                endDate: Date.now(),
-            };
-            if (userId === host) {
-                // Update the host to an empty string before creating a new meeting
-                await changeHost(teamId);
-
-                const newMeetingPromise = createNewMeeting(teamId, newMeeting);
-                const currentParticipantRef =
-                    getConferenceParticipantRef(teamId);
-                const removeMeetingPromise = remove(currentParticipantRef);
-
-                await Promise.all([newMeetingPromise, removeMeetingPromise]);
-                // window.close();
-            } else {
-                const currentParticipantRef = getConferenceParticipantUserRef(
-                    teamId,
-                    userId
-                );
-                await remove(currentParticipantRef);
-            }
-        }
-        // await rtc.client?.leave();
-        off(query(getConferenceRef(teamId)));
-
-        return true;
-    } catch (e) {
-        console.log(e);
-        return false;
-    }
-};
-
-// ==================== update preferences ====================
-export const updatePreferences = async (
-    teamId: string,
-    userId: string,
-    preferences: any
-) => {
-    const currentParticipantRef = getConferenceParticipantUserRef(
-        teamId,
-        userId
-    );
-    await update(currentParticipantRef, preferences);
-};
 
 // ==================== realtime listener ====================
 export const realtimeMeetingReadOnlyListener = (
@@ -152,6 +47,7 @@ export const realtimeMeetingReadOnlyListener = (
         }
     });
 };
+
 export const realtimeMeetingListener = (
     teamId: string,
     userId: string,

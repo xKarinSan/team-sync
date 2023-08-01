@@ -15,7 +15,7 @@ import CustomContainer from "@/components/custom/CustomContainer";
 // ==========================import external functions==========================
 import { realtimeTeamMeetingRecordChanges } from "@/firebaseFunctions/meetings/meetingGet";
 import { formatDate } from "@/components/helperFunctions/general/DateFunctions";
-import { realtimeMeetingReadOnlyListener } from "@/firebaseFunctions/conferences/conferenceOperations";
+import { realtimeMeetingReadOnlyListener } from "@/firebaseFunctions/conferences/conferenceGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================

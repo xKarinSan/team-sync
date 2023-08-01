@@ -43,7 +43,7 @@ import useTeam from "@/store/teamStore";
 import { useState, useEffect, ReactNode } from "react";
 import TeamsyncLogo from "@/images/general/TeamsyncLogo.png";
 import { leaveChat } from "@/firebaseFunctions/chats/chatDelete";
-import { leaveConference } from "@/firebaseFunctions/conferences/conferenceOperations";
+import { leaveConference } from "@/firebaseFunctions/conferences/conferenceDelete";
 
 export default function Navbar({ children }: { children: ReactNode }) {
     const pathName = usePathname();

@@ -20,23 +20,17 @@ import {
 } from "@chakra-ui/react";
 import { FiMic, FiMicOff, FiVideo, FiVideoOff } from "react-icons/fi";
 // ==========================import custom components==========================
-
-// ==========================import external functions==========================
-import {
-    realtimeMeetingListener,
-    leaveConference,
-    updatePreferences,
-    // endConference,
-} from "@/firebaseFunctions/conferences/conferenceOperations";
 import CustomButton from "@/components/custom/CustomButton";
 import CustomContainer from "@/components/custom/CustomContainer";
 import CustomGrid from "@/components/custom/CustomGrid";
+// ==========================import external functions==========================
+import { realtimeMeetingListener } from "@/firebaseFunctions/conferences/conferenceGet";
+import { leaveConference } from "@/firebaseFunctions/conferences/conferenceDelete";
+import { updatePreferences } from "@/firebaseFunctions/conferences/conferenceUpdate";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
-import {
-    Conference,
-} from "@/types/MeetingRecords/realtimeMeeting";
+import { Conference } from "@/types/MeetingRecords/realtimeMeeting";
 // ==========================etc==========================
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { rtc, options } from "@/config/agoraConfig";
