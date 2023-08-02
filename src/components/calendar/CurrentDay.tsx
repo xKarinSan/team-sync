@@ -22,6 +22,7 @@ import { DeadlineRow } from "./DeadlineRow";
 import {
     realtimeDeadlineChanges,
     getAllDeadlines,
+    retrieveAllDeadlinesDateTime,
 } from "@/firebaseFunctions/deadlines/deadlineGet";
 import { getUserDeadlines } from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
@@ -32,6 +33,7 @@ import {
     DeadlineRecord,
     DeadlineWithTimestamp,
 } from "@/types/Deadline/deadlineTypes";
+import { getAllMemberships } from "@/firebaseFunctions/memberships/membershipGet";
 // ==========================etc==========================
 
 // ===================================main component===================================
@@ -133,6 +135,8 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
             teamId ? true : false,
             setDeadlines
         );
+        // getAllMemberships();
+        // retrieveAllDeadlinesDateTime()
         setupTimeslots();
     }, []);
 

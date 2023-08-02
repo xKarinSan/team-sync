@@ -11,7 +11,19 @@ import { getSnapshotData } from "../general/getSnapshotData";
 import { Membership } from "@/types/Membership/membertypes";
 import { getAllUsers, getUserDict } from "../users/usersGet";
 
-// Fetch all users
+// Fetch all memberships
+export const getAllMemberships = async () =>{
+    try {
+        const dataSnapshot = await get(membershipRef);
+        const memberships = getSnapshotData(dataSnapshot);
+        return memberships;
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
+
+
 // Call the function to retrieve all users
 export const getAllTeamMembers = async (teamId: string) => {
     try {
