@@ -113,7 +113,6 @@ export default function TeamPage() {
                             buttonText="Create Team"
                             clickFunction={onOpen}
                         />
-                        <CustomContainer></CustomContainer>{" "}
                         <CustomContainer minHeight={"50vh"}>
                             {memberships.length > 0 ? (
                                 <>
