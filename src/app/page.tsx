@@ -38,9 +38,15 @@ export default function Home() {
             featureImage: PlaceboImage,
         },
         {
-            featureName: "Real-time Conferencing",
+            featureName: "Live Conferencing",
             featureDesc:
                 "Members far apart from one another? No problem! You can conduct your meetings anytime and anywhere with video conferencing and realtime chats!",
+            featureImage: PlaceboImage,
+        },
+        {
+            featureName: "Real-time Team chats",
+            featureDesc:
+                "Not everyone can meet virtually? No problem! Stay tuned with your team with our real-time team chats!",
             featureImage: PlaceboImage,
         },
         {
