@@ -323,7 +323,7 @@ export default function MainCalendar({}: {}) {
                                             <Heading
                                                 textAlign="center"
                                                 color="white"
-                                                size="sm"
+                                                size={["sm", null, "lg"]}
                                                 fontWeight={"medium"}
                                             >
                                                 {day}
@@ -416,9 +416,9 @@ function CalendarCell({
             background={day ? (isToday ? "#0239C8" : "#517ef0") : "FFFFFF"}
             transition={"background-color 200ms linear, color 200ms linear"}
             margin={0.5}
-            p={2}
+            p={[2, null, 4, 6]}
             borderRadius={[5, null, 10]}
-            height={["50px", "75px", "100px"]}
+            height={["50px", "75px", "100px", "120px", "150px"]}
             alignContent={"center"}
             boxShadow={"0px 0px 4px 0px rgba(0, 0, 0, 0.25);"}
             onClick={redirectToGivenDay}
@@ -430,7 +430,7 @@ function CalendarCell({
             <Heading
                 textAlign="center"
                 color="white"
-                size="sm"
+                size={["sm", null, "md"]}
                 fontWeight={"medium"}
                 margin="auto"
             >

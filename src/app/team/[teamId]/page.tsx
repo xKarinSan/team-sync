@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // ==========================import from next==========================
 // ==========================import state management==========================
 // ==========================import chakraui components==========================
-import { Heading } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 // ==========================import custom components==========================
 
 // ==========================import external functions==========================
@@ -89,13 +89,13 @@ export default function TeamHomePage({
                     <LoadingDisplay displayText="Retrieving team info . . ." />
                 </>
             ) : (
-                <>
+                <Box>
                     {" "}
-                    <Heading textAlign={"center"} fontWeight={"normal"}>
-                        {currTeam ? currTeam.teamName : "Team Name"}
+                    <Heading textAlign={"center"} fontWeight={"normal"} m={5}>
+                        Welcome to Team {currTeam ? currTeam.teamName : "Team Name"}
                     </Heading>
                     <MainMenu menuOptions={menuOptions} />
-                </>
+                </Box>
             )}
         </>
     );

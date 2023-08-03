@@ -47,7 +47,7 @@ export default function Custombadge({
                 colorScheme={badgeColor ? badgeColor : "default"}
                 variant={badgeVariant ? badgeVariant : "outline"}
             >
-                <Text p={0.1} m={1}>
+                <Text p={0.1} m={1} fontSize={["xs", "sm", "md", "lg"]}>
                     {badgeText ? <>{badgeText}</> : <>Badge Text</>}
                 </Text>
             </Badge>

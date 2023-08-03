@@ -40,10 +40,10 @@ export default function MainMenu({
     // ===============useEffect===============
 
     return (
-        <>
+        <Box>
             {menuOptions ? (
                 <>
-                    <CustomGrid gridCols={[1, 2, null, 4]}>
+                    <CustomGrid gridCols={[1, 2, null, 4]} spacing={10}>
                         {menuOptions.map(
                             (
                                 { label, icon, path }: MenuOption,
@@ -52,13 +52,23 @@ export default function MainMenu({
                                 return (
                                     <NextLink href={path} key={index}>
                                         <Box
-                                            margin="10px"
                                             background="white"
                                             p={5}
                                             borderRadius={5}
+                                            height="100%"
+                                            display={"grid"}
+                                            alignItems={"center"}
                                         >
                                             <Image alt={label} src={icon} />
-                                            <Text textAlign={"center"}>
+                                            <Text
+                                                textAlign={"center"}
+                                                fontSize={[
+                                                    null,
+                                                    null,
+                                                    "lg",
+                                                    "xl",
+                                                ]}
+                                            >
                                                 {label}
                                             </Text>
                                         </Box>
@@ -71,7 +81,7 @@ export default function MainMenu({
             ) : (
                 <></>
             )}
-        </>
+        </Box>
     );
 }
 

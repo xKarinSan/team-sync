@@ -130,13 +130,7 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
         // this should find all the memberships
         getAllDeadlines();
         getUserDeadlines(userId);
-        realtimeDeadlineChanges(
-            teamId ? teamId : userId,
-            // teamId ? true : false,
-            setDeadlines
-        );
-        // getAllMemberships();
-        // retrieveAllDeadlinesDateTime()
+        realtimeDeadlineChanges(teamId ? teamId : userId, setDeadlines);
         setupTimeslots();
     }, []);
 
@@ -145,64 +139,55 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
     }, [selectedTimeslot, deadlines]);
 
     return (
-        <Box>
-            <Heading fontWeight={"normal"} size="xl">
-                As of {currentDate}:
-            </Heading>
-            <NextLink href={teamId ? `/team/${teamId}/calendar` : `/calendar`}>
-                Back
-            </NextLink>
+        <Box
+        >
+            <Box
+                width={[null, null, "80%", "60vw"]}
+                justifyContent={"center"}
+                margin="auto"
+            >
+                <Heading fontWeight={"normal"} size="xl" display="grid">
+                    As of {currentDate}:
+                </Heading>
+                <NextLink
+                    href={teamId ? `/team/${teamId}/calendar` : `/calendar`}
+                >
+                    Back
+                </NextLink>
 
-            <CustomGrid gridCols={[2]}>
-                <DatePageColumn columnTitle="Time">
-                    {timeSlots.map((timeSlot, index) => {
-                        const { hour, minute } = timeSlot;
-                        return (
-                            <TimeslotContainer
-                                key={index}
-                                hour={hour}
-                                minute={minute}
-                                handleSelectTimeslot={handleSelectTimeslot}
-                                isSelected={checkCurrentTimeslot({
-                                    hour,
-                                    minute,
-                                })}
-                            />
-                        );
-                    })}
-                </DatePageColumn>
-
-                <DatePageColumn columnTitle="Deadlines">
-                    <AddDeadlineForm
-                        year={year}
-                        month={month}
-                        day={day}
-                        hour={selectedTimeslot.hour}
-                        minute={selectedTimeslot.minute}
-                    />
-                    {filteredDeadlines.length > 0 ? (
-                        <>
-                            {filteredDeadlines.map(
-                                (deadline: DeadlineRecord) => {
-                                    const {
-                                        id: deadlineId,
-                                        userId,
-                                        description,
-
-                                        teamId,
-
-                                        year,
-                                        month,
-                                        day,
+                <CustomGrid gridCols={[2]}>
+                    <DatePageColumn columnTitle="Time">
+                        {timeSlots.map((timeSlot, index) => {
+                            const { hour, minute } = timeSlot;
+                            return (
+                                <TimeslotContainer
+                                    key={index}
+                                    hour={hour}
+                                    minute={minute}
+                                    handleSelectTimeslot={handleSelectTimeslot}
+                                    isSelected={checkCurrentTimeslot({
                                         hour,
                                         minute,
+                                    })}
+                                />
+                            );
+                        })}
+                    </DatePageColumn>
 
-                                        deadlineDateTime,
-                                        addedDateTime,
-                                        updatedDateTime,
-                                    } = deadline;
-                                    const deadlineWithTimestamp: DeadlineWithTimestamp =
-                                        {
+                    <DatePageColumn columnTitle="Deadlines">
+                        <AddDeadlineForm
+                            year={year}
+                            month={month}
+                            day={day}
+                            hour={selectedTimeslot.hour}
+                            minute={selectedTimeslot.minute}
+                        />
+                        {filteredDeadlines.length > 0 ? (
+                            <>
+                                {filteredDeadlines.map(
+                                    (deadline: DeadlineRecord) => {
+                                        const {
+                                            id: deadlineId,
                                             userId,
                                             description,
 
@@ -217,27 +202,45 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
                                             deadlineDateTime,
                                             addedDateTime,
                                             updatedDateTime,
-                                        };
+                                        } = deadline;
+                                        const deadlineWithTimestamp: DeadlineWithTimestamp =
+                                            {
+                                                userId,
+                                                description,
 
-                                    return (
-                                        <DeadlineRow
-                                            key={deadlineId}
-                                            deadline={deadlineWithTimestamp}
-                                            deadlineId={deadlineId}
-                                        />
-                                    );
-                                }
-                            )}
-                        </>
-                    ) : (
-                        <>
-                            <CustomContainer>
-                                <Text>No deadlines</Text>
-                            </CustomContainer>
-                        </>
-                    )}
-                </DatePageColumn>
-            </CustomGrid>
+                                                teamId,
+
+                                                year,
+                                                month,
+                                                day,
+                                                hour,
+                                                minute,
+
+                                                deadlineDateTime,
+                                                addedDateTime,
+                                                updatedDateTime,
+                                            };
+
+                                        return (
+                                            <DeadlineRow
+                                                key={deadlineId}
+                                                deadline={deadlineWithTimestamp}
+                                                deadlineId={deadlineId}
+                                            />
+                                        );
+                                    }
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <CustomContainer>
+                                    <Text>No deadlines</Text>
+                                </CustomContainer>
+                            </>
+                        )}
+                    </DatePageColumn>
+                </CustomGrid>
+            </Box>
         </Box>
     );
 }

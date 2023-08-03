@@ -192,7 +192,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                         <input {...getInputProps()} />
                         <Heading
                             fontWeight={"normal"}
-                            size="lg"
+                            size="md"
                             margin="auto"
                             textAlign="center"
                         >
@@ -206,7 +206,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             <CustomContainer>
                 {selectedFiles.length == 0 ? (
                     <>
-                        <Heading fontWeight={"normal"}>
+                        <Heading fontWeight={"normal"} size="md">
                             No files uploaded, upload some?
                         </Heading>
                     </>

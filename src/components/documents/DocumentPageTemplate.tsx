@@ -143,119 +143,130 @@ export default function DocumentPageTemplate({
 
     return (
         <Box>
-            <Heading fontWeight={"normal"}>
-                Documents in {folderId ? "Folder" : "Team"} {""} {currentPlace}
-            </Heading>
-            <br />
+            <Box
+                width={[null, null, "80%", "60vw"]}
+                justifyContent={"center"}
+                margin="auto"
+            >
+                <Heading fontWeight={"normal"}>
+                    Documents in {folderId ? "Folder" : "Team"} {""}{" "}
+                    {currentPlace}
+                </Heading>
+                <br />
 
-            <CustomContainer>
-                {/* use breadcrumbs */}
-                <Breadcrumb separator=">">
-                    <BreadcrumbItem>
-                        {folderId ? (
-                            <NextLink href={`/team/${teamId}/documents/`}>
-                                Back To Team Documents
-                            </NextLink>
-                        ) : (
-                            <NextLink href={`/team/${teamId}/`}>
-                                Back To Team
-                            </NextLink>
-                        )}
-                    </BreadcrumbItem>
-                    {folderId && parentDest != teamId ? (
+                <CustomContainer>
+                    {/* use breadcrumbs */}
+                    <Breadcrumb separator=">">
                         <BreadcrumbItem>
-                            <NextLink
-                                href={`/team/${teamId}/documents/${parentDest}`}
-                            >
-                                Back To Parent
-                            </NextLink>{" "}
+                            {folderId ? (
+                                <NextLink href={`/team/${teamId}/documents/`}>
+                                    Back To Team Documents
+                                </NextLink>
+                            ) : (
+                                <NextLink href={`/team/${teamId}/`}>
+                                    Back To Team
+                                </NextLink>
+                            )}
                         </BreadcrumbItem>
-                    ) : null}
-                    <BreadcrumbItem>
-                        <Text>{currentPlace}</Text>
-                    </BreadcrumbItem>
-                </Breadcrumb>
-            </CustomContainer>
-            <Heading fontWeight={"normal"} size="md">
-                Folders
-            </Heading>
-            <CustomButton
-                buttonText="Add Folder"
-                clickFunction={onOpen}
-                LeftButtonIcon={FiFolderPlus}
-            />
-            <AddFileDialog
-                isOpen={isOpen}
-                onClose={onClose}
-                setCurrentFolderName={setFolderName}
-                currentFolderName={folderName}
-                onSubmitFunction={createFolder}
-            />
+                        {folderId && parentDest != teamId ? (
+                            <BreadcrumbItem>
+                                <NextLink
+                                    href={`/team/${teamId}/documents/${parentDest}`}
+                                >
+                                    Back To Parent
+                                </NextLink>{" "}
+                            </BreadcrumbItem>
+                        ) : null}
+                        <BreadcrumbItem>
+                            <Text>{currentPlace}</Text>
+                        </BreadcrumbItem>
+                    </Breadcrumb>
+                </CustomContainer>
+                <Heading fontWeight={"normal"} size="md">
+                    Folders
+                </Heading>
+                <CustomButton
+                    buttonText="Add Folder"
+                    clickFunction={onOpen}
+                    LeftButtonIcon={FiFolderPlus}
+                />
+                <AddFileDialog
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    setCurrentFolderName={setFolderName}
+                    currentFolderName={folderName}
+                    onSubmitFunction={createFolder}
+                />
 
-            <CustomContainer>
-                {loading ? (
-                    <>
-                        <LoadingDisplay displayText="Getting folders ..." />
-                    </>
-                ) : (
-                    <>
-                        {folders.length > 0 ? (
-                            <>
+                <CustomContainer>
+                    {loading ? (
+                        <>
+                            <LoadingDisplay displayText="Getting folders ..." />
+                        </>
+                    ) : (
+                        <>
+                            {folders.length > 0 ? (
+                                <>
+                                    <CustomGrid>
+                                        {folders.map(
+                                            (folder: Folder, index) => {
+                                                return (
+                                                    <FolderContainer
+                                                        folder={folder}
+                                                        key={index}
+                                                    />
+                                                );
+                                            }
+                                        )}
+                                    </CustomGrid>
+                                </>
+                            ) : (
+                                <>
+                                    <Heading fontWeight={"normal"}>
+                                        No folders for this team, add some?
+                                    </Heading>
+                                </>
+                            )}
+                        </>
+                    )}
+                </CustomContainer>
+                <Heading fontWeight={"nomral"} size="md">
+                    Files
+                </Heading>
+                <CustomContainer>
+                    {loading ? (
+                        <>
+                            <LoadingDisplay displayText="Getting Documents ..." />
+                        </>
+                    ) : (
+                        <>
+                            {files.length > 0 ? (
                                 <CustomGrid>
-                                    {folders.map((folder: Folder, index) => {
-                                        return (
-                                            <FolderContainer
-                                                folder={folder}
-                                                key={index}
-                                            />
-                                        );
-                                    })}
+                                    {" "}
+                                    {files.map(
+                                        (file: DocumentRecord, index) => {
+                                            return (
+                                                <FileContainer
+                                                    file={file}
+                                                    key={index}
+                                                />
+                                            );
+                                        }
+                                    )}
                                 </CustomGrid>
-                            </>
-                        ) : (
-                            <>
-                                <Heading fontWeight={"normal"}>
-                                    No folders for this team, add some?
-                                </Heading>
-                            </>
-                        )}
-                    </>
-                )}
-            </CustomContainer>
-            <Heading fontWeight={"nomral"} size="md">
-                Files
-            </Heading>
-            <CustomContainer>
-                {loading ? (
-                    <>
-                        <LoadingDisplay displayText="Getting Documents ..." />
-                    </>
-                ) : (
-                    <>
-                        {files.length > 0 ? (
-                            <CustomGrid>
-                                {" "}
-                                {files.map((file: DocumentRecord, index) => {
-                                    return (
-                                        <FileContainer
-                                            file={file}
-                                            key={index}
-                                        />
-                                    );
-                                })}
-                            </CustomGrid>
-                        ) : (
-                            <>
-                                <Heading fontWeight={"normal"}>
-                                    No documents here, add some?
-                                </Heading>
-                            </>
-                        )}
-                    </>
-                )}
-            </CustomContainer>
+                            ) : (
+                                <>
+                                    <Heading fontWeight={"normal"}>
+                                        No documents here, add some?
+                                    </Heading>
+                                </>
+                            )}
+                        </>
+                    )}
+                </CustomContainer>
 
-            <FileDropzone folderId={folderId ? folderId : teamId} />
+                <FileDropzone folderId={folderId ? folderId : teamId} />
+            </Box>
         </Box>
     );
 }
