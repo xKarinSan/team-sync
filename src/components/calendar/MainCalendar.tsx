@@ -7,20 +7,29 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 // ==========================import state management==========================
 import useTeam from "@/store/teamStore";
+import useUser from "@/store/userStore";
 // ==========================import chakraui components==========================
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, useToast } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomGrid from "../custom/CustomGrid";
 import CustomContainer from "../custom/CustomContainer";
 import LoadingDisplay from "../general/LoadingDisplay";
 import CustomSelect from "../custom/CustomSelect";
+import Custombadge from "../custom/CustomBadge";
+import CustomButton from "../custom/CustomButton";
 // ==========================import external functions==========================
-
+import {
+    getUserDeadlines,
+    retrieveCategorisedUserDeadlines,
+} from "@/firebaseFunctions/deadlines/deadlineGet";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
 import { SelectOptions } from "../custom/CustomSelect";
+
 // ==========================etc==========================
+import { createEvents } from "ics";
+import ICalendarLink from "react-icalendar-link";
 
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
@@ -43,6 +52,9 @@ const optionMonths: SelectOptions[] = [
 export default function MainCalendar({}: {}) {
     // ===============constants===============
     const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const { teamId, teamName } = useTeam();
+    const { userId, username } = useUser();
+    const toast = useToast();
 
     // ===============states===============
     const [optionYears, setOptionYears] = useState<SelectOptions[]>([]);
@@ -69,12 +81,38 @@ export default function MainCalendar({}: {}) {
         }
     };
 
+    const [deadlineDict, setDeadlineDict] = useState<any>({});
     const [calendarDays, setCalendarDays] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     // ===============helper functions (will not be directly triggered)===============
-    const extractMonthAndYear = () => {
+    const extractMonthAndYear = async () => {
         const currDate = new Date(year, month, 0);
+        let setYear = year;
+        let setMonth = month;
+        if (typeof year == "string") {
+            setYear = parseInt(year);
+        }
+        if (typeof month == "string") {
+            setMonth = parseInt(month);
+        }
+        const allUserDeadlines = await getUserDeadlines(
+            teamId ? teamId : userId
+        );
+        const userFilteredDeadlines = allUserDeadlines.filter((deadline) => {
+            const { year, month } = deadline;
+            return year == setYear && month == setMonth;
+        });
+
+        let currentDeadlineDict: any = {};
+        userFilteredDeadlines.forEach((deadline: any) => {
+            if (!currentDeadlineDict.hasOwnProperty(deadline.day)) {
+                currentDeadlineDict[deadline.day] = [];
+            }
+            currentDeadlineDict[deadline.day].push(deadline);
+        });
+        setDeadlineDict(currentDeadlineDict);
+
         var noOfDays = currDate.getDate();
         var firstDayOfMonth = new Date(
             currDate.getFullYear(),
@@ -138,6 +176,68 @@ export default function MainCalendar({}: {}) {
     };
 
     // ===============main functions (will be directly triggered)===============
+    const exportDeadlines = async () => {
+        toast({
+            title: "Downloading deadlines",
+            description: "Please wait for the exporting to complete",
+            status: "info",
+        });
+        const allDeadlines = await retrieveCategorisedUserDeadlines(
+            teamId ? teamId : userId
+        );
+        const allEvents: any = [];
+        allDeadlines.forEach((deadline: any) => {
+            const {
+                id,
+                description,
+                teamName,
+                year,
+                month,
+                day,
+                hour,
+                minute,
+            } = deadline;
+            const event = {
+                title: description,
+                description: `Deadline for ${teamName}`,
+                uid: id,
+                start: [year, month, day, hour, minute],
+                duration: { hours: 1, minutes: 0 },
+                categories: [teamName],
+            };
+            allEvents.push(event);
+        });
+
+        const fileName = `${teamName ? teamName : username}-deadlines.ics`;
+        const file: any = await new Promise((resolve, reject) => {
+            createEvents(allEvents, (error, value) => {
+                if (error) {
+                    toast({
+                        title: "Download failed!",
+                        status: "info",
+                    });
+                    reject(error);
+                }
+
+                resolve(new File([value], fileName, { type: "text/calendar" }));
+            });
+        });
+        const url = URL.createObjectURL(file);
+        // return allEvents;
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = fileName;
+
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+
+        URL.revokeObjectURL(url);
+        toast({
+            title: "Deadlines downloaded!",
+            status: "success",
+        });
+    };
 
     // ===============useEffect===============
     // when month or year change
@@ -165,7 +265,7 @@ export default function MainCalendar({}: {}) {
                             Calendar
                         </Heading>
                         <CustomContainer>
-                            <CustomGrid gridCols={[1, null, 2, 4]}>
+                            <CustomGrid gridCols={[1, null, 2, 3]}>
                                 {optionYears.length > 0 ? (
                                     <>
                                         {" "}
@@ -191,6 +291,21 @@ export default function MainCalendar({}: {}) {
                                         />
                                     </>
                                 ) : null}
+                                <Box
+                                    display="flex"
+                                    alignItems={"center"}
+                                    justifyContent={[
+                                        "flex-start",
+                                        null,
+                                        "center",
+                                        "flex-start",
+                                    ]}
+                                >
+                                    <CustomButton
+                                        buttonText="Export all deadlines"
+                                        clickFunction={exportDeadlines}
+                                    />
+                                </Box>
                             </CustomGrid>
                         </CustomContainer>
                         <CustomContainer>
@@ -242,6 +357,16 @@ export default function MainCalendar({}: {}) {
                                                                     currentYear ==
                                                                         year
                                                                 }
+                                                                noOfDeadlines={
+                                                                    deadlineDict.hasOwnProperty(
+                                                                        calendarDay
+                                                                    )
+                                                                        ? deadlineDict[
+                                                                              calendarDay
+                                                                          ]
+                                                                              .length
+                                                                        : 0
+                                                                }
                                                             />
                                                         </>
                                                     );
@@ -266,10 +391,12 @@ function CalendarCell({
     year,
     month,
     day,
+    noOfDeadlines,
     isToday,
 }: {
     year: number;
     month: number;
+    noOfDeadlines?: number;
     day?: number;
     isToday?: boolean;
 }) {
@@ -286,7 +413,7 @@ function CalendarCell({
     };
     return (
         <Box
-            background={day ? (isToday ? "#0239C8" : "#3d73ff") : "FFFFFF"}
+            background={day ? (isToday ? "#0239C8" : "#517ef0") : "FFFFFF"}
             transition={"background-color 200ms linear, color 200ms linear"}
             margin={0.5}
             p={2}
@@ -308,6 +435,16 @@ function CalendarCell({
                 margin="auto"
             >
                 {day}
+                {noOfDeadlines ? (
+                    <>
+                        {" "}
+                        <Custombadge
+                            badgeText={`(${noOfDeadlines?.toString()})`}
+                            badgeColor="red"
+                            badgeVariant="solid"
+                        />
+                    </>
+                ) : null}
             </Heading>
         </Box>
     );

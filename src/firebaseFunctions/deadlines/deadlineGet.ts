@@ -1,80 +1,63 @@
-import { DeadlineWithTimestamp } from "@/types/Deadline/deadlineTypes";
-import { getSnapshotData } from "../general/getSnapshotData";
-import { getDeadlineRef, defaultDeadlineRef } from "./deadlineRefs";
 import { onValue, get } from "firebase/database";
 import { getAllTeams, getUserTeams } from "../teams/teamGet";
 import { getAllUsers } from "../users/usersGet";
-import {
-    getAllMemberships,
-    getAllTeamMembers,
-} from "../memberships/membershipGet";
+import { getAllMemberships } from "../memberships/membershipGet";
+import { DeadlineWithTimestamp } from "@/types/Deadline/deadlineTypes";
+import { getSnapshotData } from "../general/getSnapshotData";
+import { getDeadlineRef, defaultDeadlineRef } from "./deadlineRefs";
 
-export const getDeadlineByTeam = async (teamId: string) => {
+// ================== simple modular functions ==================
+// Get a deadline by team ID
+export const getDeadlineByTeam = async (
+    teamId: string
+): Promise<DeadlineWithTimestamp[]> => {
     const snapshot = await get(getDeadlineRef(teamId));
     return getSnapshotData(snapshot);
 };
 
-export const getAllDeadlines = async () => {
+// Get all deadlines
+export const getAllDeadlines = async (): Promise<DeadlineWithTimestamp[]> => {
     const snapshot = await get(defaultDeadlineRef);
     if (snapshot.exists()) {
-        const res: any = [];
+        const res: DeadlineWithTimestamp[] = [];
 
         snapshot.forEach((child) => {
             let currVal = child.val();
             Object.keys(currVal).forEach((key) => {
-                // console.log("...currVal[key]", currVal[key]);
                 res.push({ ...currVal[key], id: key });
             });
         });
-        // console.log("res all deadlines", res);
+
         return res;
     }
     return [];
-    // const rawDeadlines = getSnapshotData(snapshot);
-    // const res: any[] = [];
-    // rawDeadlines.forEach((group) => {
-    //     console.log("group",group)
-    //     Object.keys(group).forEach((key) => {
-    //         res.push(group[key]);
-    //     });
-    // });
-    // console.log(" getAllDeadlines res", res);
-    // return res;
 };
 
-// unfiltered (did not say which team)
-// user + team deadlines
+// ================== complex functions ==================
+
+// Get user deadlines for a specific team or all teams the user is part of
 export const getUserDeadlines = async (
-    userId: string,
-    filteredDeadlines?: any
-) => {
-    // get from users first
-    const unfilteredDeadlines = filteredDeadlines
-        ? filteredDeadlines
-        : await getAllDeadlines();
-    // membership from users
+    userId: string
+): Promise<DeadlineWithTimestamp[]> => {
+    const unfilteredDeadlines = await getAllDeadlines();
+
     const userMembers = await getUserTeams(userId);
+    const idList: string[] = [
+        userId,
+        ...userMembers.map((member) => member.teamId),
+    ];
 
-    // user Id and the teamId of teams useris part of
-    const idList: string[] = [];
-    idList.push(userId);
-    userMembers.forEach((member) => {
-        idList.push(member.teamId);
-    });
+    const res: DeadlineWithTimestamp[] = unfilteredDeadlines.filter(
+        (deadline) => idList.includes(deadline.teamId)
+    );
 
-    const res: any[] = [];
-    unfilteredDeadlines.forEach((deadline: DeadlineWithTimestamp) => {
-        // get the relevant deadlines
-        if (idList.includes(deadline.teamId)) {
-            res.push(deadline);
-        }
-    });
     return res;
 };
 
+// Real-time deadline changes
 export const realtimeDeadlineChanges = (
     teamId: string,
-    isTeam: boolean,
+    // isTeam: boolean,
     setCurrentData: (data: any) => void
 ) => {
     const currentDeadlineRef = defaultDeadlineRef;
@@ -86,6 +69,7 @@ export const realtimeDeadlineChanges = (
     });
 };
 
+// Get deadlines by specific date and time
 export const getDeadlinesByDateTime = async (
     teamId: string,
     year: number,
@@ -93,9 +77,9 @@ export const getDeadlinesByDateTime = async (
     day: number,
     hour: number,
     minute: number
-) => {
+): Promise<DeadlineWithTimestamp[]> => {
     const teamDeadlines = await getDeadlineByTeam(teamId);
-    const res = teamDeadlines.filter((deadline: DeadlineWithTimestamp) => {
+    const res = teamDeadlines.filter((deadline) => {
         const {
             year: deadlineYear,
             month: deadlineMonth,
@@ -114,127 +98,136 @@ export const getDeadlinesByDateTime = async (
     return res;
 };
 
-// interval can be 30 mins or 1 hr
+// Interval can be 30 mins or 1 hr
 type EmailRecipient = {
     userId: string;
     username: string;
-    individualDeadlines: any[];
-
-    // this will display any team name and deadline name and time
-    teamDeadlines: any[];
+    individualDeadlines: DeadlineWithTimestamp[];
+    teamDeadlines: DeadlineWithTimestamp[];
 };
-export const retrieveAllDeadlinesDateTime = async (interval?: number) => {
+
+export const retrieveCategorisedUserDeadlines = async (userId: string) => {
+    const allTeams = await getAllTeams();
+    const teamDict: { [key: string]: string } = {};
+    allTeams.forEach((team: any) => {
+        const { id, teamName } = team;
+        teamDict[id] = teamName;
+    });
+    const allDeadlines = await getUserDeadlines(userId);
+    const returnDeadlines: any = [];
+    allDeadlines.forEach((deadline: any) => {
+        const { teamId } = deadline;
+        if (Object.keys(teamDict).includes(teamId)) {
+            returnDeadlines.push({
+                ...deadline,
+                teamName: "Team " + teamDict[teamId],
+            });
+        } else {
+            returnDeadlines.push({
+                ...deadline,
+                teamName: "Personal",
+            });
+        }
+    });
+    console.log("return deadlines", returnDeadlines);
+
+    return returnDeadlines;
+};
+
+// Retrieve all deadlines with specific date and time
+export const retrieveAllDeadlinesDateTime = async (
+    interval?: number
+): Promise<EmailRecipient[]> => {
     try {
         let currentInterval = interval ? interval : 30 * 60 * 1000;
-        // final output
-        let recipients: any = [];
+        let recipients: EmailRecipient[] = [];
 
-        // ==========for involved==========
-        // recipients
-        let recipientDict: any = {};
-        // teams themselves
-        let involvedTeams: any = {};
+        let recipientDict: Record<string, EmailRecipient> = {};
+        let involvedTeams: Record<string, any> = {};
+        let allUsersDict: Record<string, string> = {};
+        let allTeamDict: Record<
+            string,
+            { teamName: string; members: string[] }
+        > = {};
+        let allDeadlineDict: Record<string, any> = {};
 
-        // ==========for all==========
-        // users
-        let allUsersDict: any = {};
-        // teams
-        let allTeamDict: any = {};
-        // deadlines
-        let allDeadlineDict: any = {};
-
-        // get all the users
         const existingUsersPromise = await getAllUsers();
-
-        // get all the teams
         const existingTeamsPromise = await getAllTeams();
-
-        // get all the deadlines
         const allDeadlinesPromise = await getAllDeadlines();
-
-        // get all the mmebers
         const existingMembershipsPromise = await getAllMemberships();
-        Promise.all([
-            existingUsersPromise,
-            existingTeamsPromise,
-            allDeadlinesPromise,
-            existingMembershipsPromise,
-        ]).then((results) => {
-            let [allUsers, allTeams, allDeadlines, allMemberships] = results;
 
-            const currDate = new Date();
-            const currDateInMs = currDate.getMilliseconds();
+        const [allUsers, allTeams, allDeadlines, allMemberships] =
+            await Promise.all([
+                existingUsersPromise,
+                existingTeamsPromise,
+                allDeadlinesPromise,
+                existingMembershipsPromise,
+            ]);
 
-            // =================init the dicts=================
-            // based on users
-            allUsers.forEach((user: any) => {
-                allUsersDict[user.userId] = user.username;
-            });
-            // based on teams
-            allTeams.forEach((team: any) => {
-                allTeamDict[team.id] = {
-                    teamName: team.teamName,
-                    members: [],
+        const currDate = new Date();
+        const currDateInMs = currDate.getMilliseconds();
+
+        allUsers.forEach((user: any) => {
+            allUsersDict[user.userId] = user.username;
+        });
+
+        allTeams.forEach((team: any) => {
+            allTeamDict[team.id] = {
+                teamName: team.teamName,
+                members: [],
+            };
+        });
+
+        let approachingDeadlines = allDeadlines;
+
+        allMemberships.forEach((membership: any) => {
+            const { teamId, userId } = membership;
+            allTeamDict[teamId].members.push(userId);
+        });
+
+        approachingDeadlines.forEach((deadline: any) => {
+            const { teamId } = deadline;
+            if (allUsersDict.hasOwnProperty(teamId)) {
+                recipientDict[teamId] = {
+                    userId: teamId,
+                    username: allUsersDict[teamId],
+                    individualDeadlines: [],
+                    teamDeadlines: [],
                 };
-            });
+                recipientDict[teamId].teamDeadlines.push(deadline);
+            }
+            if (allTeamDict.hasOwnProperty(teamId)) {
+                if (!involvedTeams.hasOwnProperty(teamId)) {
+                    involvedTeams[teamId] = allTeamDict[teamId];
+                }
+            }
+        });
 
-            let approachingDeadlines = allDeadlines;
-
-            allMemberships.forEach((membership: any) => {
-                const { teamId, userId } = membership;
-                allTeamDict[teamId].members.push(userId);
-            });
-
-            // loop through the deadline
-            approachingDeadlines.forEach((deadline: any) => {
-                const { teamId } = deadline;
-                if (allUsersDict.hasOwnProperty(teamId)) {
-                    recipientDict[teamId] = {
-                        userId: teamId,
-                        username: allUsersDict[teamId],
+        Object.keys(involvedTeams).forEach((teamId: string) => {
+            const currTeam = involvedTeams[teamId];
+            const { members } = currTeam;
+            members.forEach((userId: string) => {
+                if (!recipientDict.hasOwnProperty(userId)) {
+                    recipientDict[userId] = {
+                        userId,
+                        username: allUsersDict[userId],
                         individualDeadlines: [],
                         teamDeadlines: [],
                     };
-
-                    recipientDict[teamId].teamDeadlines.push(deadline);
                 }
-                if (allTeamDict.hasOwnProperty(teamId)) {
-                    if (!involvedTeams.hasOwnProperty(teamId)) {
-                        involvedTeams[teamId] = allTeamDict[teamId];
-                    }
-                }
-            });
-
-            // go through the involved teams
-            Object.keys(involvedTeams).forEach((teamId: string) => {
-                // get all the members
-                const currTeam = involvedTeams[teamId];
-                const { members } = currTeam;
-                members.forEach((userId: string) => {
-                    if (!recipientDict.hasOwnProperty(userId)) {
-                        recipientDict[userId] = {
-                            userId,
-                            username: allUsersDict[userId],
-                            individualDeadlines: [],
-                            teamDeadlines: [],
-                        };
-                    }
-                    approachingDeadlines.forEach((deadline: any) => {
-                        recipientDict[userId].individualDeadlines.push(
-                            deadline
-                        );
-                    });
+                approachingDeadlines.forEach((deadline: any) => {
+                    recipientDict[userId].individualDeadlines.push(deadline);
                 });
             });
-
-            Object.keys(recipientDict).forEach((userId: string) => {
-                recipients.push({
-                    ...recipientDict[userId],
-                });
-            });
-            console.log("recipients", recipients);
-            return recipients;
         });
+
+        Object.keys(recipientDict).forEach((userId: string) => {
+            recipients.push({
+                ...recipientDict[userId],
+            });
+        });
+
+        return recipients;
     } catch (e) {
         console.log(e);
         return [];

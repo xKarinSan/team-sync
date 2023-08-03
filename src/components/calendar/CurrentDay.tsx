@@ -132,7 +132,7 @@ export default function CurrentDay({ currentDate }: { currentDate: string }) {
         getUserDeadlines(userId);
         realtimeDeadlineChanges(
             teamId ? teamId : userId,
-            teamId ? true : false,
+            // teamId ? true : false,
             setDeadlines
         );
         // getAllMemberships();

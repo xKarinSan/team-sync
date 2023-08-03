@@ -25,9 +25,11 @@ import { Badge, Text, Box } from "@chakra-ui/react";
 export default function Custombadge({
     badgeText,
     badgeColor,
+    badgeVariant,
 }: {
     badgeText?: string;
     badgeColor?: string;
+    badgeVariant?: string;
 }) {
     // ===============constants===============
 
@@ -43,7 +45,7 @@ export default function Custombadge({
         <Box m={1}>
             <Badge
                 colorScheme={badgeColor ? badgeColor : "default"}
-                variant={"outline"}
+                variant={badgeVariant ? badgeVariant : "outline"}
             >
                 <Text p={0.1} m={1}>
                     {badgeText ? <>{badgeText}</> : <>Badge Text</>}
