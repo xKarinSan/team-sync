@@ -19,8 +19,15 @@ import { KeyFeature } from "@/types/LandingPage/features";
 
 import FirstPic from "../images/landing/FirstLandingImage.png";
 import AboutMePic from "../images/landing/AboutMeImage.png";
-import PlaceboImage from "../images/landing/PlaceboImage.png";
 import ContactMeImage from "../images/landing/ContactMeImage.png";
+
+import MemberMgmt from "../images/landing/screenshots/MemberMgmt.png";
+import DeadlineMgmt from "../images/landing/screenshots/DeadlineMgmt.png";
+import VideoConference from "../images/landing/screenshots/VideoConference.png";
+import TeamChat from "../images/landing/screenshots/TeamChat.png";
+import DocumentsMgmt from "../images/landing/screenshots/DocumentsMgmt.png";
+
+// import PlaceboImage from "../images/landing/PlaceboImage.png";
 
 import CustomButton from "@/components/custom/CustomButton";
 export default function Home() {
@@ -29,31 +36,31 @@ export default function Home() {
             featureName: "Team Management",
             featureDesc:
                 "Intuitive UI and functionality that allows you to manage your teammates and team activities on the fly!",
-            featureImage: PlaceboImage,
+            featureImage: MemberMgmt,
         },
         {
             featureName: "Schedule Tracking",
             featureDesc:
                 "All important deadlines and meetings organised neatly in one place! Do not worry about forgetting any important stuff!",
-            featureImage: PlaceboImage,
+            featureImage: DeadlineMgmt,
         },
         {
             featureName: "Live Conferencing",
             featureDesc:
                 "Members far apart from one another? No problem! You can conduct your meetings anytime and anywhere with video conferencing and realtime chats!",
-            featureImage: PlaceboImage,
+            featureImage: VideoConference,
         },
         {
             featureName: "Real-time Team chats",
             featureDesc:
                 "Not everyone can meet virtually? No problem! Stay tuned with your team with our real-time team chats!",
-            featureImage: PlaceboImage,
+            featureImage: TeamChat,
         },
         {
-            featureName: "Content Management",
+            featureName: "Document Management",
             featureDesc:
-                "Worried about where your content go? Fret not! You can manage your project materials here, safe and secure!",
-            featureImage: PlaceboImage,
+                "Worried about where your documents go? Fret not! You can manage your project materials here, safe and sound!",
+            featureImage: DocumentsMgmt,
         },
     ];
 
