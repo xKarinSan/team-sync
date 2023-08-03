@@ -46,16 +46,16 @@ const HomePage = () => {
             icon: CalendarImage,
             path: "/calendar",
         },
-        {
-            label: "Manage Profile",
-            icon: ProfileImage,
-            path: "/profile",
-        },
-        {
-            label: "Manage Notifications",
-            icon: NotificationImage,
-            path: "/notifications",
-        },
+        // {
+        //     label: "Manage Profile",
+        //     icon: ProfileImage,
+        //     path: "/profile",
+        // },
+        // {
+        //     label: "Manage Notifications",
+        //     icon: NotificationImage,
+        //     path: "/notifications",
+        // },
         {
             label: "Logout",
             icon: LogoutImage,

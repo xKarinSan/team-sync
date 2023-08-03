@@ -208,8 +208,8 @@ const LinkItems: Array<LinkItemProps> = [
     { name: "Home", icon: FiHome, path: "/home" },
     { name: "Teams", icon: FiUsers, path: "/teams" },
     { name: "Calendar", icon: FiCalendar, path: "/calendar" },
-    { name: "Profile", icon: FiUser, path: "/profile" },
-    { name: "Notifications", icon: FiBell, path: "/notifications" },
+    // { name: "Profile", icon: FiUser, path: "/profile" },
+    // { name: "Notifications", icon: FiBell, path: "/notifications" },
     { name: "Logout", icon: FiLogOut, path: "/logout" },
 ];
 
