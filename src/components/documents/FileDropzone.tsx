@@ -203,7 +203,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                     </Box>
                 </div>
             </Box>
-            <CustomContainer>
+            {/* <CustomContainer> */}
                 {selectedFiles.length == 0 ? (
                     <>
                         <Heading fontWeight={"normal"} size="md">
@@ -217,7 +217,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                         </CustomGrid>
                     </>
                 )}
-            </CustomContainer>
+            {/* </CustomContainer> */}
         </Box>
     );
 }

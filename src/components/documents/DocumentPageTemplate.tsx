@@ -26,6 +26,7 @@ import {
     useDisclosure,
     Breadcrumb,
     BreadcrumbItem,
+    Tooltip,
 } from "@chakra-ui/react";
 import { FiMoreVertical, FiFolderPlus } from "react-icons/fi";
 
@@ -76,7 +77,6 @@ export default function DocumentPageTemplate({
     const toast = useToast();
     const { userId } = useUser();
     const { teamId } = useTeam();
-    const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // ===============states===============
@@ -143,11 +143,7 @@ export default function DocumentPageTemplate({
 
     return (
         <Box>
-            <Box
-                width={[null, null, "80%", "60vw"]}
-                justifyContent={"center"}
-                margin="auto"
-            >
+            <Box width={["100%"]} justifyContent={"center"} margin="auto">
                 <Heading fontWeight={"normal"}>
                     Documents in {folderId ? "Folder" : "Team"} {""}{" "}
                     {currentPlace}
@@ -198,72 +194,64 @@ export default function DocumentPageTemplate({
                     onSubmitFunction={createFolder}
                 />
 
-                <CustomContainer>
-                    {loading ? (
-                        <>
-                            <LoadingDisplay displayText="Getting folders ..." />
-                        </>
-                    ) : (
-                        <>
-                            {folders.length > 0 ? (
-                                <>
-                                    <CustomGrid>
-                                        {folders.map(
-                                            (folder: Folder, index) => {
-                                                return (
-                                                    <FolderContainer
-                                                        folder={folder}
-                                                        key={index}
-                                                    />
-                                                );
-                                            }
-                                        )}
-                                    </CustomGrid>
-                                </>
-                            ) : (
-                                <>
-                                    <Heading fontWeight={"normal"}>
-                                        No folders for this team, add some?
-                                    </Heading>
-                                </>
-                            )}
-                        </>
-                    )}
-                </CustomContainer>
-                <Heading fontWeight={"nomral"} size="md">
+                {loading ? (
+                    <>
+                        <LoadingDisplay displayText="Getting folders ..." />
+                    </>
+                ) : (
+                    <>
+                        {folders.length > 0 ? (
+                            <>
+                                <CustomGrid gridCols={[2, null, 3, 4]}>
+                                    {folders.map((folder: Folder, index) => {
+                                        return (
+                                            <FolderContainer
+                                                folder={folder}
+                                                key={index}
+                                            />
+                                        );
+                                    })}
+                                </CustomGrid>
+                            </>
+                        ) : (
+                            <>
+                                <Heading fontWeight={"normal"}>
+                                    No folders for this team, add some?
+                                </Heading>
+                            </>
+                        )}
+                    </>
+                )}
+                <Heading fontWeight={"normal"} size="md">
                     Files
                 </Heading>
-                <CustomContainer>
-                    {loading ? (
-                        <>
-                            <LoadingDisplay displayText="Getting Documents ..." />
-                        </>
-                    ) : (
-                        <>
-                            {files.length > 0 ? (
-                                <CustomGrid>
-                                    {" "}
-                                    {files.map(
-                                        (file: DocumentRecord, index) => {
-                                            return (
-                                                <FileContainer
-                                                    file={file}
-                                                    key={index}
-                                                />
-                                            );
-                                        }
-                                    )}
-                                </CustomGrid>
-                            ) : (
-                                <>
-                                    <Heading fontWeight={"normal"}>
-                                        No documents here, add some?
-                                    </Heading>
-                                </>
-                            )}
-                        </>
-                    )}
-                </CustomContainer>
+                {loading ? (
+                    <>
+                        <LoadingDisplay displayText="Getting Documents ..." />
+                    </>
+                ) : (
+                    <>
+                        {files.length > 0 ? (
+                            <CustomGrid gridCols={[2, null, 3, 4]}>
+                                {" "}
+                                {files.map((file: DocumentRecord, index) => {
+                                    return (
+                                        <FileContainer
+                                            file={file}
+                                            key={index}
+                                        />
+                                    );
+                                })}
+                            </CustomGrid>
+                        ) : (
+                            <>
+                                <Heading fontWeight={"normal"}>
+                                    No documents here, add some?
+                                </Heading>
+                            </>
+                        )}
+                    </>
+                )}
 
                 <FileDropzone folderId={folderId ? folderId : teamId} />
             </Box>
@@ -313,6 +301,11 @@ export function FolderContainer({ folder }: { folder: Folder }) {
             });
         }
     };
+    const handleDoubleClick = (e: any) => {
+        if (e.detail === 2 && !editing) {
+            window.open(`/team/${teamId}/documents/${folder.id}`);
+        }
+    };
 
     // delete the file entirely
     const deleteFolder = async () => {
@@ -336,12 +329,17 @@ export function FolderContainer({ folder }: { folder: Folder }) {
         }
     };
     return (
-        <CustomContainer>
-            <Box
-                display={"flex"}
-                width={"100%"}
-                justifyContent={"space-between"}
-            >
+        <Box
+            display={"inline-flex"}
+            width={"100%"}
+            justifyContent={"space-between"}
+            _hover={{ cursor: "pointer", background: "gray.200" }}
+            background="white"
+            borderWidth={"1px"}
+            padding={2}
+            onClick={handleDoubleClick}
+        >
+            <Tooltip hasArrow label={folderName}>
                 <Text
                     noOfLines={2}
                     textAlign={"left"}
@@ -362,68 +360,72 @@ export function FolderContainer({ folder }: { folder: Folder }) {
                         <>{folderName}</>
                     )}
                 </Text>
-                <Menu>
+            </Tooltip>
+            <Menu>
+                <Tooltip hasArrow label="More actions">
                     <MenuButton
                         as={IconButton}
                         aria-label="Options"
                         icon={<FiMoreVertical />}
-                        background="white"
-                        boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+                        top={"0"}
                         right={"0"}
-                    ></MenuButton>
-                    <MenuList>
-                        {editing ? (
-                            <>
-                                <MenuItem
-                                    onClick={() => {
-                                        updateFolder();
-                                    }}
-                                >
-                                    Save
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={() => {
-                                        cancelUpdating();
-                                    }}
-                                >
-                                    Cancel
-                                </MenuItem>
-                            </>
-                        ) : (
-                            <>
-                                {" "}
-                                <NextLink
-                                    href={`/team/${teamId}/documents/${folder.id}`}
-                                >
-                                    <MenuItem>Go to folder</MenuItem>
-                                </NextLink>
-                                <MenuItem
-                                    onClick={() => {
-                                        setEditing(true);
-                                    }}
-                                >
-                                    Rename Folder
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={() => {
-                                        deleteFolder();
-                                    }}
-                                >
-                                    Remove
-                                </MenuItem>
-                            </>
-                        )}
-                    </MenuList>
-                </Menu>
-            </Box>
-        </CustomContainer>
+                        width={"fit-content"}
+                        alignSelf={"center"}
+                        borderRadius={"50%"}
+                        background={"none"}
+                    />
+                </Tooltip>
+                <MenuList>
+                    {editing ? (
+                        <>
+                            <MenuItem
+                                onClick={() => {
+                                    updateFolder();
+                                }}
+                            >
+                                Save
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    cancelUpdating();
+                                }}
+                            >
+                                Cancel
+                            </MenuItem>
+                        </>
+                    ) : (
+                        <>
+                            {" "}
+                            <NextLink
+                                href={`/team/${teamId}/documents/${folder.id}`}
+                            >
+                                <MenuItem>Go to folder</MenuItem>
+                            </NextLink>
+                            <MenuItem
+                                onClick={() => {
+                                    setEditing(true);
+                                }}
+                            >
+                                Rename Folder
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    deleteFolder();
+                                }}
+                            >
+                                Remove
+                            </MenuItem>
+                        </>
+                    )}
+                </MenuList>
+            </Menu>
+        </Box>
     );
 }
 
 export function FileContainer({ file }: { file: DocumentRecord }) {
     const { fileName, fileExtension, url } = file;
     const toast = useToast();
-
     const [currFileName, setCurrFileName] = useState<string>(fileName);
     const [editing, setEditing] = useState<boolean>(false);
 
@@ -486,18 +488,30 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
             });
         }
     };
+
+    const handleDoubleClick = (e: any) => {
+        if (e.detail === 2 && !editing) {
+            window.open(url);
+        }
+    };
     return (
-        <CustomContainer>
-            <Box
-                display={"flex"}
-                width={"100%"}
-                justifyContent={"space-between"}
-            >
+        <Box
+            display={"inline-flex"}
+            width={"100%"}
+            justifyContent={"space-between"}
+            _hover={{ cursor: "pointer", background: "gray.200" }}
+            background="white"
+            borderWidth={"1px"}
+            padding={2}
+            onClick={handleDoubleClick}
+        >
+            <Tooltip hasArrow label={`${fileName}.${fileExtension}`}>
                 <Text
                     noOfLines={2}
                     textAlign={"left"}
                     overflow="hidden"
                     textOverflow={"ellipsis"}
+                    fontWeight={"light"}
                 >
                     {editing ? (
                         <>
@@ -512,62 +526,66 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                     ) : (
                         <>{fileName}</>
                     )}
-                    {"."}
                     {fileExtension}
                 </Text>
-                <Menu>
+            </Tooltip>
+            <Menu>
+                <Tooltip hasArrow label="More actions">
                     <MenuButton
                         as={IconButton}
                         aria-label="Options"
                         icon={<FiMoreVertical />}
-                        background="white"
-                        boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
+                        top={"0"}
                         right={"0"}
-                    ></MenuButton>
-                    <MenuList>
-                        {editing ? (
-                            <>
-                                <MenuItem
-                                    onClick={() => {
-                                        updateFile();
-                                    }}
-                                >
-                                    Save
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={() => {
-                                        cancelUpdating();
-                                    }}
-                                >
-                                    Cancel
-                                </MenuItem>
-                            </>
-                        ) : (
-                            <>
-                                {" "}
-                                <Link href={url} target="_blank">
-                                    <MenuItem>View</MenuItem>
-                                </Link>
-                                <MenuItem
-                                    onClick={() => {
-                                        setEditing(true);
-                                    }}
-                                >
-                                    Rename File
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={() => {
-                                        deleteFile();
-                                    }}
-                                >
-                                    Remove
-                                </MenuItem>
-                            </>
-                        )}
-                    </MenuList>
-                </Menu>
-            </Box>
-        </CustomContainer>
+                        width={"fit-content"}
+                        alignSelf={"center"}
+                        borderRadius={"50%"}
+                        background={"none"}
+                    />
+                </Tooltip>
+                <MenuList>
+                    {editing ? (
+                        <>
+                            <MenuItem
+                                onClick={() => {
+                                    updateFile();
+                                }}
+                            >
+                                Save
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    cancelUpdating();
+                                }}
+                            >
+                                Cancel
+                            </MenuItem>
+                        </>
+                    ) : (
+                        <>
+                            {" "}
+                            <Link href={url} target="_blank">
+                                <MenuItem>View</MenuItem>
+                            </Link>
+                            <MenuItem
+                                onClick={() => {
+                                    setEditing(true);
+                                }}
+                            >
+                                Rename File
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    deleteFile();
+                                }}
+                            >
+                                Remove
+                            </MenuItem>
+                        </>
+                    )}
+                </MenuList>
+            </Menu>
+        </Box>
     );
 }
 
