@@ -108,7 +108,10 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
         }
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop,
+        noClick: true,
+    });
     const selectedImages = selectedFiles?.map((file: DocumentEntry) => {
         const { fileId, name, preview } = file;
         return (
@@ -148,9 +151,9 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
 
     return (
         <Box margin="auto">
-            <Heading fontWeight={"normal"} size="md">
+            {/* <Heading fontWeight={"normal"} size="md">
                 Upload files
-            </Heading>
+            </Heading> */}
             <br />
             <CustomButton
                 buttonText={`Upload ${selectedFiles.length} files`}
@@ -204,19 +207,19 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
                 </div>
             </Box>
             {/* <CustomContainer> */}
-                {selectedFiles.length == 0 ? (
-                    <>
-                        <Heading fontWeight={"normal"} size="md">
-                            No files uploaded, upload some?
-                        </Heading>
-                    </>
-                ) : (
-                    <>
-                        <CustomGrid gridCols={[2, 4, null]}>
-                            {selectedImages}
-                        </CustomGrid>
-                    </>
-                )}
+            {selectedFiles.length == 0 ? (
+                <>
+                    <Heading fontWeight={"normal"} size="md">
+                        No files uploaded, upload some?
+                    </Heading>
+                </>
+            ) : (
+                <>
+                    <CustomGrid gridCols={[2, 4, null]}>
+                        {selectedImages}
+                    </CustomGrid>
+                </>
+            )}
             {/* </CustomContainer> */}
         </Box>
     );
