@@ -178,11 +178,58 @@ export default function DocumentPageTemplate({
                         </BreadcrumbItem>
                     </Breadcrumb>
                 </CustomContainer>
-                <CustomButton
-                    buttonText="Add Folder"
-                    clickFunction={onOpen}
-                    LeftButtonIcon={FiFolderPlus}
-                />
+                <FileDropzone folderId={folderId ? folderId : teamId}>
+                    <CustomButton
+                        margin={2}
+                        buttonText="Add Folder"
+                        clickFunction={onOpen}
+                        LeftButtonIcon={FiFolderPlus}
+                    />
+                    <Box>
+                        {folders.length > 0 ? (
+                            <>
+                                <Heading fontWeight={"normal"} size="md">
+                                    Folders
+                                </Heading>
+                                <CustomGrid gridCols={[2, null, 3, 4]}>
+                                    {folders.map((folder: Folder, index) => {
+                                        return (
+                                            <FolderContainer
+                                                folder={folder}
+                                                key={index}
+                                            />
+                                        );
+                                    })}
+                                </CustomGrid>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                        {files.length > 0 ? (
+                            <>
+                                {" "}
+                                <Heading fontWeight={"normal"} size="md">
+                                    Files
+                                </Heading>
+                                <CustomGrid gridCols={[2, null, 3, 4]}>
+                                    {" "}
+                                    {files.map(
+                                        (file: DocumentRecord, index) => {
+                                            return (
+                                                <FileContainer
+                                                    file={file}
+                                                    key={index}
+                                                />
+                                            );
+                                        }
+                                    )}
+                                </CustomGrid>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </Box>
+                </FileDropzone>
                 <AddFileDialog
                     isOpen={isOpen}
                     onClose={onClose}
@@ -190,46 +237,6 @@ export default function DocumentPageTemplate({
                     currentFolderName={folderName}
                     onSubmitFunction={createFolder}
                 />
-
-                {folders.length > 0 ? (
-                    <>
-                        <Heading fontWeight={"normal"} size="md">
-                            Folders
-                        </Heading>
-                        <CustomGrid gridCols={[2, null, 3, 4]}>
-                            {folders.map((folder: Folder, index) => {
-                                return (
-                                    <FolderContainer
-                                        folder={folder}
-                                        key={index}
-                                    />
-                                );
-                            })}
-                        </CustomGrid>
-                    </>
-                ) : (
-                    <></>
-                )}
-                {files.length > 0 ? (
-                    <>
-                        {" "}
-                        <Heading fontWeight={"normal"} size="md">
-                            Files
-                        </Heading>
-                        <CustomGrid gridCols={[2, null, 3, 4]}>
-                            {" "}
-                            {files.map((file: DocumentRecord, index) => {
-                                return (
-                                    <FileContainer file={file} key={index} />
-                                );
-                            })}
-                        </CustomGrid>
-                    </>
-                ) : (
-                    <></>
-                )}
-
-                <FileDropzone folderId={folderId ? folderId : teamId} />
             </Box>
         </Box>
     );
@@ -502,7 +509,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                     ) : (
                         <>{fileName}</>
                     )}
-                    {fileExtension}
+                    .{fileExtension}
                 </Text>
             </Tooltip>
             <Menu>

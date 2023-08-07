@@ -2,7 +2,7 @@
 // ===================================all imports===================================
 
 // ==========================import from react==========================
-import { useState, useCallback } from "react";
+import { useState, useCallback, ReactNode } from "react";
 // ==========================import from next==========================
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
@@ -39,7 +39,13 @@ import { Heading } from "@chakra-ui/react";
 
 // folderId is a string
 // takes in teamId if its not inside folder
-export default function FileDropzone({ folderId }: { folderId: string }) {
+export default function FileDropzone({
+    folderId,
+    children,
+}: {
+    folderId: string;
+    children?: ReactNode;
+}) {
     // ===============constants===============
     const toast = useToast();
     const { userId } = useUser();
@@ -66,7 +72,7 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
             });
 
             setSelectedFiles(selectedFiles);
-            setEntering(false);
+            // setEntering(false);
             toast({
                 title: `Added ${fileCount} file(s)`,
                 status: "success",
@@ -108,7 +114,10 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
         }
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        noClick: true,
+    });
     const selectedImages = selectedFiles?.map((file: DocumentEntry) => {
         const { fileId, name, preview } = file;
         return (
@@ -148,76 +157,87 @@ export default function FileDropzone({ folderId }: { folderId: string }) {
 
     return (
         <Box margin="auto">
-            <Heading fontWeight={"normal"} size="md">
-                Upload files
-            </Heading>
-            <br />
-            <CustomButton
-                buttonText={`Upload ${selectedFiles.length} files`}
-                clickFunction={uploadFiles}
-                LeftButtonIcon={FiFilePlus}
-                isDisabled={selectedFiles.length == 0}
-            />
-            <CustomButton
-                buttonText={"Clear Selection"}
-                buttonColor="#AA0000"
-                clickFunction={clearSelection}
-                LeftButtonIcon={FiTrash}
-                isDisabled={selectedFiles.length == 0}
-            />
-            <Box width={["100%", null, null, "60%", "40%"]}>
+            <Box width={["100%"]}>
                 <div
                     {...getRootProps()}
-                    onDragEnter={() => {
+                    onDragOver={() => {
                         setEntering(true);
                     }}
-                    onDragLeave={() => setEntering(false)}
+                    // onDragEnter={() => {
+                    //     setEntering(true);
+                    // }}
+                    onDropCapture={() => {
+                        setEntering(false);
+                    }}
+                    onDragLeave={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setEntering(false);
+                    }}
                 >
                     <Box
+                        border={
+                            entering
+                                ? "2px dashed #3182CE"
+                                : "none"
+                        }
                         width={["100%"]}
-                        background={entering ? "black" : "white"}
-                        color={entering ? "white" : "black"}
+                        background={entering ? "#EAF5FE" : "white"}
                         boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
                         borderRadius={5}
                         padding={2}
                         margin="auto"
                         marginTop={5}
                         marginBottom={5}
-                        minHeight={"200px"}
+                        height={"80vh"}
+                        overflow={"scroll"}
                         transition={
                             "background-color 200ms linear, color 200ms linear"
                         }
-                        display="grid"
                     >
                         <input {...getInputProps()} />
-                        <Heading
-                            fontWeight={"normal"}
-                            size="md"
-                            margin="auto"
-                            textAlign="center"
-                        >
-                            {entering
-                                ? "Drop it like its hawt!"
-                                : " Click or drag and drop files here"}
-                        </Heading>
+                        {entering ? (
+                            <>
+                                <Heading
+                                    fontWeight={"light"}
+                                    textAlign={"center"}
+                                >
+                                    Drop files to upload them
+                                </Heading>
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                        <Box marginTop="10px" marginBottom="10px">
+                            <CustomButton
+                                buttonText={`Upload ${selectedFiles.length} files`}
+                                clickFunction={uploadFiles}
+                                LeftButtonIcon={FiFilePlus}
+                                isDisabled={selectedFiles.length == 0}
+                            />
+                            <CustomButton
+                                buttonText={"Clear Selection"}
+                                buttonColor="#AA0000"
+                                clickFunction={clearSelection}
+                                LeftButtonIcon={FiTrash}
+                                isDisabled={selectedFiles.length == 0}
+                            />
+                        </Box>
+                        <Box marginBottom="10px">
+                            {selectedFiles.length >= 0 ? (
+                                <>
+                                    <CustomGrid gridCols={[2, 4, null]}>
+                                        {selectedImages}
+                                    </CustomGrid>
+                                </>
+                            ) : (
+                                <></>
+                            )}
+                        </Box>
+                        {children}
                     </Box>
                 </div>
             </Box>
-            {/* <CustomContainer> */}
-                {selectedFiles.length == 0 ? (
-                    <>
-                        <Heading fontWeight={"normal"} size="md">
-                            No files uploaded, upload some?
-                        </Heading>
-                    </>
-                ) : (
-                    <>
-                        <CustomGrid gridCols={[2, 4, null]}>
-                            {selectedImages}
-                        </CustomGrid>
-                    </>
-                )}
-            {/* </CustomContainer> */}
         </Box>
     );
 }
