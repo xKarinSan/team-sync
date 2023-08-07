@@ -190,7 +190,12 @@ export default function DocumentPageTemplate({
                     <Box>
                         {folders.length > 0 ? (
                             <>
-                                <Heading fontWeight={"normal"} size="md">
+                                <Heading
+                                    fontWeight={"normal"}
+                                    size="md"
+                                    marginTop="10px"
+                                    marginBottom="5px"
+                                >
                                     Folders
                                 </Heading>
                                 <CustomGrid gridCols={[2, null, 3, 4]}>
@@ -210,7 +215,12 @@ export default function DocumentPageTemplate({
                         {files.length > 0 ? (
                             <>
                                 {" "}
-                                <Heading fontWeight={"normal"} size="md">
+                                <Heading
+                                    fontWeight={"normal"}
+                                    size="md"
+                                    marginTop="10px"
+                                    marginBottom="5px"
+                                >
                                     Files
                                 </Heading>
                                 <CustomGrid gridCols={[2, null, 3, 4]}>
@@ -632,9 +642,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                                     data={url}
                                     width={"100%"}
                                     height={"100%"}
-                                    onLoad={()=>{
-                                        
-                                    }}
+                                    onLoad={() => {}}
                                 ></object>
                             </>
                         ) : (
