@@ -1,5 +1,3 @@
-import { DocumentRecord } from "../Documents/documentTypes";
-
 export type folderEntry = {
     // name of folder
     folderName: string;
@@ -17,15 +15,3 @@ export interface Folder extends folderEntry {
     // database generated Id
     id: string;
 }
-
-export type FolderRecord = {
-    // name of folder
-    // name as main (if new team)
-    folderName: string;
-    // date which folder is made
-    createdDate: any;
-    // children (other folders)
-    children: Folder[];
-    // files inside
-    files: DocumentRecord[];
-};

@@ -10,7 +10,6 @@ import NextLink from "next/link";
 // ==========================import state management==========================
 import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
-import useFolders from "@/store/folderStore";
 // ==========================import chakraui components==========================
 import {
     Box,
@@ -49,10 +48,7 @@ import {
     realtimeFolderChanges,
     getFolderById,
 } from "@/firebaseFunctions/folders/folderGet";
-import {
-    addFolder,
-    addChildFolder,
-} from "@/firebaseFunctions/folders/folderAdd";
+import { addFolder } from "@/firebaseFunctions/folders/folderAdd";
 import { updateFolderRecord } from "@/firebaseFunctions/folders/folderPut";
 import { deleteFolderRecord } from "@/firebaseFunctions/folders/folderDelete";
 
@@ -65,11 +61,7 @@ import { realtimeFileChanges } from "@/firebaseFunctions/documents/documentGet";
 
 // ==========================import types/interfaces==========================
 import { DocumentRecord } from "@/types/Documents/documentTypes";
-import { Folder, FolderRecord } from "@/types/Folders/folderTypes";
-import {
-    newChildFolderRef,
-    parentFolderRef,
-} from "@/firebaseFunctions/folders/folderRefs";
+import { Folder } from "@/types/Folders/folderTypes";
 
 // ==========================etc==========================
 
@@ -85,14 +77,13 @@ export default function DocumentPageTemplate({
     const toast = useToast();
     const { userId } = useUser();
     const { teamId } = useTeam();
-    const { folders, addFolder } = useFolders();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     // ===============states===============
     const [currentPlace, setCurrentPlace] = useState<string>("");
     const [parentDest, setParentDest] = useState<string>("");
     const [folderName, setFolderName] = useState<string>("");
-    const [currFolders, setCurrFolders] = useState([]);
+    const [folders, setFolders] = useState([]);
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -117,11 +108,12 @@ export default function DocumentPageTemplate({
                 status: "error",
             });
         } else {
-            const addFolderRes = await addChildFolder(folders, {
+            const addFolderRes = await addFolder({
+                teamId,
                 folderName,
-                createdDate: Date.now(),
-                children: [],
-                files: [],
+                parentId: folderId ? folderId : teamId,
+                creatorId: userId,
+                createdDate: new Date(),
             });
             if (addFolderRes) {
                 toast({
@@ -143,9 +135,8 @@ export default function DocumentPageTemplate({
         getCurrentPlace();
         realtimeFileChanges(folderId && teamId ? folderId : teamId, setFiles);
         realtimeFolderChanges(
-            parentFolderRef(folders),
             folderId && teamId ? folderId : teamId,
-            setCurrFolders
+            setFolders
         );
         setLoading(false);
     }, []);
@@ -162,24 +153,7 @@ export default function DocumentPageTemplate({
                 <CustomContainer>
                     {/* use breadcrumbs */}
                     <Breadcrumb separator=">">
-                        {folders.map((folder: any, index: number) => {
-                            const { folderName, id } = folder;
-
-                            return (
-                                <BreadcrumbItem>
-                                    <NextLink
-                                        href={
-                                            index == 0
-                                                ? `/team/${teamId}/documents/`
-                                                : `/team/${teamId}/documents/${id}`
-                                        }
-                                    >
-                                        {folderName}
-                                    </NextLink>
-                                </BreadcrumbItem>
-                            );
-                        })}
-                        {/* <BreadcrumbItem>
+                        <BreadcrumbItem>
                             {folderId ? (
                                 <NextLink href={`/team/${teamId}/documents/`}>
                                     Back To Team Documents
@@ -201,9 +175,12 @@ export default function DocumentPageTemplate({
                         ) : null}
                         <BreadcrumbItem>
                             <Text>{currentPlace}</Text>
-                        </BreadcrumbItem> */}
+                        </BreadcrumbItem>
                     </Breadcrumb>
                 </CustomContainer>
+                <Heading fontWeight={"normal"} size="md">
+                    Folders
+                </Heading>
                 <CustomButton
                     buttonText="Add Folder"
                     clickFunction={onOpen}
@@ -223,13 +200,10 @@ export default function DocumentPageTemplate({
                     </>
                 ) : (
                     <>
-                        {currFolders.length > 0 ? (
+                        {folders.length > 0 ? (
                             <>
-                                <Heading fontWeight={"normal"} size="md">
-                                    Folders
-                                </Heading>
                                 <CustomGrid gridCols={[2, null, 3, 4]}>
-                                    {currFolders.map((folder: any, index) => {
+                                    {folders.map((folder: Folder, index) => {
                                         return (
                                             <FolderContainer
                                                 folder={folder}
@@ -239,10 +213,18 @@ export default function DocumentPageTemplate({
                                     })}
                                 </CustomGrid>
                             </>
-                        ) : null}
+                        ) : (
+                            <>
+                                <Heading fontWeight={"normal"}>
+                                    No folders for this team, add some?
+                                </Heading>
+                            </>
+                        )}
                     </>
                 )}
-
+                <Heading fontWeight={"normal"} size="md">
+                    Files
+                </Heading>
                 {loading ? (
                     <>
                         <LoadingDisplay displayText="Getting Documents ..." />
@@ -250,25 +232,24 @@ export default function DocumentPageTemplate({
                 ) : (
                     <>
                         {files.length > 0 ? (
+                            <CustomGrid gridCols={[2, null, 3, 4]}>
+                                {" "}
+                                {files.map((file: DocumentRecord, index) => {
+                                    return (
+                                        <FileContainer
+                                            file={file}
+                                            key={index}
+                                        />
+                                    );
+                                })}
+                            </CustomGrid>
+                        ) : (
                             <>
-                                <Heading fontWeight={"normal"} size="md">
-                                    Files
+                                <Heading fontWeight={"normal"}>
+                                    No documents here, add some?
                                 </Heading>
-                                <CustomGrid gridCols={[2, null, 3, 4]}>
-                                    {" "}
-                                    {files.map(
-                                        (file: DocumentRecord, index) => {
-                                            return (
-                                                <FileContainer
-                                                    file={file}
-                                                    key={index}
-                                                />
-                                            );
-                                        }
-                                    )}
-                                </CustomGrid>
                             </>
-                        ) : null}
+                        )}
                     </>
                 )}
 
@@ -283,10 +264,7 @@ export default function DocumentPageTemplate({
 // the rest are pretty much similar like the main components
 
 export function FolderContainer({ folder }: { folder: Folder }) {
-    const router = useRouter();
-    const { teamId } = useTeam();
-    const { addFolder } = useFolders();
-    const { folderName, id } = folder;
+    const { folderName, parentId, teamId } = folder;
     const toast = useToast();
 
     const [currFolderName, setCurrFolderName] = useState<string>(folderName);
@@ -325,9 +303,7 @@ export function FolderContainer({ folder }: { folder: Folder }) {
     };
     const handleDoubleClick = (e: any) => {
         if (e.detail === 2 && !editing) {
-            addFolder(id, folderName);
-            router.push(`/team/${teamId}/documents/${id}`);
-            // window.open(`/team/${teamId}/documents/${id}`);
+            window.open(`/team/${teamId}/documents/${folder.id}`);
         }
     };
 

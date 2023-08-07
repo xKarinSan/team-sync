@@ -40,7 +40,6 @@ import { usePathname } from "next/navigation";
 import NextLink from "next/link";
 import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
-import useFolders from "@/store/folderStore";
 import { useState, useEffect, ReactNode } from "react";
 import TeamsyncLogo from "@/images/general/TeamsyncLogo.png";
 import { leaveChat } from "@/firebaseFunctions/chats/chatDelete";
@@ -223,7 +222,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
     const { teamId, removeTeam } = useTeam();
     const { userId } = useUser();
-    const { clearFolders } = useFolders();
 
     const [sidebarItems, setSidebarItems] = useState<LinkItemProps[]>([]);
 
@@ -283,9 +281,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 handleLeavingConference();
             }
             setSidebarItems(setCurrentTeamItems(teamId));
-        }
-        if (!pathName.includes("/documents")) {
-            clearFolders();
         }
     }, [pathName]);
     return (

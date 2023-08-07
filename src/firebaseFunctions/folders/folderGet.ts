@@ -32,45 +32,22 @@ export const getChildrenFolders = async (parentId: string) => {
 
 // ================== listener ==================
 
-// export const realtimeFolderChanges = (
-//     parentId: string,
-//     setCurrentData: (data: any) => void
-// ) => {
-//     onValue(folderRef, (snapshot) => {
-//         if (snapshot.exists()) {
-//             const data = snapshot.val();
-//             let dataIds = Object.keys(data);
-//             const res: any[] = [];
-//             dataIds.forEach((id: string) => {
-//                 if (data[id].parentId === parentId) {
-//                     res.push({ ...data[id], id });
-//                 }
-//             });
-
-//             setCurrentData(res);
-//         }
-//     });
-// };
-
 export const realtimeFolderChanges = (
-    currentRef: any,
     parentId: string,
     setCurrentData: (data: any) => void
 ) => {
-    onValue(currentRef, (snapshot) => {
+    onValue(folderRef, (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
-            if (data.hasOwnProperty("children")) {
-                const { children } = data;
-                const res: any[] = [];
-                console.log("children", children);
-                Object.keys(children).forEach((id: string) => {
-                    res.push({ ...children[id], id });
-                });
-                console.log("res",res)
+            let dataIds = Object.keys(data);
+            const res: any[] = [];
+            dataIds.forEach((id: string) => {
+                if (data[id].parentId === parentId) {
+                    res.push({ ...data[id], id });
+                }
+            });
 
-                setCurrentData(res);
-            }
+            setCurrentData(res);
         }
     });
 };
