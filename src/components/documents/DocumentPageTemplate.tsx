@@ -178,9 +178,6 @@ export default function DocumentPageTemplate({
                         </BreadcrumbItem>
                     </Breadcrumb>
                 </CustomContainer>
-                <Heading fontWeight={"normal"} size="md">
-                    Folders
-                </Heading>
                 <CustomButton
                     buttonText="Add Folder"
                     clickFunction={onOpen}
@@ -194,63 +191,42 @@ export default function DocumentPageTemplate({
                     onSubmitFunction={createFolder}
                 />
 
-                {loading ? (
+                {folders.length > 0 ? (
                     <>
-                        <LoadingDisplay displayText="Getting folders ..." />
+                        <Heading fontWeight={"normal"} size="md">
+                            Folders
+                        </Heading>
+                        <CustomGrid gridCols={[2, null, 3, 4]}>
+                            {folders.map((folder: Folder, index) => {
+                                return (
+                                    <FolderContainer
+                                        folder={folder}
+                                        key={index}
+                                    />
+                                );
+                            })}
+                        </CustomGrid>
                     </>
                 ) : (
-                    <>
-                        {folders.length > 0 ? (
-                            <>
-                                <CustomGrid gridCols={[2, null, 3, 4]}>
-                                    {folders.map((folder: Folder, index) => {
-                                        return (
-                                            <FolderContainer
-                                                folder={folder}
-                                                key={index}
-                                            />
-                                        );
-                                    })}
-                                </CustomGrid>
-                            </>
-                        ) : (
-                            <>
-                                <Heading fontWeight={"normal"}>
-                                    No folders for this team, add some?
-                                </Heading>
-                            </>
-                        )}
-                    </>
+                    <></>
                 )}
-                <Heading fontWeight={"normal"} size="md">
-                    Files
-                </Heading>
-                {loading ? (
+                {files.length > 0 ? (
                     <>
-                        <LoadingDisplay displayText="Getting Documents ..." />
+                        {" "}
+                        <Heading fontWeight={"normal"} size="md">
+                            Files
+                        </Heading>
+                        <CustomGrid gridCols={[2, null, 3, 4]}>
+                            {" "}
+                            {files.map((file: DocumentRecord, index) => {
+                                return (
+                                    <FileContainer file={file} key={index} />
+                                );
+                            })}
+                        </CustomGrid>
                     </>
                 ) : (
-                    <>
-                        {files.length > 0 ? (
-                            <CustomGrid gridCols={[2, null, 3, 4]}>
-                                {" "}
-                                {files.map((file: DocumentRecord, index) => {
-                                    return (
-                                        <FileContainer
-                                            file={file}
-                                            key={index}
-                                        />
-                                    );
-                                })}
-                            </CustomGrid>
-                        ) : (
-                            <>
-                                <Heading fontWeight={"normal"}>
-                                    No documents here, add some?
-                                </Heading>
-                            </>
-                        )}
-                    </>
+                    <></>
                 )}
 
                 <FileDropzone folderId={folderId ? folderId : teamId} />
