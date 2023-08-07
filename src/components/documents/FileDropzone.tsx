@@ -163,9 +163,6 @@ export default function FileDropzone({
                     onDragOver={() => {
                         setEntering(true);
                     }}
-                    // onDragEnter={() => {
-                    //     setEntering(true);
-                    // }}
                     onDropCapture={() => {
                         setEntering(false);
                     }}
@@ -176,11 +173,7 @@ export default function FileDropzone({
                     }}
                 >
                     <Box
-                        border={
-                            entering
-                                ? "2px dashed #3182CE"
-                                : "none"
-                        }
+                        border={entering ? "2px dashed #3182CE" : "none"}
                         width={["100%"]}
                         background={entering ? "#EAF5FE" : "white"}
                         boxShadow={"0 0 4px 0 rgba(0, 0, 0, 0.2)"}
@@ -189,7 +182,7 @@ export default function FileDropzone({
                         margin="auto"
                         marginTop={5}
                         marginBottom={5}
-                        height={"80vh"}
+                        height={["65vh", null, "70vh"]}
                         overflow={"scroll"}
                         transition={
                             "background-color 200ms linear, color 200ms linear"

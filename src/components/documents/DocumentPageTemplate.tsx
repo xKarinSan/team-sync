@@ -27,8 +27,10 @@ import {
     Breadcrumb,
     BreadcrumbItem,
     Tooltip,
+    Icon,
+    Image,
 } from "@chakra-ui/react";
-import { FiMoreVertical, FiFolderPlus } from "react-icons/fi";
+import { FiMoreVertical, FiFolderPlus, FiFolder, FiFile } from "react-icons/fi";
 
 // ==========================import custom components==========================
 import CustomContainer from "../custom/CustomContainer";
@@ -64,7 +66,7 @@ import { DocumentRecord } from "@/types/Documents/documentTypes";
 import { Folder } from "@/types/Folders/folderTypes";
 
 // ==========================etc==========================
-
+import FilePic from "@/images/teampage/DocumentsImage.png";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -178,13 +180,13 @@ export default function DocumentPageTemplate({
                         </BreadcrumbItem>
                     </Breadcrumb>
                 </CustomContainer>
+                <CustomButton
+                    margin={0}
+                    buttonText="Add Folder"
+                    clickFunction={onOpen}
+                    LeftButtonIcon={FiFolderPlus}
+                />
                 <FileDropzone folderId={folderId ? folderId : teamId}>
-                    <CustomButton
-                        margin={2}
-                        buttonText="Add Folder"
-                        clickFunction={onOpen}
-                        LeftButtonIcon={FiFolderPlus}
-                    />
                     <Box>
                         {folders.length > 0 ? (
                             <>
@@ -316,6 +318,7 @@ export function FolderContainer({ folder }: { folder: Folder }) {
             display={"inline-flex"}
             width={"100%"}
             justifyContent={"space-between"}
+            alignContent={"center"}
             _hover={{ cursor: "pointer", background: "gray.200" }}
             background="white"
             borderWidth={"1px"}
@@ -328,7 +331,10 @@ export function FolderContainer({ folder }: { folder: Folder }) {
                     textAlign={"left"}
                     overflow="hidden"
                     textOverflow={"ellipsis"}
+                    marginTop={"auto"}
+                    marginBottom={"auto"}
                 >
+                    <Icon as={FiFolder} marginRight={2} />
                     {editing ? (
                         <>
                             <Input
@@ -411,6 +417,32 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
     const toast = useToast();
     const [currFileName, setCurrFileName] = useState<string>(fileName);
     const [editing, setEditing] = useState<boolean>(false);
+    const fileExtensions = [
+        "pdf",
+        "doc",
+        "docx",
+        "ppt",
+        "pptx",
+        "xls",
+        "xlsx",
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "bmp",
+        "ico",
+        "svg",
+        "webp",
+        "tiff",
+        "psd",
+        "ai",
+        "eps",
+        "raw",
+        "mp4",
+        "mov",
+        "avi",
+        // Add more file extensions as needed
+    ];
 
     // cancel updating file name
     const cancelUpdating = () => {
@@ -479,95 +511,145 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
     };
     return (
         <Box
-            display={"inline-flex"}
-            width={"100%"}
-            justifyContent={"space-between"}
             _hover={{ cursor: "pointer", background: "gray.200" }}
             background="white"
             borderWidth={"1px"}
             padding={2}
             onClick={handleDoubleClick}
         >
-            <Tooltip hasArrow label={`${fileName}.${fileExtension}`}>
-                <Text
-                    noOfLines={2}
-                    textAlign={"left"}
-                    overflow="hidden"
-                    textOverflow={"ellipsis"}
-                    fontWeight={"light"}
-                >
-                    {editing ? (
-                        <>
-                            <Input
-                                placeholder="New file name"
-                                value={currFileName}
-                                onChange={(e) => {
-                                    setCurrFileName(e.target.value);
-                                }}
-                            />
-                        </>
-                    ) : (
-                        <>{fileName}</>
-                    )}
-                    .{fileExtension}
-                </Text>
-            </Tooltip>
-            <Menu>
-                <Tooltip hasArrow label="More actions">
-                    <MenuButton
-                        as={IconButton}
-                        aria-label="Options"
-                        icon={<FiMoreVertical />}
-                        top={"0"}
-                        right={"0"}
-                        width={"fit-content"}
-                        alignSelf={"center"}
-                        borderRadius={"50%"}
-                        background={"none"}
-                    />
+            <Box
+                display={"inline-flex"}
+                width={"100%"}
+                justifyContent={"space-between"}
+            >
+                <Tooltip hasArrow label={`${fileName}.${fileExtension}`}>
+                    <Box overflow={"hidden"}>
+                        <Text
+                            noOfLines={2}
+                            textAlign={"left"}
+                            overflow="scroll"
+                            textOverflow={"ellipsis"}
+                            fontWeight={"light"}
+                            margin="auto"
+                        >
+                            <Icon as={FiFile} marginRight={2} />
+                            {editing ? (
+                                <>
+                                    <Input
+                                        placeholder="New file name"
+                                        value={currFileName}
+                                        onChange={(e) => {
+                                            setCurrFileName(e.target.value);
+                                        }}
+                                    />
+                                </>
+                            ) : (
+                                <Text as="span">{fileName}</Text>
+                            )}
+                            .{fileExtension}
+                        </Text>
+                    </Box>
                 </Tooltip>
-                <MenuList>
-                    {editing ? (
-                        <>
-                            <MenuItem
-                                onClick={() => {
-                                    updateFile();
-                                }}
-                            >
-                                Save
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    cancelUpdating();
-                                }}
-                            >
-                                Cancel
-                            </MenuItem>
-                        </>
-                    ) : (
-                        <>
-                            {" "}
-                            <Link href={url} target="_blank">
-                                <MenuItem>View</MenuItem>
-                            </Link>
-                            <MenuItem
-                                onClick={() => {
-                                    setEditing(true);
-                                }}
-                            >
-                                Rename File
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    deleteFile();
-                                }}
-                            >
-                                Remove
-                            </MenuItem>
-                        </>
-                    )}
-                </MenuList>
-            </Menu>
+                <Menu>
+                    <Tooltip hasArrow label="More actions">
+                        <MenuButton
+                            as={IconButton}
+                            aria-label="Options"
+                            icon={<FiMoreVertical />}
+                            top={"0"}
+                            right={"0"}
+                            width={"fit-content"}
+                            alignSelf={"center"}
+                            borderRadius={"50%"}
+                            background={"none"}
+                        />
+                    </Tooltip>
+                    <MenuList>
+                        {editing ? (
+                            <>
+                                <MenuItem
+                                    onClick={() => {
+                                        updateFile();
+                                    }}
+                                >
+                                    Save
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        cancelUpdating();
+                                    }}
+                                >
+                                    Cancel
+                                </MenuItem>
+                            </>
+                        ) : (
+                            <>
+                                {" "}
+                                <Link href={url} target="_blank">
+                                    <MenuItem>View</MenuItem>
+                                </Link>
+                                <MenuItem
+                                    onClick={() => {
+                                        setEditing(true);
+                                    }}
+                                >
+                                    Rename File
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        deleteFile();
+                                    }}
+                                >
+                                    Remove
+                                </MenuItem>
+                            </>
+                        )}
+                    </MenuList>
+                </Menu>
+            </Box>
+            <Box
+                background="white"
+                margin="0 auto"
+                height={"200px"}
+                padding="10px"
+                borderRadius={"5px"}
+                overflow={"hidden"}
+            >
+                {fileExtension == "mov" ? (
+                    <>
+                        <video width={"100%"} height={"100%"}>
+                            <source src={url} />
+                        </video>
+                    </>
+                ) : (
+                    <>
+                        {fileExtensions.includes(fileExtension) ? (
+                            <>
+                                {" "}
+                                <object
+                                    // type={fileExtension}
+                                    style={{ objectFit: "cover" }}
+                                    data={url}
+                                    width={"100%"}
+                                    height={"100%"}
+                                    onLoad={()=>{
+                                        
+                                    }}
+                                ></object>
+                            </>
+                        ) : (
+                            <>
+                                <Image
+                                    src={FilePic.src}
+                                    width="100%"
+                                    margin="0 auto"
+                                />
+                            </>
+                        )}
+                    </>
+                )}
+                {/* <Image src={url} width={"100%"} /> */}
+            </Box>
         </Box>
     );
 }
