@@ -19,14 +19,21 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { FiMic, FiMicOff, FiVideo, FiVideoOff } from "react-icons/fi";
+import { LuScreenShare, LuScreenShareOff } from "react-icons/lu";
 // ==========================import custom components==========================
 import CustomButton from "@/components/custom/CustomButton";
 import CustomContainer from "@/components/custom/CustomContainer";
 import CustomGrid from "@/components/custom/CustomGrid";
 // ==========================import external functions==========================
 import { realtimeMeetingListener } from "@/firebaseFunctions/conferences/conferenceGet";
-import { leaveConference } from "@/firebaseFunctions/conferences/conferenceDelete";
-import { updatePreferences } from "@/firebaseFunctions/conferences/conferenceUpdate";
+import {
+    leaveConference,
+    removeScreenSharer,
+} from "@/firebaseFunctions/conferences/conferenceDelete";
+import {
+    updatePreferences,
+    setScreenSharer,
+} from "@/firebaseFunctions/conferences/conferenceUpdate";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -35,6 +42,7 @@ import { Conference } from "@/types/MeetingRecords/realtimeMeeting";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { rtc, options } from "@/config/agoraConfig";
 import DefaultProfilePic from "@/images/general/defaultProfilePic.png";
+import { UserImportBuilder } from "firebase-admin/lib/auth/user-import-builder";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -50,7 +58,6 @@ export default function CurrentMeeting({
     const { teamId } = useTeam();
     const router = useRouter();
     const toast = useToast();
-    const participantRef = useRef<any>(null);
 
     // ===============states===============
     const [currentMeeting, setCurrentMeeting] = useState<Conference>({
@@ -59,6 +66,10 @@ export default function CurrentMeeting({
         isActive: false,
         lastStarted: null,
         host: "",
+        screenSharer: {
+            userId: "",
+            username: "",
+        },
     }); // [{id: string, name: string, video: boolean, audio: boolean}
 
     const [userSettings, setUserSettings] = useState<any>({
@@ -67,10 +78,43 @@ export default function CurrentMeeting({
         screenShareEnabled: false,
     });
 
-    const [loading, setLoading] = useState<boolean>(false);
     const [remoteUsers, setRemoteUsers] = useState<any>({});
 
+    const [remoteUserScreens, setRemoteUserScreens] = useState<any>({});
+
     // ===============helper functions (will not be directly triggered)===============
+    const initScreenShareClient = async () => {
+        // await rtc.
+        if (rtc.screenShareClient) {
+            return;
+        }
+        rtc.screenShareClient = AgoraRTC.createClient({
+            mode: "rtc",
+            codec: "h264",
+        });
+
+        setRemoteUserScreens(rtc.screenShareClient.remoteUsers);
+        // =====================for screen sharing==============
+        rtc.screenShareClient.on(
+            "user-published",
+            async (user: any, mediaType: any) => {
+                await screenShareSubscribe(user, mediaType);
+            }
+        );
+        rtc.screenShareClient.on("user-unpublished", async (user: any) => {
+            await handleScreenShareUserLeft(user);
+        });
+
+        // create screen video track
+        await rtc.screenShareClient.join(
+            options.appId,
+            teamId + "-share-screen",
+            null,
+            userId + "-share-screen"
+        );
+
+        // then display
+    };
     const initAgoraClient = async () => {
         // const AgoraRTC = (await import("agora-rtc-sdk-ng")).default;
         if (rtc.client) {
@@ -81,6 +125,7 @@ export default function CurrentMeeting({
             codec: "h264",
         });
 
+        // =====================for video conferencing==============
         setRemoteUsers(rtc.client.remoteUsers);
         rtc.client.remoteUsers.forEach((user: any) => {
             if (user.audioTrack) {
@@ -92,7 +137,7 @@ export default function CurrentMeeting({
         });
         // event handling
         rtc.client.on("user-published", async (user: any, mediaType: any) => {
-            await subscribe(user, mediaType);
+            await handleUserSubscribe(user, mediaType);
         });
         rtc.client.on("user-unpublished", async (user: any) => {
             await handleUserLeft(user);
@@ -111,15 +156,19 @@ export default function CurrentMeeting({
         await rtc.client.publish([localAudioTrack, localVideoTrack]);
     };
 
-    const subscribe = async (user: any, mediaType: any) => {
+    // ====== for remote users in the call ======
+    // users entering
+    const handleUserSubscribe = async (user: any, mediaType: any) => {
         const id = user.uid;
-        const currentRemoteUsers = remoteUsers;
-        currentRemoteUsers[id] = user;
-        setRemoteUsers(currentRemoteUsers);
-        const uid = user.uid;
+        setRemoteUsers((prevRemoteUsers: any) => ({
+            ...prevRemoteUsers,
+            [id]: user,
+        }));
+
         await rtc.client.subscribe(user, mediaType);
+
         if (mediaType === "video") {
-            user.videoTrack.play(`player-${uid}`);
+            user.videoTrack.play(`player-${id}`);
         }
         if (mediaType === "audio") {
             user.audioTrack.play();
@@ -132,6 +181,32 @@ export default function CurrentMeeting({
         delete remoteUsers[id];
     };
 
+    // ====== for screen sharing======
+    // user shares a screen
+    const screenShareSubscribe = async (user: any, mediaType: any) => {
+        const id = user.uid;
+        setRemoteUserScreens((prevRemoteUsers: any) => ({
+            ...prevRemoteUsers,
+            [id]: user,
+        }));
+
+        await rtc.screenShareClient.subscribe(user, mediaType);
+
+        if (mediaType === "video") {
+            user.videoTrack.play(`screen-share`);
+        }
+        if (mediaType === "audio") {
+            user.audioTrack.play();
+        }
+    };
+
+    // Handle user leave
+    const handleScreenShareUserLeft = (user: any) => {
+        const id = user.uid;
+        delete remoteUserScreens[id];
+    };
+
+    // =========mic=========
     const muteAudio = async () => {
         await rtc.localAudioTrack.setEnabled(false);
     };
@@ -140,12 +215,92 @@ export default function CurrentMeeting({
         await rtc.localAudioTrack.setEnabled(true);
     };
 
+    // =========webcam=========
     const muteVideo = async () => {
         await rtc.localVideoTrack.setEnabled(false);
     };
 
     const unmuteVideo = async () => {
         await rtc.localVideoTrack.setEnabled(true);
+    };
+
+    // =========screen sharing=========
+    const startSharing = async () => {
+        try {
+            await initScreenShareClient();
+            if (rtc.localScreenShareVideoTrack) {
+                rtc.localScreenShareVideoTrack.stop();
+                rtc.localScreenShareVideoTrack.close();
+            }
+            if (rtc.localScreenShareAudioTrack) {
+                rtc.localScreenShareAudioTrack.stop();
+                rtc.localScreenShareAudioTrack.close();
+            }
+
+            const screenTrack: any = await AgoraRTC.createScreenVideoTrack(
+                {
+                    encoderConfig: "720p",
+                },
+                "auto"
+            );
+
+            if (screenTrack instanceof Array) {
+                rtc.localScreenShareVideoTrack = screenTrack[0];
+                rtc.localScreenShareAudioTrack = screenTrack[1];
+            } else {
+                rtc.localScreenShareVideoTrack = screenTrack;
+            }
+
+            rtc.localScreenShareVideoTrack.play("screen-share");
+
+            rtc.localScreenShareVideoTrack.on("track-ended", async () => {
+                await stopSharing();
+                // alert(`Screen-share track ended, stop sharing screen `);
+                rtc.localScreenShareVideoTrack &&
+                    rtc.localScreenShareVideoTrack.close();
+                rtc.localScreenShareAudioTrack &&
+                    rtc.localScreenShareVideoTrack.close();
+            });
+
+            if (rtc.localScreenShareAudioTrack == null) {
+                await rtc.screenShareClient.publish([
+                    rtc.localScreenShareVideoTrack,
+                ]);
+            } else {
+                await rtc.screenShareClient.publish([
+                    rtc.localScreenShareVideoTrack,
+                    rtc.localScreenShareAudioTrack,
+                ]);
+            }
+            await setScreenSharer(teamId, userId + "-share-screen", username);
+
+            toast({
+                title: "Screen sharing started",
+                status: "success",
+            });
+        } catch (e) {
+            toast({
+                title: "Screen sharing failed",
+                status: "error",
+            });
+        }
+    };
+    const stopSharing = async () => {
+        if (rtc.localScreenShareVideoTrack) {
+            rtc.localScreenShareVideoTrack.stop();
+            rtc.localScreenShareVideoTrack.close();
+        }
+        if (rtc.localScreenShareAudioTrack) {
+            rtc.localScreenShareAudioTrack.stop();
+            rtc.localScreenShareAudioTrack.close();
+        }
+        await removeScreenSharer(teamId);
+        await rtc.screenShareClient.leave();
+        rtc.screenShareClient = null;
+        toast({
+            title: "Screen sharing stopped",
+            status: "success",
+        });
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -169,10 +324,33 @@ export default function CurrentMeeting({
             videoEnabled: !userSettings.videoEnabled,
         });
     };
+
+    const toggleScreenShare = async () => {
+        // check if anyone is sharing screen
+        if (currentMeeting.screenSharer) {
+            // if someone is sharing screen, check if its you
+            const { screenSharer } = currentMeeting;
+            // if its you, you can stop sharing
+            if (screenSharer.userId == userId + "-share-screen") {
+                await stopSharing();
+            }
+            // else, you cannot do anything
+            else {
+                toast({
+                    title: "Someone is sharing screen, please wait...",
+                    status: "warning",
+                });
+            }
+        }
+        // if nobody is sharing screen, you can share screen
+        else {
+            await startSharing();
+        }
+    };
+
     const leaveMeeting = async () => {
         await handleLeave();
         await leaveConference(teamId, userId).then(async () => {
-            // await handleLeave();
             toast({
                 title: "Left the meeting, going back to teams...",
                 status: "info",
@@ -190,8 +368,10 @@ export default function CurrentMeeting({
     };
 
     // ===============useEffect===============
+    // to initialise client & listeners
     useEffect(() => {
         initAgoraClient();
+        initScreenShareClient();
         realtimeMeetingListener(
             teamId,
             userId,
@@ -202,6 +382,7 @@ export default function CurrentMeeting({
         );
     }, []);
 
+    // to detect changes in conference
     useEffect(() => {
         if (rtc.client.remoteUsers) {
             rtc.client.remoteUsers.forEach((user: any) => {
@@ -213,7 +394,21 @@ export default function CurrentMeeting({
                 }
             });
         }
-    }, [currentMeeting, rtc.client]);
+    }, [currentMeeting, rtc.client, remoteUsers]);
+
+    // detect changes in screen share
+    useEffect(() => {
+        if (rtc.screenShareClient && rtc.screenShareClient.remoteUsers) {
+            rtc.screenShareClient.remoteUsers.forEach((user: any) => {
+                if (user.audioTrack) {
+                    user.audioTrack.play();
+                }
+                if (user.videoTrack) {
+                    user.videoTrack.play(`screen-share`);
+                }
+            });
+        }
+    }, [currentMeeting, rtc.screenShareClient, remoteUserScreens]);
     return (
         <Box>
             {" "}
@@ -221,11 +416,20 @@ export default function CurrentMeeting({
                 Ongoing Meeting
             </Heading>
             <CustomContainer minHeight="80vh" maxHeight="80vh">
+                <SharedScreen
+                    sharerId={
+                        currentMeeting.screenSharer?.userId
+                            ? currentMeeting.screenSharer.userId
+                            : ""
+                    }
+                    sharerName={
+                        currentMeeting.screenSharer?.username
+                            ? currentMeeting.screenSharer.username
+                            : ""
+                    }
+                />
                 <Box padding="5px">
-                    <CustomGrid
-                        gridCols={[1, null, null, null, 2, 3]}
-                        ref={participantRef}
-                    >
+                    <CustomGrid gridCols={[1, null, null, null, 2, 3]}>
                         <ParticipantScreen
                             containerId={"local-stream"}
                             username={username + " (You)"}
@@ -281,6 +485,21 @@ export default function CurrentMeeting({
                     margin="5px"
                     onClick={() => {
                         toggleCam();
+                    }}
+                />
+                <IconButton
+                    icon={
+                        currentMeeting.screenSharer?.userId !=
+                        userId + "-share-screen" ? (
+                            <LuScreenShare />
+                        ) : (
+                            <LuScreenShareOff />
+                        )
+                    }
+                    aria-label="toggle-screen-share"
+                    margin="5px"
+                    onClick={() => {
+                        toggleScreenShare();
                     }}
                 />
                 <CustomButton
@@ -367,5 +586,30 @@ const ParticipantScreen = ({
                 />
             </Box>
         </CustomContainer>
+    );
+};
+
+const SharedScreen = ({
+    sharerId,
+    sharerName,
+}: {
+    sharerId: string;
+    sharerName: string;
+}) => {
+    return (
+        <Box
+            background="#282828"
+            width="100%"
+            margin="5px auto"
+            height="600px"
+            borderRadius="10px"
+            padding="15px"
+            display={sharerId?.length > 0 ? "block" : "none"}
+        >
+            <Box id={"screen-share"} height="90%" width="100%"></Box>
+            <Text color="white" margin="5px auto" textAlign={"center"}>
+                {sharerName} is sharing screen
+            </Text>
+        </Box>
     );
 };

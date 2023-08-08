@@ -10,7 +10,7 @@ import {
     getConferenceRef,
     getConferenceParticipantUserRef,
 } from "./conferenceRefs";
-import { conferenceInit,joinConference } from "./conferencePost";
+import { conferenceInit, joinConference } from "./conferencePost";
 import { leaveConference } from "./conferenceDelete";
 
 // ==================== retrieve conference ====================
@@ -22,7 +22,6 @@ export const getTeamConference = async (teamId: string) => {
     }
     return null;
 };
-
 
 // ==================== realtime listener ====================
 export const realtimeMeetingReadOnlyListener = (
@@ -82,10 +81,15 @@ export const realtimeMeetingListener = (
                     currParticipants[id] = { ...data.participants[id] };
                 });
             }
+            let screenSharer = "";
+            if (data.hasOwnProperty("screenSharer")) {
+                screenSharer = data.screenSharer;
+            }
             const currentConference = {
                 host,
                 lastStarted,
                 participants: currParticipants,
+                screenSharer,
             };
             setCurrentData(currentConference);
 

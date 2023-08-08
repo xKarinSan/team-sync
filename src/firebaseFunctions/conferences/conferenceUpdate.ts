@@ -1,7 +1,9 @@
 import { update } from "firebase/database";
-import { getConferenceParticipantUserRef, getConferenceRef } from "./conferenceRefs";
-
-
+import {
+    getConferenceParticipantUserRef,
+    getConferenceRef,
+    getConferenceScreenSharerRef,
+} from "./conferenceRefs";
 
 // ==================== change host ====================
 export const changeHost = async (teamId: string) => {
@@ -10,7 +12,6 @@ export const changeHost = async (teamId: string) => {
         host: "",
     });
 };
-
 
 // ==================== update preferences ====================
 export const updatePreferences = async (
@@ -23,4 +24,16 @@ export const updatePreferences = async (
         userId
     );
     await update(currentParticipantRef, preferences);
+};
+
+// ==================== update screen sharer ====================
+export const setScreenSharer = async (
+    teamId: string,
+    userId: string,
+    username: string
+) => {
+    await update(getConferenceScreenSharerRef(teamId), {
+        userId,
+        username,
+    });
 };
