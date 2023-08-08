@@ -6,6 +6,7 @@ import {
     getConferenceParticipantRef,
     getConferenceParticipantUserRef,
     getConferenceRef,
+    getConferenceScreenSharerRef,
 } from "./conferenceRefs";
 import { off, query, remove, update } from "firebase/database";
 
@@ -50,7 +51,5 @@ export const leaveConference = async (teamId: string, userId: string) => {
 
 // ==================== remove screen sharing ====================
 export const removeScreenSharer = async (teamId: string) => {
-    await update(getConferenceRef(teamId), {
-        screenSharer: "",
-    });
+    await remove(getConferenceScreenSharerRef(teamId));
 };

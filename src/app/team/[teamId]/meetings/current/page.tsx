@@ -67,7 +67,7 @@ export default function CurrentMeeting({
         isActive: false,
         lastStarted: null,
         host: "",
-        screenSharer: "",
+        screenSharer: null,
     }); // [{id: string, name: string, video: boolean, audio: boolean}
 
     const [userSettings, setUserSettings] = useState<any>({
@@ -160,7 +160,7 @@ export default function CurrentMeeting({
 
     // =========screen sharing=========
     const startSharing = async () => {
-        await setScreenSharer(teamId, userId);
+        await setScreenSharer(teamId, userId, username);
         toast({
             title: "Screen sharing started",
             status: "success",
@@ -211,7 +211,7 @@ export default function CurrentMeeting({
             const { screenSharer } = currentMeeting;
             // if its you, you can stop sharing
             // alert("screenSharer: " + screenSharer + " userId: " + userId);
-            if (screenSharer == userId) {
+            if (screenSharer.userId == userId) {
                 await stopSharing();
             }
             // else, you cannot do anything
@@ -280,6 +280,16 @@ export default function CurrentMeeting({
                 Ongoing Meeting
             </Heading>
             <CustomContainer minHeight="80vh" maxHeight="80vh">
+                {currentMeeting.screenSharer ? (
+                    <>
+                        <SharedScreen
+                            sharerId={currentMeeting.screenSharer.userId}
+                            sharerName={currentMeeting.screenSharer.username}
+                        />
+                    </>
+                ) : (
+                    <></>
+                )}
                 <Box padding="5px">
                     <CustomGrid
                         gridCols={[1, null, null, null, 2, 3]}
@@ -344,7 +354,7 @@ export default function CurrentMeeting({
                 />
                 <IconButton
                     icon={
-                        currentMeeting.screenSharer != userId ? (
+                        currentMeeting.screenSharer?.userId != userId ? (
                             <LuScreenShare />
                         ) : (
                             <LuScreenShareOff />
@@ -440,5 +450,19 @@ const ParticipantScreen = ({
                 />
             </Box>
         </CustomContainer>
+    );
+};
+
+const SharedScreen = ({
+    sharerId,
+    sharerName,
+}: {
+    sharerId: string;
+    sharerName: string;
+}) => {
+    return (
+        <Box>
+            <Text>{sharerName} is sharing screen</Text>
+        </Box>
     );
 };

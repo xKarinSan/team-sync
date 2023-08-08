@@ -19,3 +19,7 @@ export const getConferenceParticipantUserRef = (
 ) => {
     return ref(realtimeDB, `conferences/${teamId}/participants/${userId}`);
 };
+
+export const getConferenceScreenSharerRef = (teamId: string) => {
+    return ref(realtimeDB, `conferences/${teamId}/screenSharer`);
+};

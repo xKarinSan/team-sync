@@ -1,5 +1,11 @@
 // base
 // id is teamid
+export type ScreenSharer = {
+    // userId of person sharing screen
+    userId: string;
+    username: string;
+};
+
 export type Conference = {
     // team which meeting is occuring at
     // participants: ParticipantPreferencesRecord[];
@@ -15,7 +21,7 @@ export type Conference = {
     host: string;
 
     // userId of person sharing screen
-    screenSharer: string;
+    screenSharer: ScreenSharer | null;
 };
 
 // id is uerId
