@@ -19,14 +19,21 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { FiMic, FiMicOff, FiVideo, FiVideoOff } from "react-icons/fi";
+import { LuScreenShare, LuScreenShareOff } from "react-icons/lu";
 // ==========================import custom components==========================
 import CustomButton from "@/components/custom/CustomButton";
 import CustomContainer from "@/components/custom/CustomContainer";
 import CustomGrid from "@/components/custom/CustomGrid";
 // ==========================import external functions==========================
 import { realtimeMeetingListener } from "@/firebaseFunctions/conferences/conferenceGet";
-import { leaveConference } from "@/firebaseFunctions/conferences/conferenceDelete";
-import { updatePreferences } from "@/firebaseFunctions/conferences/conferenceUpdate";
+import {
+    leaveConference,
+    removeScreenSharer,
+} from "@/firebaseFunctions/conferences/conferenceDelete";
+import {
+    updatePreferences,
+    setScreenSharer,
+} from "@/firebaseFunctions/conferences/conferenceUpdate";
 // ==========================import external variables==========================
 
 // ==========================import types/interfaces==========================
@@ -35,6 +42,7 @@ import { Conference } from "@/types/MeetingRecords/realtimeMeeting";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { rtc, options } from "@/config/agoraConfig";
 import DefaultProfilePic from "@/images/general/defaultProfilePic.png";
+import { UserImportBuilder } from "firebase-admin/lib/auth/user-import-builder";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -59,6 +67,7 @@ export default function CurrentMeeting({
         isActive: false,
         lastStarted: null,
         host: "",
+        screenSharer: "",
     }); // [{id: string, name: string, video: boolean, audio: boolean}
 
     const [userSettings, setUserSettings] = useState<any>({
@@ -67,7 +76,6 @@ export default function CurrentMeeting({
         screenShareEnabled: false,
     });
 
-    const [loading, setLoading] = useState<boolean>(false);
     const [remoteUsers, setRemoteUsers] = useState<any>({});
 
     // ===============helper functions (will not be directly triggered)===============
@@ -132,6 +140,7 @@ export default function CurrentMeeting({
         delete remoteUsers[id];
     };
 
+    // =========mic=========
     const muteAudio = async () => {
         await rtc.localAudioTrack.setEnabled(false);
     };
@@ -140,12 +149,29 @@ export default function CurrentMeeting({
         await rtc.localAudioTrack.setEnabled(true);
     };
 
+    // =========webcam=========
     const muteVideo = async () => {
         await rtc.localVideoTrack.setEnabled(false);
     };
 
     const unmuteVideo = async () => {
         await rtc.localVideoTrack.setEnabled(true);
+    };
+
+    // =========screen sharing=========
+    const startSharing = async () => {
+        await setScreenSharer(teamId, userId);
+        toast({
+            title: "Screen sharing started",
+            status: "success",
+        });
+    };
+    const stopSharing = async () => {
+        await removeScreenSharer(teamId);
+        toast({
+            title: "Screen sharing stopped",
+            status: "success",
+        });
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -169,6 +195,39 @@ export default function CurrentMeeting({
             videoEnabled: !userSettings.videoEnabled,
         });
     };
+
+    const toggleScreenShare = async () => {
+        // if (userSettings.screenShareEnabled) {
+        //     await startSharing();
+        // } else {
+        //     await stopSharing();
+        // }
+
+        // ==
+        // check if anyone is sharing screen
+        // console.log("[toggleScreenShare] currentMeeting", currentMeeting);
+        if (currentMeeting.screenSharer) {
+            // if someone is sharing screen, check if its you
+            const { screenSharer } = currentMeeting;
+            // if its you, you can stop sharing
+            // alert("screenSharer: " + screenSharer + " userId: " + userId);
+            if (screenSharer == userId) {
+                await stopSharing();
+            }
+            // else, you cannot do anything
+            else {
+                toast({
+                    title: "Someone is sharing screen, please wait...",
+                    status: "warning",
+                });
+            }
+        }
+        // if nobody is sharing screen, you can share screen
+        else {
+            await startSharing();
+        }
+    };
+
     const leaveMeeting = async () => {
         await handleLeave();
         await leaveConference(teamId, userId).then(async () => {
@@ -281,6 +340,20 @@ export default function CurrentMeeting({
                     margin="5px"
                     onClick={() => {
                         toggleCam();
+                    }}
+                />
+                <IconButton
+                    icon={
+                        currentMeeting.screenSharer != userId ? (
+                            <LuScreenShare />
+                        ) : (
+                            <LuScreenShareOff />
+                        )
+                    }
+                    aria-label="toggle-screen-share"
+                    margin="5px"
+                    onClick={() => {
+                        toggleScreenShare();
                     }}
                 />
                 <CustomButton

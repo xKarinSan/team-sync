@@ -13,6 +13,9 @@ export type Conference = {
 
     // userId of host
     host: string;
+
+    // userId of person sharing screen
+    screenSharer: string;
 };
 
 // id is uerId

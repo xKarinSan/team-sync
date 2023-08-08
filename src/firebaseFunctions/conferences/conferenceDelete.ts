@@ -2,8 +2,12 @@ import { Meeting } from "@/types/MeetingRecords/meetingTypes";
 import { getTeamConference } from "./conferenceGet";
 import { changeHost } from "./conferenceUpdate";
 import { createNewMeeting } from "../meetings/meetingAdd";
-import { getConferenceParticipantRef, getConferenceParticipantUserRef, getConferenceRef } from "./conferenceRefs";
-import { off, query, remove } from "firebase/database";
+import {
+    getConferenceParticipantRef,
+    getConferenceParticipantUserRef,
+    getConferenceRef,
+} from "./conferenceRefs";
+import { off, query, remove, update } from "firebase/database";
 
 // ==================== leave conference ====================
 export const leaveConference = async (teamId: string, userId: string) => {
@@ -42,4 +46,11 @@ export const leaveConference = async (teamId: string, userId: string) => {
         console.log(e);
         return false;
     }
+};
+
+// ==================== remove screen sharing ====================
+export const removeScreenSharer = async (teamId: string) => {
+    await update(getConferenceRef(teamId), {
+        screenSharer: "",
+    });
 };
