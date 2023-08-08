@@ -43,6 +43,8 @@ export const realtimeMeetingReadOnlyListener = (
                 participantCount,
             };
             setCurrentData(currentConference);
+        } else {
+            // alert("nonexistent");
         }
     });
 };
