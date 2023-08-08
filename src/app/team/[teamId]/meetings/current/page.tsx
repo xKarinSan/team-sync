@@ -245,11 +245,15 @@ export default function CurrentMeeting({
             rtc.localScreenShareVideoTrack.play("screen-share");
 
             rtc.localScreenShareVideoTrack.on("track-ended", () => {
-                alert(`Screen-share track ended, stop sharing screen `);
+                // alert(`Screen-share track ended, stop sharing screen `);
                 rtc.localScreenShareVideoTrack &&
                     rtc.localScreenShareVideoTrack.close();
                 rtc.localScreenShareAudioTrack &&
                     rtc.localScreenShareVideoTrack.close();
+                toast({
+                    title: "Screen sharing stopped",
+                    status: "success",
+                });
             });
 
             if (rtc.localScreenShareAudioTrack == null) {
@@ -276,25 +280,16 @@ export default function CurrentMeeting({
         }
     };
     const stopSharing = async () => {
-        const stopAndCloseTrack = async (track: any) => {
-            if (track) {
-                track.stop();
-                track.close();
-            }
-        };
-
-        await Promise.all([
-            stopAndCloseTrack(rtc.localScreenShareVideoTrack),
-            stopAndCloseTrack(rtc.localScreenShareAudioTrack),
-        ]);
-
+        if (rtc.localScreenShareVideoTrack) {
+            rtc.localScreenShareVideoTrack.stop();
+            rtc.localScreenShareVideoTrack.close();
+        }
+        if (rtc.localScreenShareAudioTrack) {
+            rtc.localScreenShareAudioTrack.stop();
+            rtc.localScreenShareAudioTrack.close();
+        }
         await removeScreenSharer(teamId);
-        await rtc.screenShareClient.leave();
-
-        toast({
-            title: "Screen sharing stopped",
-            status: "success",
-        });
+        // await rtc.screenShareClient.leave();
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -483,7 +478,8 @@ export default function CurrentMeeting({
                 />
                 <IconButton
                     icon={
-                        currentMeeting.screenSharer?.userId != userId ? (
+                        currentMeeting.screenSharer?.userId !=
+                        userId + +"-share-screen" ? (
                             <LuScreenShare />
                         ) : (
                             <LuScreenShareOff />
