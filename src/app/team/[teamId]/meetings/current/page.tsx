@@ -227,6 +227,16 @@ export default function CurrentMeeting({
     // =========screen sharing=========
     const startSharing = async () => {
         try {
+            await initScreenShareClient();
+            if (rtc.localScreenShareVideoTrack) {
+                rtc.localScreenShareVideoTrack.stop();
+                rtc.localScreenShareVideoTrack.close();
+            }
+            if (rtc.localScreenShareAudioTrack) {
+                rtc.localScreenShareAudioTrack.stop();
+                rtc.localScreenShareAudioTrack.close();
+            }
+
             const screenTrack: any = await AgoraRTC.createScreenVideoTrack(
                 {
                     encoderConfig: "720p",
@@ -234,7 +244,6 @@ export default function CurrentMeeting({
                 "auto"
             );
 
-            // console.log("[startSharing] screenTrack", screenTrack);
             if (screenTrack instanceof Array) {
                 rtc.localScreenShareVideoTrack = screenTrack[0];
                 rtc.localScreenShareAudioTrack = screenTrack[1];
@@ -244,16 +253,13 @@ export default function CurrentMeeting({
 
             rtc.localScreenShareVideoTrack.play("screen-share");
 
-            rtc.localScreenShareVideoTrack.on("track-ended", () => {
+            rtc.localScreenShareVideoTrack.on("track-ended", async () => {
+                await stopSharing();
                 // alert(`Screen-share track ended, stop sharing screen `);
                 rtc.localScreenShareVideoTrack &&
                     rtc.localScreenShareVideoTrack.close();
                 rtc.localScreenShareAudioTrack &&
                     rtc.localScreenShareVideoTrack.close();
-                toast({
-                    title: "Screen sharing stopped",
-                    status: "success",
-                });
             });
 
             if (rtc.localScreenShareAudioTrack == null) {
@@ -289,7 +295,12 @@ export default function CurrentMeeting({
             rtc.localScreenShareAudioTrack.close();
         }
         await removeScreenSharer(teamId);
-        // await rtc.screenShareClient.leave();
+        await rtc.screenShareClient.leave();
+        rtc.screenShareClient = null;
+        toast({
+            title: "Screen sharing stopped",
+            status: "success",
+        });
     };
 
     // ===============main functions (will be directly triggered)===============
@@ -387,7 +398,7 @@ export default function CurrentMeeting({
 
     // detect changes in screen share
     useEffect(() => {
-        if (rtc.screenShareClient.remoteUsers) {
+        if (rtc.screenShareClient && rtc.screenShareClient.remoteUsers) {
             rtc.screenShareClient.remoteUsers.forEach((user: any) => {
                 if (user.audioTrack) {
                     user.audioTrack.play();
@@ -479,7 +490,7 @@ export default function CurrentMeeting({
                 <IconButton
                     icon={
                         currentMeeting.screenSharer?.userId !=
-                        userId + +"-share-screen" ? (
+                        userId + "-share-screen" ? (
                             <LuScreenShare />
                         ) : (
                             <LuScreenShareOff />
