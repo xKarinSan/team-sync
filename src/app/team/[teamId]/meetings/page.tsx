@@ -53,6 +53,10 @@ export default function MeetingDisplayPage({}: {}) {
         realtimeTeamMeetingRecordChanges(teamId, setTeamMeetings);
     }, []);
 
+    // useEffect(() => {
+    //     console.log("[useEFfect] currMeeting", currMeeting);
+    // }, [currMeeting]);
+
     return (
         <Box width={["100%", null, "80%", "60%"]}>
             <Heading fontWeight={"normal"} size="lg">
