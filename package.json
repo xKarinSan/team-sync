@@ -29,6 +29,7 @@
         "react-dropzone": "^14.2.3",
         "react-icalendar-link": "^3.0.2",
         "react-icons": "^4.10.1",
+        "remixicon-react": "^1.0.0",
         "typescript": "5.1.6",
         "uuid": "^9.0.0",
         "zustand": "^4.3.9"
