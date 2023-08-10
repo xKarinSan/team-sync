@@ -17,6 +17,9 @@ import {
     Icon,
     IconButton,
     useToast,
+    SimpleGrid,
+    Button,
+    Tooltip,
 } from "@chakra-ui/react";
 import { FiMic, FiMicOff, FiVideo, FiVideoOff } from "react-icons/fi";
 import { LuScreenShare, LuScreenShareOff } from "react-icons/lu";
@@ -42,7 +45,7 @@ import { Conference } from "@/types/MeetingRecords/realtimeMeeting";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { rtc, options } from "@/config/agoraConfig";
 import DefaultProfilePic from "@/images/general/defaultProfilePic.png";
-import { UserImportBuilder } from "firebase-admin/lib/auth/user-import-builder";
+import { LuPictureInPicture, LuPictureInPicture2 } from "react-icons/lu";
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
 
@@ -58,6 +61,7 @@ export default function CurrentMeeting({
     const { teamId } = useTeam();
     const router = useRouter();
     const toast = useToast();
+    const shareScreenContainer = useRef(null);
 
     // ===============states===============
     const [currentMeeting, setCurrentMeeting] = useState<Conference>({
@@ -239,8 +243,12 @@ export default function CurrentMeeting({
 
             const screenTrack: any = await AgoraRTC.createScreenVideoTrack(
                 {
-                    encoderConfig: "720p",
+                    encoderConfig: "1080p_2",
+                    optimizationMode: "detail",
+                    selfBrowserSurface: "exclude",
+                    systemAudio: "include",
                 },
+
                 "auto"
             );
 
@@ -407,6 +415,8 @@ export default function CurrentMeeting({
                     user.videoTrack.play(`screen-share`);
                 }
             });
+        } else {
+            console.log("[useEffect], nothing found");
         }
     }, [currentMeeting, rtc.screenShareClient, remoteUserScreens]);
     return (
@@ -415,93 +425,211 @@ export default function CurrentMeeting({
             <Heading fontWeight={"normal"} size="lg">
                 Ongoing Meeting
             </Heading>
+            {/* block when nobody is sharing screen, flex when somebody is sharing screen*/}
             <CustomContainer minHeight="80vh" maxHeight="80vh">
-                <SharedScreen
-                    sharerId={
-                        currentMeeting.screenSharer?.userId
-                            ? currentMeeting.screenSharer.userId
-                            : ""
+                <Box
+                    display={
+                        currentMeeting.screenSharer
+                            ? ["grid", null, null, "flex"]
+                            : ["block"]
                     }
-                    sharerName={
-                        currentMeeting.screenSharer?.username
-                            ? currentMeeting.screenSharer.username
-                            : ""
-                    }
-                />
-                <Box padding="5px">
-                    <CustomGrid gridCols={[1, null, null, null, 2, 3]}>
-                        <ParticipantScreen
-                            containerId={"local-stream"}
-                            username={username + " (You)"}
-                            profilePic={profilePic}
-                            videoEnabled={userSettings.videoEnabled}
-                            micEnabled={userSettings.micEnabled}
-                            screenShareEnabled={false}
-                        />
-                        {Object.keys(currentMeeting.participants).map(
-                            (uid, index) => {
-                                if (uid != userId) {
-                                    const {
-                                        username,
-                                        videoEnabled,
-                                        micEnabled,
-                                        screenShareEnabled,
-                                        profilePic,
-                                    } = currentMeeting.participants[uid];
-                                    return (
-                                        <ParticipantScreen
-                                            key={index}
-                                            containerId={`player-${uid}`}
-                                            username={username}
-                                            profilePic={profilePic}
-                                            videoEnabled={videoEnabled}
-                                            micEnabled={micEnabled}
-                                            screenShareEnabled={
-                                                screenShareEnabled
-                                            }
-                                        />
-                                    );
+                >
+                    <Box padding="5px" width="100%">
+                        <Box>
+                            <SharedScreen
+                                sharerId={
+                                    currentMeeting.screenSharer?.userId
+                                        ? currentMeeting.screenSharer.userId
+                                        : ""
                                 }
-                            }
+                                sharerName={
+                                    currentMeeting.screenSharer?.username
+                                        ? currentMeeting.screenSharer.username
+                                        : ""
+                                }
+                            />
+                        </Box>
+                    </Box>
+                    <Box padding="5px">
+                        {/* simplegrid when nobody is sharing screen*/}
+                        {currentMeeting.screenSharer ? (
+                            <>
+                                <Box
+                                    display={["flex", null, null, "grid"]}
+                                    height={"100%"}
+                                    width={["100%", null, null, "300px"]}
+                                    maxHeight={"600px"}
+                                    overflow={"scroll"}
+                                >
+                                    <Box minWidth={["45%", null, null, "100%"]}>
+                                        <ParticipantScreen
+                                            containerId={"local-stream"}
+                                            username={username + " (You)"}
+                                            profilePic={profilePic}
+                                            videoEnabled={
+                                                userSettings.videoEnabled
+                                            }
+                                            micEnabled={userSettings.micEnabled}
+                                            screenShareEnabled={false}
+                                        />
+                                    </Box>
+
+                                    {Object.keys(
+                                        currentMeeting.participants
+                                    ).map((uid, index) => {
+                                        if (uid != userId) {
+                                            const {
+                                                username,
+                                                videoEnabled,
+                                                micEnabled,
+                                                screenShareEnabled,
+                                                profilePic,
+                                            } =
+                                                currentMeeting.participants[
+                                                    uid
+                                                ];
+                                            return (
+                                                <Box
+                                                    minWidth={[
+                                                        "45%",
+                                                        null,
+                                                        null,
+                                                        "100%",
+                                                    ]}
+                                                    key={index}
+                                                >
+                                                    <ParticipantScreen
+                                                        key={index}
+                                                        containerId={`player-${uid}`}
+                                                        username={username}
+                                                        profilePic={profilePic}
+                                                        videoEnabled={
+                                                            videoEnabled
+                                                        }
+                                                        micEnabled={micEnabled}
+                                                        screenShareEnabled={
+                                                            screenShareEnabled
+                                                        }
+                                                    />
+                                                </Box>
+                                            );
+                                        }
+                                    })}
+                                </Box>
+                            </>
+                        ) : (
+                            <>
+                                {" "}
+                                <SimpleGrid
+                                    columns={[1, 2, null, 3, 4]}
+                                    spacing={2}
+                                >
+                                    <ParticipantScreen
+                                        containerId={"local-stream"}
+                                        username={username + " (You)"}
+                                        profilePic={profilePic}
+                                        videoEnabled={userSettings.videoEnabled}
+                                        micEnabled={userSettings.micEnabled}
+                                        screenShareEnabled={false}
+                                    />
+                                    {Object.keys(
+                                        currentMeeting.participants
+                                    ).map((uid, index) => {
+                                        if (uid != userId) {
+                                            const {
+                                                username,
+                                                videoEnabled,
+                                                micEnabled,
+                                                screenShareEnabled,
+                                                profilePic,
+                                            } =
+                                                currentMeeting.participants[
+                                                    uid
+                                                ];
+                                            return (
+                                                <ParticipantScreen
+                                                    key={index}
+                                                    containerId={`player-${uid}`}
+                                                    username={username}
+                                                    profilePic={profilePic}
+                                                    videoEnabled={videoEnabled}
+                                                    micEnabled={micEnabled}
+                                                    screenShareEnabled={
+                                                        screenShareEnabled
+                                                    }
+                                                />
+                                            );
+                                        }
+                                    })}
+                                </SimpleGrid>
+                            </>
                         )}
-                        {/* </Box> */}
-                    </CustomGrid>
+                        {/* row whens someone share screen */}
+                    </Box>
                 </Box>
             </CustomContainer>
             <CustomContainer>
-                <IconButton
-                    icon={userSettings.micEnabled ? <FiMic /> : <FiMicOff />}
-                    aria-label="toggle-mic"
-                    margin="5px"
-                    onClick={() => {
-                        toggleMic();
-                    }}
-                />
-                <IconButton
-                    icon={
-                        userSettings.videoEnabled ? <FiVideo /> : <FiVideoOff />
+                <Tooltip
+                    hasArrow
+                    label={userSettings.micEnabled ? "Mute" : "Unmute"}
+                >
+                    <IconButton
+                        icon={
+                            userSettings.micEnabled ? <FiMic /> : <FiMicOff />
+                        }
+                        aria-label="toggle-mic"
+                        margin="5px"
+                        onClick={() => {
+                            toggleMic();
+                        }}
+                    />
+                </Tooltip>
+                <Tooltip
+                    hasArrow
+                    label={
+                        userSettings.videoEnabled ? "Stop Video" : "Start Video"
                     }
-                    aria-label="toggle-mic"
-                    margin="5px"
-                    onClick={() => {
-                        toggleCam();
-                    }}
-                />
-                <IconButton
-                    icon={
+                >
+                    <IconButton
+                        icon={
+                            userSettings.videoEnabled ? (
+                                <FiVideo />
+                            ) : (
+                                <FiVideoOff />
+                            )
+                        }
+                        aria-label="toggle-mic"
+                        margin="5px"
+                        onClick={() => {
+                            toggleCam();
+                        }}
+                    />
+                </Tooltip>
+                <Tooltip
+                    hasArrow
+                    label={
                         currentMeeting.screenSharer?.userId !=
-                        userId + "-share-screen" ? (
-                            <LuScreenShare />
-                        ) : (
-                            <LuScreenShareOff />
-                        )
+                        userId + "-share-screen"
+                            ? "Start Sharing"
+                            : "Stop Sharing"
                     }
-                    aria-label="toggle-screen-share"
-                    margin="5px"
-                    onClick={() => {
-                        toggleScreenShare();
-                    }}
-                />
+                >
+                    <IconButton
+                        icon={
+                            currentMeeting.screenSharer?.userId !=
+                            userId + "-share-screen" ? (
+                                <LuScreenShare />
+                            ) : (
+                                <LuScreenShareOff />
+                            )
+                        }
+                        aria-label="toggle-screen-share"
+                        margin="5px"
+                        onClick={() => {
+                            toggleScreenShare();
+                        }}
+                    />
+                </Tooltip>
                 <CustomButton
                     clickFunction={leaveMeeting}
                     buttonText={"Leave Meeting"}
@@ -531,11 +659,14 @@ const ParticipantScreen = ({
     screenShareEnabled: boolean;
 }) => {
     return (
-        <CustomContainer
-            containerColor="#282828"
+        <Box
+            background="#282828"
             minHeight="300px"
             display="grid"
-            margin="5px auto"
+            margin="5px"
+            padding="15px"
+            borderRadius={"5px"}
+            minWidth={["auto", null, null, "250px"]}
         >
             <Box margin="10px auto" alignSelf="center" width="100%">
                 <Box
@@ -545,7 +676,7 @@ const ParticipantScreen = ({
                             ? ["400px", "300px", "200px", "300px"]
                             : "auto"
                     }
-                    margin={"0 autp"}
+                    margin={"0 auto"}
                 >
                     {videoEnabled ? null : (
                         <>
@@ -585,7 +716,7 @@ const ParticipantScreen = ({
                     margin="10px"
                 />
             </Box>
-        </CustomContainer>
+        </Box>
     );
 };
 
@@ -596,20 +727,84 @@ const SharedScreen = ({
     sharerId: string;
     sharerName: string;
 }) => {
+    const [playingPictureInPicture, setPlayingPictureInPicture] =
+        useState(false);
+    const handleTogglePictureInPicture = () => {
+        if (document.pictureInPictureElement) {
+            document.exitPictureInPicture();
+            // setPlayingPictureInPicture(false);
+        } else if (document.pictureInPictureEnabled) {
+            const targetElem = document.getElementById("screen-share");
+            if (targetElem) {
+                const videoTag = targetElem.getElementsByTagName("video")[0];
+                if (videoTag) {
+                    videoTag.requestPictureInPicture();
+                    // setPlayingPictureInPicture(true);
+                }
+            }
+        }
+    };
+    useEffect(() => {
+        const onPictureInPictureChange = () => {
+            console.log("[useEffect onPictureInPictureChange] trigger");
+            setPlayingPictureInPicture(
+                document.pictureInPictureElement !== null
+            );
+        };
+
+        window.addEventListener(
+            "enterpictureinpicture",
+            onPictureInPictureChange
+        );
+        window.addEventListener(
+            "leavepictureinpicture",
+            onPictureInPictureChange
+        );
+    }, []);
+
     return (
         <Box
             background="#282828"
-            width="100%"
+            width={"100%"}
             margin="5px auto"
-            height="600px"
             borderRadius="10px"
             padding="15px"
             display={sharerId?.length > 0 ? "block" : "none"}
         >
-            <Box id={"screen-share"} height="90%" width="100%"></Box>
+            <Box
+                id={"screen-share"}
+                height={["40vh", null, null, "60vh"]}
+                width="100%"
+            ></Box>
             <Text color="white" margin="5px auto" textAlign={"center"}>
                 {sharerName} is sharing screen
             </Text>
+            <Tooltip
+                hasArrow
+                label={
+                    playingPictureInPicture
+                        ? "Stop playing picture in picture"
+                        : "Play picture in picture"
+                }
+            >
+                <IconButton
+                    onClick={handleTogglePictureInPicture}
+                    icon={
+                        playingPictureInPicture ? (
+                            <LuPictureInPicture />
+                        ) : (
+                            <LuPictureInPicture2 />
+                        )
+                    }
+                    _hover={{
+                        color: "black",
+                        background: "white",
+                    }}
+                    background="black"
+                    color="white"
+                    aria-label="toggle-picture-in-picture"
+                />
+            </Tooltip>
         </Box>
     );
 };
