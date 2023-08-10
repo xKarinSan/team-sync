@@ -496,6 +496,7 @@ export default function CurrentMeeting({
                                                         null,
                                                         "100%",
                                                     ]}
+                                                    key={index}
                                                 >
                                                     <ParticipantScreen
                                                         key={index}
@@ -568,39 +569,67 @@ export default function CurrentMeeting({
                 </Box>
             </CustomContainer>
             <CustomContainer>
-                <IconButton
-                    icon={userSettings.micEnabled ? <FiMic /> : <FiMicOff />}
-                    aria-label="toggle-mic"
-                    margin="5px"
-                    onClick={() => {
-                        toggleMic();
-                    }}
-                />
-                <IconButton
-                    icon={
-                        userSettings.videoEnabled ? <FiVideo /> : <FiVideoOff />
+                <Tooltip
+                    hasArrow
+                    label={userSettings.micEnabled ? "Mute" : "Unmute"}
+                >
+                    <IconButton
+                        icon={
+                            userSettings.micEnabled ? <FiMic /> : <FiMicOff />
+                        }
+                        aria-label="toggle-mic"
+                        margin="5px"
+                        onClick={() => {
+                            toggleMic();
+                        }}
+                    />
+                </Tooltip>
+                <Tooltip
+                    hasArrow
+                    label={
+                        userSettings.videoEnabled ? "Stop Video" : "Start Video"
                     }
-                    aria-label="toggle-mic"
-                    margin="5px"
-                    onClick={() => {
-                        toggleCam();
-                    }}
-                />
-                <IconButton
-                    icon={
+                >
+                    <IconButton
+                        icon={
+                            userSettings.videoEnabled ? (
+                                <FiVideo />
+                            ) : (
+                                <FiVideoOff />
+                            )
+                        }
+                        aria-label="toggle-mic"
+                        margin="5px"
+                        onClick={() => {
+                            toggleCam();
+                        }}
+                    />
+                </Tooltip>
+                <Tooltip
+                    hasArrow
+                    label={
                         currentMeeting.screenSharer?.userId !=
-                        userId + "-share-screen" ? (
-                            <LuScreenShare />
-                        ) : (
-                            <LuScreenShareOff />
-                        )
+                        userId + "-share-screen"
+                            ? "Start Sharing"
+                            : "Stop Sharing"
                     }
-                    aria-label="toggle-screen-share"
-                    margin="5px"
-                    onClick={() => {
-                        toggleScreenShare();
-                    }}
-                />
+                >
+                    <IconButton
+                        icon={
+                            currentMeeting.screenSharer?.userId !=
+                            userId + "-share-screen" ? (
+                                <LuScreenShare />
+                            ) : (
+                                <LuScreenShareOff />
+                            )
+                        }
+                        aria-label="toggle-screen-share"
+                        margin="5px"
+                        onClick={() => {
+                            toggleScreenShare();
+                        }}
+                    />
+                </Tooltip>
                 <CustomButton
                     clickFunction={leaveMeeting}
                     buttonText={"Leave Meeting"}
