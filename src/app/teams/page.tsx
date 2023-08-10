@@ -12,7 +12,13 @@ import useUser from "@/store/userStore";
 import useTeam from "@/store/teamStore";
 
 // ==========================import chakraui components==========================
-import { Box, Heading, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+    Box,
+    Heading,
+    Tooltip,
+    useDisclosure,
+    useToast,
+} from "@chakra-ui/react";
 import { FiUser, FiUsers } from "react-icons/fi";
 
 // ==========================import custom components==========================
@@ -192,20 +198,21 @@ const MembershipContainer = ({
     };
 
     return (
-        <Box
-            onClick={() => {
-                //
-                getCurrentTeam();
-            }}
-        >
-            <CustomButton
-                buttonColor="rgba(243, 246, 251, 1)"
-                buttonTextAlignment={"flex-start"}
-                textColor="black"
-                LeftButtonIcon={FiUsers}
-                buttonText={membership.teamName}
-                buttonWidth="100%"
-            />
-        </Box>
+        <Tooltip label={membership.teamName} aria-label="A tooltip">
+            <Box
+                onClick={() => {
+                    getCurrentTeam();
+                }}
+            >
+                <CustomButton
+                    buttonColor="rgba(243, 246, 251, 1)"
+                    buttonTextAlignment={"flex-start"}
+                    textColor="black"
+                    LeftButtonIcon={FiUsers}
+                    buttonText={membership.teamName}
+                    buttonWidth="100%"
+                />
+            </Box>
+        </Tooltip>
     );
 };

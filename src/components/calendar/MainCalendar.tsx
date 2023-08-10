@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import useTeam from "@/store/teamStore";
 import useUser from "@/store/userStore";
 // ==========================import chakraui components==========================
-import { Box, Heading, useToast } from "@chakra-ui/react";
+import { Box, Heading, Tooltip, useToast } from "@chakra-ui/react";
 // ==========================import custom components==========================
 import CustomGrid from "../custom/CustomGrid";
 import CustomContainer from "../custom/CustomContainer";
@@ -29,7 +29,6 @@ import { SelectOptions } from "../custom/CustomSelect";
 
 // ==========================etc==========================
 import { createEvents } from "ics";
-import ICalendarLink from "react-icalendar-link";
 
 // ===================================main component===================================
 // ===============component exclusive interface(s)/type(s) if any===============
@@ -412,40 +411,46 @@ function CalendarCell({
         }
     };
     return (
-        <Box
-            background={day ? (isToday ? "#0239C8" : "#517ef0") : "FFFFFF"}
-            transition={"background-color 200ms linear, color 200ms linear"}
-            margin={0.5}
-            p={[2, null, 4, 6]}
-            borderRadius={[5, null, 10]}
-            height={["50px", "75px", "90px", "100px", "120px"]}
-            alignContent={"center"}
-            boxShadow={"0px 0px 4px 0px rgba(0, 0, 0, 0.25);"}
-            onClick={redirectToGivenDay}
-            _hover={{
-                background: day ? (isToday ? "#0e1834" : "#244ebd") : "FFFFFF",
-                cursor: day ? "pointer" : "default",
-            }}
-        >
-            <Heading
-                textAlign="center"
-                color="white"
-                size={["sm", null, "md"]}
-                fontWeight={"light"}
-                margin="auto"
+        <Tooltip label={day ? `${day}-${month}-${year} ` : ""}>
+            <Box
+                background={day ? (isToday ? "#0239C8" : "#517ef0") : "FFFFFF"}
+                transition={"background-color 200ms linear, color 200ms linear"}
+                margin={0.5}
+                p={[2, null, 4, 6]}
+                borderRadius={[5, null, 10]}
+                height={["50px", "75px", "90px", "100px", "120px"]}
+                alignContent={"center"}
+                boxShadow={"0px 0px 4px 0px rgba(0, 0, 0, 0.25);"}
+                onClick={redirectToGivenDay}
+                _hover={{
+                    background: day
+                        ? isToday
+                            ? "#0e1834"
+                            : "#244ebd"
+                        : "FFFFFF",
+                    cursor: day ? "pointer" : "default",
+                }}
             >
-                {day}
-                {noOfDeadlines ? (
-                    <>
-                        {" "}
-                        <Custombadge
-                            badgeText={`(${noOfDeadlines?.toString()})`}
-                            badgeColor="red"
-                            badgeVariant="solid"
-                        />
-                    </>
-                ) : null}
-            </Heading>
-        </Box>
+                <Heading
+                    textAlign="center"
+                    color="white"
+                    size={["sm", null, "md"]}
+                    fontWeight={"light"}
+                    margin="auto"
+                >
+                    {day}
+                    {noOfDeadlines ? (
+                        <>
+                            {" "}
+                            <Custombadge
+                                badgeText={`(${noOfDeadlines?.toString()})`}
+                                badgeColor="red"
+                                badgeVariant="solid"
+                            />
+                        </>
+                    ) : null}
+                </Heading>
+            </Box>
+        </Tooltip>
     );
 }
