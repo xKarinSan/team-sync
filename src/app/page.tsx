@@ -11,22 +11,21 @@ import {
     Input,
     Textarea,
     useColorModeValue,
-    Image,
 } from "@chakra-ui/react";
 import { FiGithub } from "react-icons/fi";
 import Link from "next/link";
-// import Image from "next/image";
+import Image from "next/image";
 import { KeyFeature } from "@/types/LandingPage/features";
 
 import FirstPic from "../images/landing/FirstLandingImage.png";
 import AboutMePic from "../images/landing/AboutMeImage.png";
 import ContactMeImage from "../images/landing/ContactMeImage.png";
 
-import MemberMgmt from "../images/landing/screenshots/MemberMgmt.gif";
-import DeadlineMgmt from "../images/landing/screenshots/DeadlineMgmt.gif";
+import MemberMgmt from "../images/landing/screenshots/MemberMgmt.png";
+import DeadlineMgmt from "../images/landing/screenshots/DeadlineMgmt.png";
 import VideoConference from "../images/landing/screenshots/VideoConference.png";
-import TeamChat from "../images/landing/screenshots/TeamChat.gif";
-import DocumentsMgmt from "../images/landing/screenshots/DocumentsMgmt.gif";
+import TeamChat from "../images/landing/screenshots/TeamChat.png";
+import DocumentsMgmt from "../images/landing/screenshots/DocumentsMgmt.png";
 
 // import PlaceboImage from "../images/landing/PlaceboImage.png";
 
@@ -37,31 +36,31 @@ export default function Home() {
             featureName: "Team Management",
             featureDesc:
                 "Intuitive UI and functionality that allows you to manage your teammates and team activities on the fly!",
-            featureImage: MemberMgmt.src,
+            featureImage: MemberMgmt,
         },
         {
             featureName: "Schedule Tracking",
             featureDesc:
                 "All important deadlines and meetings organised neatly in one place! Do not worry about forgetting any important stuff!",
-            featureImage: DeadlineMgmt.src,
+            featureImage: DeadlineMgmt,
         },
         {
             featureName: "Live Conferencing",
             featureDesc:
                 "Members far apart from one another? No problem! You can conduct your meetings anytime and anywhere with video conferencing and realtime chats!",
-            featureImage: VideoConference.src,
+            featureImage: VideoConference,
         },
         {
             featureName: "Real-time Team chats",
             featureDesc:
                 "Not everyone can meet virtually? No problem! Stay tuned with your team with our real-time team chats!",
-            featureImage: TeamChat.src,
+            featureImage: TeamChat,
         },
         {
             featureName: "Document Management",
             featureDesc:
                 "Worried about where your documents go? Fret not! You can manage your project materials here, safe and sound!",
-            featureImage: DocumentsMgmt.src,
+            featureImage: DocumentsMgmt,
         },
     ];
 
@@ -119,7 +118,7 @@ export default function Home() {
                         display={"grid"}
                         margin="auto"
                     >
-                        <Image src={FirstPic.src} alt="first pic" />
+                        <Image src={FirstPic} alt="first pic" />
                     </Box>
                 </Flex>
             </LandingPageSegment>
@@ -130,7 +129,7 @@ export default function Home() {
                         display={"grid"}
                         margin="auto"
                     >
-                        <Image src={AboutMePic.src} alt="about us" />
+                        <Image src={AboutMePic} alt="about us" />
                     </Box>
                     <Box
                         width={["90%", null, "60%"]}
@@ -200,7 +199,7 @@ export default function Home() {
                         <ContactUsForm />
                     </Box>
                     <Box width={["90%", null, null, "45%"]}>
-                        <Image src={ContactMeImage.src} alt="Contact me" />
+                        <Image src={ContactMeImage} alt="Contact me" />
                     </Box>
                 </Flex>
             </LandingPageSegment>{" "}
