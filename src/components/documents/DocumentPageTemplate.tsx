@@ -430,9 +430,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
     const fileExtensions = [
         "pdf",
         "doc",
-        "docx",
         "ppt",
-        "pptx",
         "xls",
         "xlsx",
         "jpg",
@@ -649,7 +647,7 @@ export function FileContainer({ file }: { file: DocumentRecord }) {
                             <>
                                 <Image
                                     src={FilePic.src}
-                                    width="100%"
+                                    height="100%"
                                     margin="0 auto"
                                 />
                             </>
