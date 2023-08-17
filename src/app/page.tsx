@@ -11,8 +11,9 @@ import {
     Input,
     Textarea,
     useColorModeValue,
+    Icon,
 } from "@chakra-ui/react";
-import { FiGithub } from "react-icons/fi";
+import { BiLogoGithub } from "react-icons/bi";
 import Link from "next/link";
 import Image from "next/image";
 import { KeyFeature } from "@/types/LandingPage/features";
@@ -27,9 +28,6 @@ import VideoConference from "../images/landing/screenshots/VideoConference.png";
 import TeamChat from "../images/landing/screenshots/TeamChat.png";
 import DocumentsMgmt from "../images/landing/screenshots/DocumentsMgmt.png";
 
-// import PlaceboImage from "../images/landing/PlaceboImage.png";
-
-import CustomButton from "@/components/custom/CustomButton";
 export default function Home() {
     const keyFeatures: KeyFeature[] = [
         {
@@ -342,45 +340,40 @@ function Footer() {
     };
     return (
         <Box
-            // bg={useColorModeValue("gray.50", "gray.900")}
+            height="150px"
             bg="#0131AE"
             color={useColorModeValue("gray.700", "gray.200")}
+            display={"grid"}
+            alignContent={"end"}
         >
-            <Box
-                borderTopWidth={1}
-                borderStyle={"solid"}
-                borderColor={useColorModeValue("gray.200", "gray.700")}
-                p={5}
-            >
+            <Box p={5}>
                 <Heading
                     textAlign={"center"}
                     color="white"
-                    fontWeight={"normal"}
+                    fontWeight={"light"}
                     size={"md"}
                 >
                     Done by{" "}
-                    <Heading as="span" fontWeight={"bold"} size="md">
+                    <Heading as="span" fontWeight={"normal"} size="md">
                         Siang Meng
                     </Heading>
                 </Heading>
-                <Container
-                    as={Stack}
-                    maxW={"6xl"}
-                    py={4}
-                    direction={{ base: "column", md: "row" }}
-                    spacing={4}
-                    justify={{ base: "center" }}
-                    align={{ base: "center", md: "center" }}
-                >
-                    <CustomButton
-                        margin={0}
-                        LeftButtonIcon={FiGithub}
-                        buttonText="Source Code"
-                        buttonColor="white"
-                        textColor="black"
-                        clickFunction={clickSourceCode}
-                    />
-                </Container>
+                <br />
+                <Box display={"grid"} alignContent={"center"}>
+                    <Link
+                        href="https://github.com/xKarinSan/team-sync"
+                        target="_blank"
+                    >
+                        <Heading
+                            textAlign={"center"}
+                            color="white"
+                            fontWeight={"bold"}
+                            size={"md"}
+                        >
+                            <Icon as={BiLogoGithub} /> Source Code
+                        </Heading>
+                    </Link>
+                </Box>
             </Box>
         </Box>
     );
