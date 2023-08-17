@@ -17,6 +17,7 @@ import {
     MenuItem,
     MenuButton,
     Button,
+    Progress,
 } from "@chakra-ui/react";
 import { FiFile, FiFilePlus, FiTrash } from "react-icons/fi";
 
@@ -52,6 +53,15 @@ export default function FileDropzone({
     // ===============states===============
     const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
     const [entering, setEntering] = useState<boolean>(false);
+
+    const [isUploading, setIsUploading] = useState<boolean>(false);
+
+    // for no of files
+    const [noOfUploadedFiles, setNoOfUploadedFiles] = useState<number>(0);
+
+    // for bytes
+    const [noOfUploadedBytes, setNoOfUploadedBytes] = useState<number>(0);
+    const [currFileSize, setCurrFileSize] = useState<number>(0);
 
     // ===============helper functions (will not be directly triggered)===============
 
@@ -93,24 +103,42 @@ export default function FileDropzone({
         setSelectedFiles([]);
     };
 
+    const successfulUpload = () => {
+        toast({
+            title: "File(s) uploaded",
+            status: "success",
+        });
+        setSelectedFiles([]);
+        setIsUploading(false);
+    };
+
+    const failedUpload = () => {
+        setIsUploading(false);
+        toast({
+            title: "File(s) failed to upload",
+            status: "error",
+        });
+    };
     const uploadFiles = async () => {
+        setIsUploading(true);
         toast({
             title: "Uploading file(s)",
             status: "info",
         });
         try {
-            await addFilesToTeam(folderId, selectedFiles, userId);
-            toast({
-                title: "File(s) uploaded",
-                status: "success",
-            });
-            setSelectedFiles([]);
+            addFilesToTeam(
+                folderId,
+                selectedFiles,
+                userId,
+                setNoOfUploadedFiles,
+                setNoOfUploadedBytes,
+                setCurrFileSize,
+                successfulUpload,
+                failedUpload
+            );
         } catch (err) {
-            console.log(err);
-            toast({
-                title: "File(s) failed to upload",
-                status: "error",
-            });
+            console.log("err", err);
+            failedUpload();
         }
     };
 
@@ -217,14 +245,36 @@ export default function FileDropzone({
                             />
                         </Box>
                         <Box marginBottom="10px">
-                            {selectedFiles.length >= 0 ? (
-                                <>
-                                    <CustomGrid gridCols={[2, 4, null]}>
-                                        {selectedImages}
-                                    </CustomGrid>
-                                </>
+                            {isUploading ? (
+                                <Box margin="10px auto">
+                                    <Text color="black" size="md">
+                                        Uploading {noOfUploadedFiles}/{" "}
+                                        {selectedFiles.length} files ...
+                                    </Text>
+                                    <Text color="black" size="sm">
+                                        {" "}
+                                        {noOfUploadedBytes}/{currFileSize} bytes
+                                        ..
+                                    </Text>
+                                    <Progress
+                                        size="sm"
+                                        colorScheme="blue"
+                                        value={noOfUploadedBytes}
+                                        max={currFileSize}
+                                    />
+                                </Box>
                             ) : (
-                                <></>
+                                <>
+                                    {selectedFiles.length >= 0 ? (
+                                        <>
+                                            <CustomGrid gridCols={[2, 4, null]}>
+                                                {selectedImages}
+                                            </CustomGrid>
+                                        </>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </>
                             )}
                         </Box>
                         {children}

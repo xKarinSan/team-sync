@@ -1,5 +1,9 @@
 import { getDocumentRef, getFileRef } from "./documentRefs";
-import { uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+    uploadBytes,
+    getDownloadURL,
+    uploadBytesResumable,
+} from "firebase/storage";
 import { push } from "firebase/database";
 // import { v4 as uuidv4 } from "uuid";
 
@@ -31,20 +35,45 @@ export const addFileRecord = async (
 export const addFilesToTeam = async (
     teamId: string,
     fileArr: File[],
-    uploaderId: string
+    uploaderId: string,
+    setNoOfUploadedFiles: (no: number) => void,
+    setNoOfUploadedBytes: (no: number) => void,
+    setCurrFileSize: (no: number) => void,
+    successfulUpload: () => void,
+    failedUpload: () => void
 ) => {
     const promises: any[] = [];
-
+    let noOfUploadedFilesCounter = 0;
+    setNoOfUploadedFiles(noOfUploadedFilesCounter);
     fileArr.forEach(async (file) => {
         const extension = file.name.substring(
             file.name.lastIndexOf(".") + 1,
             file.name.length
         );
+
+        setNoOfUploadedBytes(0);
+        setCurrFileSize(0);
+
         const docId = Math.random().toString(36).substr(2, 9);
         const newFileName = docId + "." + extension;
         const docRef = getDocumentRef(teamId, newFileName);
-        promises.push(
-            await uploadBytes(docRef, file).then(async () => {
+
+        const uploadTask = uploadBytesResumable(docRef, file);
+        promises.push(uploadTask);
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot: any) => {
+                setNoOfUploadedBytes(snapshot.bytesTransferred);
+                setCurrFileSize(snapshot.totalBytes);
+            },
+            (error: any) => {
+                failedUpload();
+                return;
+            },
+            async () => {
+                noOfUploadedFilesCounter += 1;
+                setNoOfUploadedFiles(noOfUploadedFilesCounter);
                 await getDownloadURL(docRef).then(async (url) => {
                     const newDocument: any = {
                         docId,
@@ -60,10 +89,15 @@ export const addFilesToTeam = async (
                     };
                     await addFileRecord(teamId, newDocument);
                 });
-            })
+            }
         );
     });
-
-    const res = await Promise.all(promises);
-    return res;
+    Promise.all(promises)
+        .then(() => {
+            successfulUpload();
+        })
+        .catch((e: any) => {
+            console.log("err", e);
+            failedUpload();
+        });
 };
