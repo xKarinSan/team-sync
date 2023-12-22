@@ -12,7 +12,7 @@ TeamSync is a collaborative platform that offers various features for efficient 
 - [License](#license)
 
 ## Links
-- [Live site](team-syncc.vercel.app)
+- [Live site](https://team-syncc.vercel.app)
 
 ## Features
 - Team Management: Easily create and manage teams, invite members, and assign roles.
